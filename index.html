@@ -59,8 +59,7 @@
   <p class="colibri">Doboré · Café de especialidad</p>
   <h1>¿Qué es cada foto?</h1>
   <p class="sub">Escribe el nombre de cada plato o bebida debajo de su foto.
-  Se guarda solo en tu teléfono mientras escribes. Cuando termines, toca
-  <b>Enviar a Daniel</b>.</p>
+  Se guarda solo mientras escribes — no hay que enviar nada.</p>
 </header>
 <div class="progreso" id="progreso" aria-live="polite"><b>0</b> de <b id="total">0</b> fotos nombradas</div>
 <div class="aviso" id="aviso"></div>
@@ -71,15 +70,25 @@
   <div id="menu-lista"></div>
 </section>
 <footer>
-  <div class="botones">
-    <button class="secundario" id="copiar">Copiar enlace</button>
-    <button class="primario" id="enviar">Enviar a Daniel</button>
+  <div class="botones" style="justify-content:center">
+    <p id="estado" style="margin:0;font-size:14px;color:var(--tinta2);text-align:center;line-height:52px">Conectando…</p>
   </div>
 </footer>
 <div class="toast" id="toast" role="status"></div>
-<script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import { getFirestore, collection, doc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDjK08ZG2us5T_lYQaXO4Nwj1-3a7ODeQY",
+  authDomain: "dobore.firebaseapp.com",
+  projectId: "dobore",
+  storageBucket: "dobore.firebasestorage.app",
+  messagingSenderId: "271842453854",
+  appId: "1:271842453854:web:12b06b7f226f1238df87cf"
+};
+
 const FOTOS = Array.from({length:9},(_,i)=>`foto-${String(i+1).padStart(2,'0')}`);
-const KEY='dobore-nombres-v2';
 const MENU=[
   {cat:'Café',items:['Espresso','Cappuccino','Latte','Cold Brew','Tónica de café']},
   {cat:'Brunch',items:['Tostada de masa madre','Bowl de frutas de temporada','Huevos al gusto','Pan de la casa','Sopa del día']},
@@ -88,32 +97,9 @@ const MENU=[
 const $=id=>document.getElementById(id);
 let datos={};
 
-// respuestas que llegan por enlace (?r=)
-function leerEnlace(){
-  const r=new URLSearchParams(location.search).get('r');
-  if(!r) return null;
-  try{ return JSON.parse(decodeURIComponent(escape(atob(r.replace(/-/g,'+').replace(/_/g,'/'))))); }
-  catch(e){ return null; }
-}
-function guardarLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(datos)); }catch(e){} }
-function cargarLocal(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } }
-
-const recibido=leerEnlace();
-datos=cargarLocal();
-if(recibido && recibido.labels){
-  // lo recibido pisa lo local (es lo que mandó el cliente)
-  datos={...datos, ...recibido.labels};
-  guardarLocal();
-  const f=recibido.ts? new Date(recibido.ts).toLocaleString('es-PA',{dateStyle:'long',timeStyle:'short'}) : '';
-  const av=$('aviso');
-  av.textContent=`Estas son las respuestas enviadas${f? ' el '+f : ''} — puedes corregirlas y reenviar.`;
-  av.style.display='block';
-}
-
 // pinta las cards
 const lista=$('lista');
 for(const id of FOTOS){
-  const d=datos[id]||{};
   const card=document.createElement('section');
   card.className='card';
   card.innerHTML=`
@@ -121,22 +107,20 @@ for(const id of FOTOS){
     <div class="cuerpo">
       <span class="num">Foto ${id.slice(-2)} de ${FOTOS.length}</span>
       <label for="${id}-n">Nombre del plato o bebida</label>
-      <input id="${id}-n" type="text" list="platos" autocomplete="off" enterkeyhint="next" value="${(d.n||'').replace(/"/g,'&quot;')}" placeholder="Ej: Cinnamon roll de la casa">
+      <input id="${id}-n" type="text" list="platos" autocomplete="off" enterkeyhint="next" placeholder="Ej: Cinnamon roll de la casa">
       <label for="${id}-d">Algún detalle (opcional)</label>
-      <input id="${id}-d" type="text" autocomplete="off" enterkeyhint="next" value="${(d.d||'').replace(/"/g,'&quot;')}" placeholder="Ingrediente especial, tamaño…">
-      <p class="guardado" id="${id}-ok">✓ Guardado en este teléfono</p>
+      <input id="${id}-d" type="text" autocomplete="off" enterkeyhint="next" placeholder="Ingrediente especial, tamaño…">
+      <p class="guardado" id="${id}-ok">✓ Guardado</p>
     </div>`;
   lista.appendChild(card);
 }
 $('total').textContent=FOTOS.length;
 
-// autocompletado con los nombres exactos del menú registrado
 const dl=document.createElement('datalist'); dl.id='platos';
 MENU.flatMap(c=>c.items).forEach(n=>{const o=document.createElement('option');o.value=n;dl.appendChild(o);});
 document.body.appendChild(dl);
 
-// lista viva: platos del menú que ya tienen foto nombrada vs los que faltan
-const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
 function pintarFaltantes(){
   const usados=new Set(FOTOS.map(id=>norm(datos[id]&&datos[id].n)));
   $('menu-lista').innerHTML=MENU.map(c=>`
@@ -146,43 +130,51 @@ function pintarFaltantes(){
       return `<span style="display:inline-block;margin:3px 6px 3px 0;padding:7px 12px;border-radius:999px;font-size:14px;border:1.5px solid ${ok?'var(--ok)':'var(--arena)'};color:${ok?'var(--ok)':'var(--tinta2)'};${ok?'':'background:var(--papel)'}">${ok?'✓ ':''}${n}</span>`;
     }).join('')}`).join('');
 }
-pintarFaltantes();
-
 function progreso(){
   const n=FOTOS.filter(id=>datos[id]&&datos[id].n&&datos[id].n.trim()).length;
   $('progreso').firstElementChild.textContent=n;
-  return n;
 }
-progreso();
-
-let timer={};
-lista.addEventListener('input',e=>{
-  const m=e.target.id.match(/^(foto-\d+)-(n|d)$/); if(!m) return;
-  const [,id,campo]=m;
-  datos[id]=datos[id]||{}; datos[id][campo]=e.target.value;
-  guardarLocal(); progreso(); pintarFaltantes();
-  clearTimeout(timer[id]);
-  const ok=$(id+'-ok'); ok.classList.remove('on');
-  timer[id]=setTimeout(()=>{ ok.classList.add('on'); setTimeout(()=>ok.classList.remove('on'),1600); },500);
-});
-
-function enlace(){
-  const payload={v:1, ts:Date.now(), labels:datos};
-  const b=btoa(unescape(encodeURIComponent(JSON.stringify(payload)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-  return location.origin+location.pathname+'?r='+b;
+function refrescarUI(origen){
+  for(const id of FOTOS){
+    const d=datos[id]||{};
+    const en=$(id+'-n'), ed=$(id+'-d');
+    // no pisar lo que el usuario está escribiendo en este momento
+    if(document.activeElement!==en) en.value=d.n||'';
+    if(document.activeElement!==ed) ed.value=d.d||'';
+  }
+  progreso(); pintarFaltantes();
 }
-function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),2200); }
+pintarFaltantes(); progreso();
 
-$('enviar').addEventListener('click',()=>{
-  const n=progreso();
-  const url=enlace();
-  const texto=`Hola Daniel, ya nombré las fotos del menú de Doboré (${n} de ${FOTOS.length}). Míralas aquí: ${url}`;
-  window.open('https://wa.me/?text='+encodeURIComponent(texto),'_blank');
-});
-$('copiar').addEventListener('click',async()=>{
-  try{ await navigator.clipboard.writeText(enlace()); toast('Enlace copiado ✓'); }
-  catch(e){ prompt('Copia este enlace:', enlace()); }
-});
+if(!firebaseConfig){
+  $('estado').textContent='⚠ Falta configurar la base de datos — avísale a Daniel.';
+}else{
+  const db=getFirestore(initializeApp(firebaseConfig));
+  const col=collection(db,'etiquetas');
+  // tiempo real: lo que escribe el cliente lo ve Daniel al instante (y viceversa)
+  onSnapshot(col,snap=>{
+    snap.docChanges().forEach(ch=>{ datos[ch.doc.id]={n:'',d:'',...ch.doc.data()}; });
+    refrescarUI('remoto');
+    $('estado').textContent='Se guarda automáticamente ✓ — puedes cerrar cuando quieras.';
+  },()=>{ $('estado').textContent='⚠ Sin conexión — vuelve a intentar con internet.'; });
+
+  let timer={};
+  lista.addEventListener('input',e=>{
+    const m=e.target.id.match(/^(foto-\d+)-(n|d)$/); if(!m) return;
+    const [,id,campo]=m;
+    datos[id]=datos[id]||{n:'',d:''}; datos[id][campo]=e.target.value;
+    progreso(); pintarFaltantes();
+    $('estado').textContent='Guardando…';
+    clearTimeout(timer[id]);
+    timer[id]=setTimeout(async()=>{
+      try{
+        await setDoc(doc(col,id),{n:datos[id].n||'',d:datos[id].d||'',t:Date.now()});
+        const ok=$(id+'-ok'); ok.classList.add('on'); setTimeout(()=>ok.classList.remove('on'),1600);
+        $('estado').textContent='Se guarda automáticamente ✓ — puedes cerrar cuando quieras.';
+      }catch(err){ $('estado').textContent='⚠ No se pudo guardar — revisa tu conexión.'; }
+    },600);
+  });
+}
 </script>
 </body>
 </html>
