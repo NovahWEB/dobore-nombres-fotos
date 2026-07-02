@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Doboré · ¿Qué es cada foto?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --crema:#F6F0E6; --papel:#FFFDF8; --tinta:#221710; --tinta2:rgba(34,23,16,.66);
+    --cobre:#9C6B36; --arena:#E4D8C4; --ok:#3E6B3A;
+  }
+  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  body{margin:0;background:var(--crema);color:var(--tinta);
+    font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased}
+  header{padding:28px 20px 10px;text-align:center;max-width:640px;margin:0 auto}
+  h1{font-family:"Playfair Display",serif;font-weight:600;font-size:clamp(26px,7vw,34px);margin:.2em 0 .3em}
+  .sub{color:var(--tinta2);font-size:15px;margin:0 auto;max-width:46ch}
+  .colibri{font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--cobre);font-weight:600}
+  .progreso{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--crema) 92%,transparent);
+    backdrop-filter:blur(6px);border-bottom:1px solid var(--arena);
+    padding:10px 20px;text-align:center;font-size:14px;color:var(--tinta2)}
+  .progreso b{color:var(--tinta)}
+  .aviso{max-width:640px;margin:14px auto 0;padding:12px 16px;background:#EFE3CD;border:1px solid var(--arena);
+    border-radius:10px;font-size:14px;display:none}
+  main{max-width:640px;margin:0 auto;padding:10px 16px 140px}
+  .card{background:var(--papel);border:1px solid var(--arena);border-radius:14px;
+    overflow:hidden;margin:18px 0;box-shadow:0 1px 2px rgba(34,23,16,.05)}
+  .card img{display:block;width:100%;height:auto;background:#EDE4D6}
+  .card .cuerpo{padding:14px 16px 18px}
+  .num{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--cobre);font-weight:600}
+  label{display:block;font-size:13px;color:var(--tinta2);margin:12px 0 4px}
+  input{width:100%;padding:12px 14px;font:inherit;font-size:17px;color:var(--tinta);
+    background:var(--crema);border:1.5px solid var(--arena);border-radius:10px;min-height:48px}
+  input:focus{outline:2px solid var(--cobre);outline-offset:1px;border-color:var(--cobre)}
+  .guardado{font-size:12px;color:var(--ok);margin-top:6px;opacity:0;transition:opacity .3s}
+  .guardado.on{opacity:1}
+  footer{position:fixed;bottom:0;left:0;right:0;z-index:6;
+    background:color-mix(in srgb,var(--papel) 94%,transparent);backdrop-filter:blur(8px);
+    border-top:1px solid var(--arena);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+  .botones{max-width:640px;margin:0 auto;display:flex;gap:10px}
+  button{flex:1;font:inherit;font-weight:600;font-size:16px;padding:14px;border-radius:12px;
+    cursor:pointer;min-height:52px;border:1.5px solid var(--tinta)}
+  .primario{background:var(--tinta);color:var(--crema)}
+  .secundario{background:transparent;color:var(--tinta)}
+  button:active{transform:translateY(1px)}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:100px;z-index:7;
+    background:var(--tinta);color:var(--crema);padding:10px 18px;border-radius:10px;
+    font-size:14px;opacity:0;pointer-events:none;transition:opacity .3s}
+  .toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <p class="colibri">Doboré · Café de especialidad</p>
+  <h1>¿Qué es cada foto?</h1>
+  <p class="sub">Escribe el nombre de cada plato o bebida debajo de su foto.
+  Se guarda solo en tu teléfono mientras escribes. Cuando termines, toca
+  <b>Enviar a Daniel</b>.</p>
+</header>
+<div class="progreso" id="progreso" aria-live="polite"><b>0</b> de <b id="total">0</b> fotos nombradas</div>
+<div class="aviso" id="aviso"></div>
+<main id="lista"></main>
+<footer>
+  <div class="botones">
+    <button class="secundario" id="copiar">Copiar enlace</button>
+    <button class="primario" id="enviar">Enviar a Daniel</button>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const FOTOS = Array.from({length:16},(_,i)=>`foto-${String(i+1).padStart(2,'0')}`);
+const KEY='dobore-nombres-v1';
+const $=id=>document.getElementById(id);
+let datos={};
+
+// respuestas que llegan por enlace (?r=)
+function leerEnlace(){
+  const r=new URLSearchParams(location.search).get('r');
+  if(!r) return null;
+  try{ return JSON.parse(decodeURIComponent(escape(atob(r.replace(/-/g,'+').replace(/_/g,'/'))))); }
+  catch(e){ return null; }
+}
+function guardarLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(datos)); }catch(e){} }
+function cargarLocal(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } }
+
+const recibido=leerEnlace();
+datos=cargarLocal();
+if(recibido && recibido.labels){
+  // lo recibido pisa lo local (es lo que mandó el cliente)
+  datos={...datos, ...recibido.labels};
+  guardarLocal();
+  const f=recibido.ts? new Date(recibido.ts).toLocaleString('es-PA',{dateStyle:'long',timeStyle:'short'}) : '';
+  const av=$('aviso');
+  av.textContent=`Estas son las respuestas enviadas${f? ' el '+f : ''}. Puedes corregirlas y reenviar.`;
+  av.style.display='block';
+}
+
+// pinta las cards
+const lista=$('lista');
+for(const id of FOTOS){
+  const d=datos[id]||{};
+  const card=document.createElement('section');
+  card.className='card';
+  card.innerHTML=`
+    <img src="fotos/${id}.webp" alt="Foto del menú ${id.slice(-2)}" loading="lazy" width="1200" height="900">
+    <div class="cuerpo">
+      <span class="num">Foto ${id.slice(-2)} de ${FOTOS.length}</span>
+      <label for="${id}-n">Nombre del plato o bebida</label>
+      <input id="${id}-n" type="text" autocomplete="off" enterkeyhint="next" value="${(d.n||'').replace(/"/g,'&quot;')}" placeholder="Ej: Cinnamon roll de la casa">
+      <label for="${id}-d">Algún detalle (opcional)</label>
+      <input id="${id}-d" type="text" autocomplete="off" enterkeyhint="next" value="${(d.d||'').replace(/"/g,'&quot;')}" placeholder="Ingrediente especial, tamaño…">
+      <p class="guardado" id="${id}-ok">✓ Guardado en este teléfono</p>
+    </div>`;
+  lista.appendChild(card);
+}
+$('total').textContent=FOTOS.length;
+
+function progreso(){
+  const n=FOTOS.filter(id=>datos[id]&&datos[id].n&&datos[id].n.trim()).length;
+  $('progreso').firstElementChild.textContent=n;
+  return n;
+}
+progreso();
+
+let timer={};
+lista.addEventListener('input',e=>{
+  const m=e.target.id.match(/^(foto-\d+)-(n|d)$/); if(!m) return;
+  const [,id,campo]=m;
+  datos[id]=datos[id]||{}; datos[id][campo]=e.target.value;
+  guardarLocal(); progreso();
+  clearTimeout(timer[id]);
+  const ok=$(id+'-ok'); ok.classList.remove('on');
+  timer[id]=setTimeout(()=>{ ok.classList.add('on'); setTimeout(()=>ok.classList.remove('on'),1600); },500);
+});
+
+function enlace(){
+  const payload={v:1, ts:Date.now(), labels:datos};
+  const b=btoa(unescape(encodeURIComponent(JSON.stringify(payload)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  return location.origin+location.pathname+'?r='+b;
+}
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),2200); }
+
+$('enviar').addEventListener('click',()=>{
+  const n=progreso();
+  const url=enlace();
+  const texto=`Hola Daniel, ya nombré las fotos del menú de Doboré (${n} de ${FOTOS.length}). Míralas aquí: ${url}`;
+  window.open('https://wa.me/?text='+encodeURIComponent(texto),'_blank');
+});
+$('copiar').addEventListener('click',async()=>{
+  try{ await navigator.clipboard.writeText(enlace()); toast('Enlace copiado ✓'); }
+  catch(e){ prompt('Copia este enlace:', enlace()); }
+});
+</script>
+</body>
+</html>
