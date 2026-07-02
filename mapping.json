@@ -1,18 +1,22 @@
 {
- "foto-01.webp": "DSC_2546 (1).jpg",
- "foto-02.webp": "DSC_6605 (1).jpg",
- "foto-03.webp": "DSC_6786 (1).jpg",
- "foto-04.webp": "DSC_7020 (1).jpg",
- "foto-05.webp": "DSC_7070 (1).jpg",
- "foto-06.webp": "DSC_8715 (2).jpg",
- "foto-07.webp": "DSC_8717 (1).jpg",
- "foto-08.webp": "DSC_8720 (1).jpg",
- "foto-09.webp": "DSC_8724 (1).jpg",
- "foto-10.webp": "DSC_8724.jpg",
- "foto-11.webp": "DSC_8733.jpg",
- "foto-12.webp": "DSC_8742.jpg",
- "foto-13.webp": "DSC_8770.jpg",
- "foto-14.webp": "DSC_8775.jpg",
- "foto-15.webp": "DSC_8785.jpg",
- "foto-16.webp": "DSC_8797.jpg"
+ "fotos": {
+  "foto-01.webp": "DSC_2546 (1).jpg",
+  "foto-02.webp": "DSC_6786 (1).jpg",
+  "foto-03.webp": "DSC_7020 (1).jpg",
+  "foto-04.webp": "DSC_7070 (1).jpg",
+  "foto-05.webp": "DSC_8715 (2).jpg",
+  "foto-06.webp": "DSC_8724 (1).jpg",
+  "foto-07.webp": "DSC_8742.jpg",
+  "foto-08.webp": "DSC_8785.jpg",
+  "foto-09.webp": "DSC_8797.jpg"
+ },
+ "descartadas": {
+  "DSC_6605 (1).jpg": "reservada como header de la sección Postres de la carta",
+  "DSC_8717 (1).jpg": "duplicada de la 06",
+  "DSC_8720 (1).jpg": "duplicada de la 09",
+  "DSC_8724.jpg": "duplicada de la 09",
+  "DSC_8733.jpg": "duplicada de la 12",
+  "DSC_8770.jpg": "duplicada de la 15",
+  "DSC_8775.jpg": "duplicada de la 15"
+ }
 }

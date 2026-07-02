@@ -65,6 +65,11 @@
 <div class="progreso" id="progreso" aria-live="polite"><b>0</b> de <b id="total">0</b> fotos nombradas</div>
 <div class="aviso" id="aviso"></div>
 <main id="lista"></main>
+<section id="faltantes" style="max-width:640px;margin:34px auto 0;padding:0 16px 10px">
+  <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:22px;margin:0 0 6px">¿Qué falta por fotografiar?</h2>
+  <p class="sub" style="margin:0 0 14px">Este es el menú actual de Doboré. Lo que quede <b>sin marcar</b> cuando termines es lo que aún no tiene foto — si puedes tomarles una foto después, ¡mejor todavía!</p>
+  <div id="menu-lista"></div>
+</section>
 <footer>
   <div class="botones">
     <button class="secundario" id="copiar">Copiar enlace</button>
@@ -73,8 +78,13 @@
 </footer>
 <div class="toast" id="toast" role="status"></div>
 <script>
-const FOTOS = Array.from({length:16},(_,i)=>`foto-${String(i+1).padStart(2,'0')}`);
-const KEY='dobore-nombres-v1';
+const FOTOS = Array.from({length:9},(_,i)=>`foto-${String(i+1).padStart(2,'0')}`);
+const KEY='dobore-nombres-v2';
+const MENU=[
+  {cat:'Café',items:['Espresso','Cappuccino','Latte','Cold Brew','Tónica de café']},
+  {cat:'Brunch',items:['Tostada de masa madre','Bowl de frutas de temporada','Huevos al gusto','Pan de la casa','Sopa del día']},
+  {cat:'Postres / Panadería',items:['Cheesecake de maracuyá','Brownie de chocolate','Croissant de mantequilla','Galleta de avena y cacao','Pan de banano']},
+];
 const $=id=>document.getElementById(id);
 let datos={};
 
@@ -111,7 +121,7 @@ for(const id of FOTOS){
     <div class="cuerpo">
       <span class="num">Foto ${id.slice(-2)} de ${FOTOS.length}</span>
       <label for="${id}-n">Nombre del plato o bebida</label>
-      <input id="${id}-n" type="text" autocomplete="off" enterkeyhint="next" value="${(d.n||'').replace(/"/g,'&quot;')}" placeholder="Ej: Cinnamon roll de la casa">
+      <input id="${id}-n" type="text" list="platos" autocomplete="off" enterkeyhint="next" value="${(d.n||'').replace(/"/g,'&quot;')}" placeholder="Ej: Cinnamon roll de la casa">
       <label for="${id}-d">Algún detalle (opcional)</label>
       <input id="${id}-d" type="text" autocomplete="off" enterkeyhint="next" value="${(d.d||'').replace(/"/g,'&quot;')}" placeholder="Ingrediente especial, tamaño…">
       <p class="guardado" id="${id}-ok">✓ Guardado en este teléfono</p>
@@ -119,6 +129,24 @@ for(const id of FOTOS){
   lista.appendChild(card);
 }
 $('total').textContent=FOTOS.length;
+
+// autocompletado con los nombres exactos del menú registrado
+const dl=document.createElement('datalist'); dl.id='platos';
+MENU.flatMap(c=>c.items).forEach(n=>{const o=document.createElement('option');o.value=n;dl.appendChild(o);});
+document.body.appendChild(dl);
+
+// lista viva: platos del menú que ya tienen foto nombrada vs los que faltan
+const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+function pintarFaltantes(){
+  const usados=new Set(FOTOS.map(id=>norm(datos[id]&&datos[id].n)));
+  $('menu-lista').innerHTML=MENU.map(c=>`
+    <p style="margin:12px 0 4px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--cobre);font-weight:600">${c.cat}</p>
+    ${c.items.map(n=>{
+      const ok=usados.has(norm(n));
+      return `<span style="display:inline-block;margin:3px 6px 3px 0;padding:7px 12px;border-radius:999px;font-size:14px;border:1.5px solid ${ok?'var(--ok)':'var(--arena)'};color:${ok?'var(--ok)':'var(--tinta2)'};${ok?'':'background:var(--papel)'}">${ok?'✓ ':''}${n}</span>`;
+    }).join('')}`).join('');
+}
+pintarFaltantes();
 
 function progreso(){
   const n=FOTOS.filter(id=>datos[id]&&datos[id].n&&datos[id].n.trim()).length;
@@ -132,7 +160,7 @@ lista.addEventListener('input',e=>{
   const m=e.target.id.match(/^(foto-\d+)-(n|d)$/); if(!m) return;
   const [,id,campo]=m;
   datos[id]=datos[id]||{}; datos[id][campo]=e.target.value;
-  guardarLocal(); progreso();
+  guardarLocal(); progreso(); pintarFaltantes();
   clearTimeout(timer[id]);
   const ok=$(id+'-ok'); ok.classList.remove('on');
   timer[id]=setTimeout(()=>{ ok.classList.add('on'); setTimeout(()=>ok.classList.remove('on'),1600); },500);
