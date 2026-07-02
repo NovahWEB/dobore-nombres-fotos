@@ -96,7 +96,7 @@ if(recibido && recibido.labels){
   guardarLocal();
   const f=recibido.ts? new Date(recibido.ts).toLocaleString('es-PA',{dateStyle:'long',timeStyle:'short'}) : '';
   const av=$('aviso');
-  av.textContent=`Estas son las respuestas enviadas${f? ' el '+f : ''}. Puedes corregirlas y reenviar.`;
+  av.textContent=`Estas son las respuestas enviadas${f? ' el '+f : ''} — puedes corregirlas y reenviar.`;
   av.style.display='block';
 }
 
