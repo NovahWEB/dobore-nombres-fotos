@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Doboré — La Carta</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23A23918'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23F7ECDA'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500;1,700;1,900&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --crema:      #F7ECDA;
+    --crema-suave:#EFE0C8;
+    --tostado:    #23120A;
+    --terracota:  #A23918;
+    --miel:       #8A600F;
+    --cobre:      #C67F43;
+    --cobre-claro:#E0A96D;
+    --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html,body{overflow-x:clip}
+  body{
+    background:var(--crema);
+    color:var(--tostado);
+    font-family:'Archivo',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  img{max-width:100%;display:block}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit}
+  :focus-visible{outline:3px solid var(--cobre);outline-offset:4px;border-radius:6px}
+
+  /* grano de papel sobre todo */
+  .grain{position:fixed;inset:0;z-index:60;pointer-events:none;background-image:var(--grano);opacity:.09;mix-blend-mode:multiply}
+
+  .wrap{width:100%;max-width:480px;margin-inline:auto;padding-inline:18px}
+
+  /* ------------------------------------------------ HERO */
+  .hero{min-height:94svh;display:flex;flex-direction:column;justify-content:space-between;padding-block:22px 30px;position:relative;overflow:hidden}
+  .hero-top{display:flex;justify-content:space-between;align-items:baseline;letter-spacing:.22em;text-transform:uppercase;font-size:.72rem;font-weight:600}
+  .hero-top .dot{color:var(--terracota)}
+  .hero-mid{position:relative;padding-top:12px}
+  .colibri{width:118px;height:auto;margin-left:4px;color:var(--terracota);overflow:visible}
+  .colibri path{fill:currentColor}
+  .colibri .ojo{fill:var(--crema)}
+  .hero-la{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;font-size:clamp(1.6rem,7vw,2.2rem);color:var(--miel);margin:6px 0 -14px 8px}
+  .hero-carta{
+    font-family:'Playfair Display',serif;font-style:italic;font-weight:900;
+    font-size:clamp(88px,29vw,150px);line-height:.9;letter-spacing:-.02em;
+    color:var(--terracota);
+    text-shadow:4px 4px 0 var(--cobre-claro);
+    margin-left:-4px;
+  }
+  .hero-sub{margin:18px 4px 0;font-size:.95rem;max-width:30ch;color:#4a2c17}
+  .hero-sub strong{color:var(--terracota)}
+  .chips{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+  .chip{
+    display:inline-flex;align-items:baseline;gap:.5em;text-decoration:none;color:var(--tostado);
+    border:1.6px solid var(--tostado);border-radius:999px;padding:.55em 1.05em;
+    font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    transition:background .22s ease,color .22s ease,transform .22s ease;
+  }
+  .chip small{font-family:'Playfair Display',serif;font-style:italic;font-size:.85em;color:var(--terracota);transition:color .22s ease}
+  .chip:hover,.chip:focus-visible{background:var(--terracota);border-color:var(--terracota);color:var(--crema)}
+  .chip:hover small,.chip:focus-visible small{color:var(--crema)}
+  .chip:active{transform:scale(.96)}
+  .hero-cue{display:flex;align-items:center;gap:12px;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--miel)}
+  .hero-cue .linea{flex:0 0 54px;height:1.5px;background:var(--terracota);transform-origin:left;animation:cue 2.2s ease-in-out infinite}
+  @keyframes cue{0%,100%{transform:scaleX(.35)}50%{transform:scaleX(1)}}
+  .hero-hoja{position:absolute;right:-26px;top:10%;width:150px;color:var(--miel);opacity:.28;transform:rotate(24deg)}
+  .hoja path{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+
+  /* ------------------------------------------------ TICKER */
+  .ticker{
+    background:var(--crema);color:var(--tostado);
+    border-top:1.5px solid var(--tostado);border-bottom:1.5px solid var(--tostado);
+    overflow:hidden;white-space:nowrap;padding-block:9px;position:relative;z-index:2;
+  }
+  .ticker-track{display:inline-flex;will-change:transform}
+  .ticker-track span{
+    display:inline-block;font-size:.7rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;padding-right:.28em;
+  }
+  .ticker-track b{color:var(--terracota);font-weight:600}
+
+  /* ------------------------------------------------ SECCIONES */
+  .sec{position:relative;color:var(--crema);padding:64px 0 76px;overflow:hidden}
+  .sec--cafe{background:var(--miel)}
+  .sec--brunch{background:var(--terracota)}
+  .sec--postres{background:var(--tostado)}
+  .sec::before{content:"";position:absolute;inset:0;background-image:var(--grano);opacity:.13;pointer-events:none}
+
+  .sec-num{
+    position:absolute;top:-30px;right:-14px;z-index:0;
+    font-family:'Playfair Display',serif;font-style:italic;font-weight:900;
+    font-size:clamp(150px,48vw,240px);line-height:1;
+    color:transparent;-webkit-text-stroke:1.5px rgba(247,236,218,.34);
+    pointer-events:none;user-select:none;
+  }
+  .sec-head{position:relative;z-index:1}
+  .sec-kicker{font-size:.7rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--cobre-claro);margin-bottom:6px}
+  .sec-title{overflow:hidden}
+  .sec-title .ttl{
+    display:inline-block;font-family:'Playfair Display',serif;font-style:italic;font-weight:900;
+    font-size:clamp(64px,21vw,110px);line-height:1;letter-spacing:-.02em;padding-right:.12em;
+    clip-path:inset(-10% 0% -10% 0%);
+  }
+  .sec-intro{margin-top:10px;font-size:.92rem;max-width:32ch;color:rgba(247,236,218,.82)}
+  .sec .hoja-deco{position:absolute;z-index:0;width:130px;color:var(--crema);opacity:.14;pointer-events:none}
+
+  /* ------------------------------------------------ PLATOS CON FOTO */
+  .dish{display:block;width:100%;position:relative;z-index:1;margin-top:58px;-webkit-tap-highlight-color:transparent}
+  .dish .win{
+    position:relative;display:block;overflow:hidden;background:#180c06;
+    clip-path:circle(75% at 50% 52%);
+    box-shadow:0 18px 40px rgba(0,0,0,.35);
+  }
+  .dish .win img{width:100%;height:100%;object-fit:cover}
+  .win--arch{width:min(80%,330px);aspect-ratio:4/5;border-radius:170px 170px 22px 22px}
+  .win--medallon{width:min(72%,300px);aspect-ratio:1;border-radius:50%}
+  .win--plato{width:min(84%,340px);aspect-ratio:5/4;border-radius:50%}
+  .win--piedra{width:min(78%,320px);aspect-ratio:0.95;border-radius:58% 42% 55% 45%/48% 60% 40% 52%}
+  .t-l{transform:rotate(-2.4deg)}
+  .t-r{transform:rotate(2deg)}
+  .a-r{margin-left:auto}
+  .a-c{margin-inline:auto}
+  .dish-name{
+    display:block;position:relative;z-index:2;
+    font-family:'Playfair Display',serif;font-weight:900;line-height:.98;letter-spacing:-.01em;
+    font-size:clamp(2.1rem,10.5vw,3.1rem);
+    margin-top:-.52em;
+    text-shadow:0 3px 18px rgba(0,0,0,.45);
+  }
+  .dish-name em{font-style:italic;color:var(--cobre-claro)}
+  .dish-tease{display:block;margin-top:8px;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,236,218,.75)}
+  .dish-cta{display:block;margin-top:10px;font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;color:var(--cobre-claro)}
+
+  .stamp{
+    display:inline-block;font-weight:700;font-size:1rem;letter-spacing:.04em;
+    border:2px solid var(--crema);border-radius:999px;padding:.4em .95em;
+    transform:rotate(-6deg);background:rgba(0,0,0,.14);
+  }
+  .dish .stamp{position:absolute;right:6px;z-index:3;top:-16px}
+  .dish{padding-top:16px}
+  .dish .win + .stamp{top:auto}
+  .stamp--precio{position:absolute;top:2px;right:2px}
+
+  /* badge destacado giratorio */
+  .badge{position:absolute;z-index:3;width:92px;height:92px;top:-26px;left:-10px;color:var(--crema);filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+  .badge svg{width:100%;height:100%;animation:girar 16s linear infinite}
+  .badge text{font-family:'Archivo',sans-serif;font-size:7.4px;letter-spacing:1.55px;text-transform:uppercase;fill:currentColor;font-weight:600}
+  .badge circle.centro{fill:var(--cobre)}
+  @keyframes girar{to{transform:rotate(360deg)}}
+
+  /* separador botánico entre platos */
+  .sep{display:flex;justify-content:center;gap:10px;margin-top:50px;color:rgba(247,236,218,.4)}
+  .sep i{width:5px;height:5px;border-radius:50%;background:currentColor}
+  .sep i:nth-child(2){transform:translateY(5px)}
+
+  /* ------------------------------------------------ FILAS SIN FOTO */
+  .rows{position:relative;z-index:1;margin-top:54px}
+  .rows-title{font-size:.7rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--cobre-claro);margin-bottom:4px}
+  .row{
+    display:flex;align-items:baseline;gap:12px;width:100%;padding:16px 0 14px;
+    border-bottom:1.5px dashed rgba(247,236,218,.35);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .row:first-of-type{border-top:1.5px dashed rgba(247,236,218,.35)}
+  .row-name{font-family:'Playfair Display',serif;font-weight:700;font-size:1.5rem;line-height:1.1}
+  .row-dots{flex:1;border-bottom:2px dotted rgba(247,236,218,.4);transform:translateY(-6px)}
+  .row .stamp{font-size:.85rem;padding:.32em .8em;transform:rotate(-4deg);flex:none}
+  .row:hover .row-name,.row:focus-visible .row-name{color:var(--cobre-claro);transition:color .2s ease}
+
+  /* ------------------------------------------------ FOOTER */
+  .footer{background:var(--crema);color:var(--tostado);padding:56px 0 46px;text-align:center;position:relative;overflow:hidden}
+  .footer .colibri{width:74px;margin:0 auto 10px;color:var(--terracota)}
+  .footer-nombre{font-family:'Playfair Display',serif;font-style:italic;font-weight:900;font-size:2rem;color:var(--terracota)}
+  .footer-linea{font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;margin-top:6px;color:var(--miel)}
+  .footer-nota{margin-top:20px;font-size:.85rem;color:#5a3a20;max-width:30ch;margin-inline:auto}
+
+  /* ------------------------------------------------ DETALLE */
+  .detail{
+    position:fixed;inset:0;z-index:80;color:var(--crema);
+    overflow-y:auto;overscroll-behavior:contain;
+    background:var(--tostado);
+  }
+  .detail[data-cat="cafe"]{background:var(--miel)}
+  .detail[data-cat="brunch"]{background:var(--terracota)}
+  .detail[data-cat="postres"]{background:var(--tostado)}
+  .detail::before{content:"";position:fixed;inset:0;background-image:var(--grano);opacity:.13;pointer-events:none}
+  .detail[hidden]{display:none}
+  .detail-inner{max-width:480px;margin-inline:auto;padding:64px 22px 56px;position:relative;min-height:100%}
+  .detail-close{
+    position:fixed;top:14px;right:14px;z-index:5;
+    width:46px;height:46px;border-radius:50%;border:2px solid var(--crema);
+    display:grid;place-items:center;color:var(--crema);background:rgba(0,0,0,.18);
+    transition:transform .22s ease,background .22s ease;
+  }
+  .detail-close:hover{background:rgba(0,0,0,.4);transform:rotate(90deg)}
+  .detail-close svg{width:18px;height:18px;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+  .d-kicker{font-size:.7rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--cobre-claro)}
+  .d-name{
+    font-family:'Playfair Display',serif;font-weight:900;line-height:.98;letter-spacing:-.01em;
+    font-size:clamp(2.4rem,11.5vw,3.4rem);margin-top:8px;text-shadow:0 3px 18px rgba(0,0,0,.4);
+  }
+  .d-win{
+    position:relative;width:min(84%,330px);max-height:44vh;aspect-ratio:4/5;margin:26px auto 0;
+    border-radius:170px 170px 22px 22px;overflow:hidden;background:#180c06;
+    box-shadow:0 20px 46px rgba(0,0,0,.4);transform:rotate(-1.6deg);
+  }
+  .d-win img{width:100%;height:100%;object-fit:cover}
+  .d-win.sin-foto{display:grid;place-items:center;background:rgba(0,0,0,.22);border:1.6px solid rgba(247,236,218,.35)}
+  .d-win.sin-foto .arte{width:56%;color:var(--crema);opacity:.9}
+  .arte path,.arte ellipse{fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .d-desc{margin:26px auto 0;font-size:1.05rem;line-height:1.65;max-width:34ch;color:rgba(247,236,218,.94)}
+  .d-desc::first-letter{font-family:'Playfair Display',serif;font-style:italic;font-size:1.6em;color:var(--cobre-claro)}
+  .d-foot{display:flex;align-items:center;gap:18px;margin-top:30px}
+  .d-foot .stamp{font-size:1.35rem;padding:.45em 1em;border-width:2.5px;transform:rotate(-7deg);background:rgba(0,0,0,.18)}
+  .d-nota{font-family:'Playfair Display',serif;font-style:italic;font-size:.98rem;color:var(--cobre-claro);max-width:16ch;line-height:1.35}
+
+  /* ken burns lentísimo */
+  .kb img{animation:kb 22s ease-in-out infinite alternate;transform-origin:55% 45%}
+  @keyframes kb{from{transform:scale(1.04)}to{transform:scale(1.2) translate(-2.5%,-3%)}}
+
+  /* ------------------------------------------------ reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    .kb img,.badge svg,.hero-cue .linea{animation:none}
+    .detail{transition:opacity .2s ease}
+    *{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============================ HERO ============================ -->
+<header class="hero">
+  <div class="wrap hero-top">
+    <span>Doboré <span class="dot">·</span> Café</span>
+    <span>Panamá</span>
+  </div>
+
+  <div class="wrap hero-mid">
+    <svg class="hero-hoja hoja" viewBox="0 0 100 160" aria-hidden="true">
+      <path d="M50 5 C 50 60, 50 110, 50 155"/>
+      <path d="M50 30 C 34 26, 22 14, 20 2 C 36 6, 46 16, 50 30 Z"/>
+      <path d="M50 62 C 66 58, 78 46, 80 34 C 64 38, 54 48, 50 62 Z"/>
+      <path d="M50 96 C 34 92, 22 80, 20 68 C 36 72, 46 82, 50 96 Z"/>
+      <path d="M50 128 C 66 124, 78 112, 80 100 C 64 104, 54 114, 50 128 Z"/>
+    </svg>
+    <svg class="colibri" viewBox="0 0 110 90" aria-hidden="true">
+      <path class="ala" d="M62 37 C 63 26, 71 14, 84 8 C 90 5.5, 97 4.5, 103 5.5 C 97 13, 90 21, 83 28 C 77 33.5, 70 37, 64 38.5 Z"/>
+      <path d="M6 44 C 18 42.5, 30 43.5, 40 44.5 C 43 37, 50 32, 57 33 C 62 34, 66 38, 67 43 C 73 45, 77.5 50, 78.5 55 C 85 61, 89.5 71, 88.5 83 C 84.5 78, 81 73, 78 68 C 77.5 74.5, 74.5 79.5, 69.5 83 C 69.5 76.5, 68.5 70, 66 64.5 C 59.5 66, 51 63.5, 45.5 57 C 42.5 53.5, 41 49.5, 40.5 47.5 C 30 46.5, 17 45.5, 6 45.5 Z"/>
+      <circle class="ojo" cx="51.5" cy="40" r="2"/>
+    </svg>
+    <p class="hero-la">Aquí está</p>
+    <h1 class="hero-carta">la<br>Carta</h1>
+    <p class="hero-sub">Café de la tierra, brunch del fogón y algo dulce para cerrar. <strong>Toca cualquier plato</strong> para verlo de cerca.</p>
+    <nav class="chips" aria-label="Categorías">
+      <a class="chip" href="#cafe"><small>01</small> Café</a>
+      <a class="chip" href="#brunch"><small>02</small> Brunch</a>
+      <a class="chip" href="#postres"><small>03</small> Postres</a>
+    </nav>
+  </div>
+
+  <div class="wrap hero-cue"><span class="linea"></span> Desliza con hambre</div>
+</header>
+
+<!-- ============================ 01 CAFÉ ============================ -->
+<div class="ticker" aria-hidden="true"><div class="ticker-track"></div></div>
+
+<section class="sec sec--cafe" id="cafe" aria-labelledby="t-cafe">
+  <span class="sec-num" aria-hidden="true">01</span>
+  <svg class="hoja hoja-deco" style="left:-40px;bottom:8%;transform:rotate(-18deg)" viewBox="0 0 100 160" aria-hidden="true"><path d="M50 5 C 50 60, 50 110, 50 155"/><path d="M50 30 C 34 26, 22 14, 20 2 C 36 6, 46 16, 50 30 Z"/><path d="M50 62 C 66 58, 78 46, 80 34 C 64 38, 54 48, 50 62 Z"/><path d="M50 96 C 34 92, 22 80, 20 68 C 36 72, 46 82, 50 96 Z"/></svg>
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="sec-kicker">01 · El ritual de la mañana</p>
+      <h2 class="sec-title" id="t-cafe"><span class="ttl">Café</span></h2>
+      <p class="sec-intro">Granos locales, tueste fresco. La barra es el corazón de la casa.</p>
+    </header>
+
+    <button class="dish" data-dish="espresso-sunrise">
+      <span class="win win--arch t-l kb"><img src="../fotos/foto-01.webp" alt="Espresso Sunrise: vaso con agua tónica, espresso y jugo de naranja en capas"></span>
+      <span class="stamp stamp--precio">$1.00</span>
+      <span class="dish-name">Espresso <em>Sunrise</em></span>
+      <span class="dish-tease">Tónica · espresso · naranja natural</span>
+      <span class="dish-cta">Tócalo para verlo de cerca</span>
+    </button>
+
+    <div class="rows">
+      <p class="rows-title">De la barra, al grano</p>
+      <button class="row" data-dish="espresso"><span class="row-name">Espresso</span><span class="row-dots"></span><span class="stamp">$2.50</span></button>
+      <button class="row" data-dish="cappuccino"><span class="row-name">Cappuccino</span><span class="row-dots"></span><span class="stamp">$3.25</span></button>
+      <button class="row" data-dish="latte"><span class="row-name">Latte</span><span class="row-dots"></span><span class="stamp">$3.75</span></button>
+      <button class="row" data-dish="coldbrew"><span class="row-name">Cold Brew</span><span class="row-dots"></span><span class="stamp">$4.00</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 02 BRUNCH ============================ -->
+<div class="ticker" aria-hidden="true"><div class="ticker-track"></div></div>
+
+<section class="sec sec--brunch" id="brunch" aria-labelledby="t-brunch">
+  <span class="sec-num" aria-hidden="true">02</span>
+  <svg class="hoja hoja-deco" style="right:-38px;top:34%;transform:rotate(158deg)" viewBox="0 0 100 160" aria-hidden="true"><path d="M50 5 C 50 60, 50 110, 50 155"/><path d="M50 30 C 34 26, 22 14, 20 2 C 36 6, 46 16, 50 30 Z"/><path d="M50 62 C 66 58, 78 46, 80 34 C 64 38, 54 48, 50 62 Z"/><path d="M50 96 C 34 92, 22 80, 20 68 C 36 72, 46 82, 50 96 Z"/></svg>
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="sec-kicker">02 · Del fogón a la mesa</p>
+      <h2 class="sec-title" id="t-brunch"><span class="ttl">Brunch</span></h2>
+      <p class="sec-intro">Pan artesanal, salsa de la casa y fuego sin apuro.</p>
+    </header>
+
+    <button class="dish" data-dish="sandwich-huevo">
+      <span class="win win--medallon t-r a-r kb"><img src="../fotos/foto-02.webp" alt="Sandwich de huevo en pan brioche dorado"></span>
+      <span class="stamp stamp--precio">$1.00</span>
+      <span class="dish-name">Sandwich<br>de <em>Huevo</em></span>
+      <span class="dish-tease">Brioche tostado · huevos cremosos</span>
+      <span class="dish-cta">Tócalo para verlo de cerca</span>
+    </button>
+
+    <div class="sep" aria-hidden="true"><i></i><i></i><i></i></div>
+
+    <button class="dish" data-dish="hamburguesa">
+      <span class="badge" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <defs><path id="aro" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
+          <circle class="centro" cx="50" cy="50" r="14"/>
+          <text><textPath href="#aro">destacado · de la casa · destacado ·</textPath></text>
+        </svg>
+      </span>
+      <span class="win win--arch t-l a-c kb"><img src="../fotos/foto-03.webp" alt="Hamburguesa Doboré Suprema con queso derretido y vegetales crocantes"></span>
+      <span class="stamp stamp--precio">$1.00</span>
+      <span class="dish-name">Hamburguesa <em>Doboré</em> Suprema</span>
+      <span class="dish-tease">Media libra · doble queso · salsa de la casa</span>
+      <span class="dish-cta">Tócala para verla de cerca</span>
+    </button>
+
+    <div class="sep" aria-hidden="true"><i></i><i></i><i></i></div>
+
+    <button class="dish" data-dish="tortilla">
+      <span class="win win--piedra t-r kb"><img src="../fotos/foto-05.webp" alt="Tortilla de la Abuela asada, servida caliente"></span>
+      <span class="stamp stamp--precio">$1.00</span>
+      <span class="dish-name">Tortilla de<br>la <em>Abuela</em></span>
+      <span class="dish-tease">Receta de familia · queso nacional</span>
+      <span class="dish-cta">Tócala para verla de cerca</span>
+    </button>
+
+    <div class="sep" aria-hidden="true"><i></i><i></i><i></i></div>
+
+    <button class="dish" data-dish="hummus">
+      <span class="win win--plato t-l a-r kb"><img src="../fotos/foto-06.webp" alt="Hummus sedoso con aceite de oliva y pan pita"></span>
+      <span class="stamp stamp--precio">$1.00</span>
+      <span class="dish-name"><em>Hummus</em></span>
+      <span class="dish-tease">Garbanzo · oliva · pita tostada</span>
+      <span class="dish-cta">Tócalo para verlo de cerca</span>
+    </button>
+
+    <div class="sep" aria-hidden="true"><i></i><i></i><i></i></div>
+
+    <button class="dish" data-dish="alitas">
+      <span class="win win--medallon t-r kb"><img src="../fotos/foto-07.webp" alt="Alitas de pollo bañadas en salsa, con ajonjolí"></span>
+      <span class="stamp stamp--precio">$1.00</span>
+      <span class="dish-name">Alitas de <em>Pollo</em></span>
+      <span class="dish-tease">Salsa de la casa · doraditas</span>
+      <span class="dish-cta">Tócalas para verlas de cerca</span>
+    </button>
+  </div>
+</section>
+
+<!-- ============================ 03 POSTRES ============================ -->
+<div class="ticker" aria-hidden="true"><div class="ticker-track"></div></div>
+
+<section class="sec sec--postres" id="postres" aria-labelledby="t-postres">
+  <span class="sec-num" aria-hidden="true">03</span>
+  <svg class="hoja hoja-deco" style="left:-36px;top:20%;transform:rotate(-160deg)" viewBox="0 0 100 160" aria-hidden="true"><path d="M50 5 C 50 60, 50 110, 50 155"/><path d="M50 30 C 34 26, 22 14, 20 2 C 36 6, 46 16, 50 30 Z"/><path d="M50 62 C 66 58, 78 46, 80 34 C 64 38, 54 48, 50 62 Z"/><path d="M50 96 C 34 92, 22 80, 20 68 C 36 72, 46 82, 50 96 Z"/></svg>
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="sec-kicker">03 · El final dulce</p>
+      <h2 class="sec-title" id="t-postres"><span class="ttl">Postres</span></h2>
+      <p class="sec-intro">Horneado en casa, glaseado tibio. Quédate un rato más.</p>
+    </header>
+
+    <button class="dish" data-dish="cinnamon">
+      <span class="win win--medallon t-l kb"><img src="../fotos/foto-04.webp" alt="Cinnamon roll horneado en casa con glaseado"></span>
+      <span class="stamp stamp--precio">$1.00</span>
+      <span class="dish-name">Cinnamon <em>Roll</em></span>
+      <span class="dish-tease">Canela · glaseado tibio</span>
+      <span class="dish-cta">Tócalo para verlo de cerca</span>
+    </button>
+
+    <div class="sep" aria-hidden="true"><i></i><i></i><i></i></div>
+
+    <button class="dish" data-dish="waffles">
+      <span class="badge" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <defs><path id="aro2" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
+          <circle class="centro" cx="50" cy="50" r="14"/>
+          <text><textPath href="#aro2">destacado · de la casa · destacado ·</textPath></text>
+        </svg>
+      </span>
+      <span class="win win--plato t-r a-r kb"><img src="../fotos/foto-09.webp" style="object-position:50% 96%" alt="Waffles Doboré dorados con miel y frutas"></span>
+      <span class="stamp stamp--precio">$1.00</span>
+      <span class="dish-name">Waffles <em>Doboré</em></span>
+      <span class="dish-tease">Dorados por fuera · suaves por dentro</span>
+      <span class="dish-cta">Tócalos para verlos de cerca</span>
+    </button>
+
+    <div class="rows">
+      <p class="rows-title">Para acompañar el café</p>
+      <button class="row" data-dish="cheesecake"><span class="row-name">Cheesecake de maracuyá</span><span class="row-dots"></span><span class="stamp">$4.75</span></button>
+      <button class="row" data-dish="brownie"><span class="row-name">Brownie de chocolate</span><span class="row-dots"></span><span class="stamp">$4.25</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="footer">
+  <div class="wrap">
+    <svg class="colibri" viewBox="0 0 110 90" aria-hidden="true">
+      <path class="ala" d="M62 37 C 63 26, 71 14, 84 8 C 90 5.5, 97 4.5, 103 5.5 C 97 13, 90 21, 83 28 C 77 33.5, 70 37, 64 38.5 Z"/>
+      <path d="M6 44 C 18 42.5, 30 43.5, 40 44.5 C 43 37, 50 32, 57 33 C 62 34, 66 38, 67 43 C 73 45, 77.5 50, 78.5 55 C 85 61, 89.5 71, 88.5 83 C 84.5 78, 81 73, 78 68 C 77.5 74.5, 74.5 79.5, 69.5 83 C 69.5 76.5, 68.5 70, 66 64.5 C 59.5 66, 51 63.5, 45.5 57 C 42.5 53.5, 41 49.5, 40.5 47.5 C 30 46.5, 17 45.5, 6 45.5 Z"/>
+      <circle class="ojo" cx="51.5" cy="40" r="2"/>
+    </svg>
+    <p class="footer-nombre">Doboré</p>
+    <p class="footer-linea">Café · Brunch · Postres</p>
+    <p class="footer-nota">Pide en barra o levanta la mano — vamos a ti. Gracias por venir.</p>
+  </div>
+</footer>
+
+<!-- ============================ DETALLE ============================ -->
+<div class="detail" role="dialog" aria-modal="true" aria-labelledby="d-name" hidden>
+  <button class="detail-close" aria-label="Cerrar detalle">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M5 5 L19 19 M19 5 L5 19"/></svg>
+  </button>
+  <div class="detail-inner">
+    <p class="d-kicker"></p>
+    <h2 class="d-name" id="d-name"></h2>
+    <div class="d-win kb"></div>
+    <p class="d-desc"></p>
+    <div class="d-foot">
+      <span class="stamp d-price"></span>
+      <span class="d-nota">Pídelo en barra o levanta la mano.</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasGsap = !reduced && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+
+  /* ---------------- datos reales ---------------- */
+  var CATS = { cafe:'01 · Café', brunch:'02 · Brunch', postres:'03 · Postres' };
+  var DISHES = {
+    'espresso-sunrise':{cat:'cafe',name:'Espresso Sunrise',price:'$1.00',foto:'../fotos/foto-01.webp',
+      alt:'Espresso Sunrise en vaso alto, con capas de tónica, espresso y naranja',
+      desc:'Agua tónica, espresso y jugo de naranja natural. Frío, burbujeante y con el golpe justo para arrancar el día.'},
+    'espresso':{cat:'cafe',name:'Espresso',price:'$2.50',foto:null,
+      desc:'Doble shot de granos locales, tueste fresco de la semana. Corto, intenso, al grano.'},
+    'cappuccino':{cat:'cafe',name:'Cappuccino',price:'$3.25',foto:null,
+      desc:'Espresso con leche vaporizada y espuma sedosa. El clásico que nunca falla.'},
+    'latte':{cat:'cafe',name:'Latte',price:'$3.75',foto:null,
+      desc:'Suave y cremoso, con arte latte de la casa. Para tomarse el tiempo.'},
+    'coldbrew':{cat:'cafe',name:'Cold Brew',price:'$4.00',foto:null,
+      desc:'Extracción en frío durante horas, servido con hielo. Dulzor natural, cero amargura.'},
+    'sandwich-huevo':{cat:'brunch',name:'Sandwich de Huevo',price:'$1.00',foto:'../fotos/foto-02.webp',
+      alt:'Sandwich de huevo en pan brioche dorado, de cerca',
+      desc:'Huevos cremosos, queso derretido y pan brioche tostado en mantequilla. Sencillo y adictivo.'},
+    'hamburguesa':{cat:'brunch',name:'Hamburguesa Doboré Suprema',price:'$1.00',foto:'../fotos/foto-03.webp',destacado:true,
+      alt:'Hamburguesa Doboré Suprema con queso cheddar derretido y vegetales crocantes',
+      desc:'Pan artesanal, media libra de carne, queso cheddar y Pepper Jack, cebolla encurtida y salsa de la casa.'},
+    'tortilla':{cat:'brunch',name:'Tortilla de la Abuela',price:'$1.00',foto:'../fotos/foto-05.webp',
+      alt:'Tortilla de la Abuela asada, servida caliente',
+      desc:'Tortilla criolla asada como la hacía la abuela, con queso nacional. Sabe a casa.'},
+    'hummus':{cat:'brunch',name:'Hummus',price:'$1.00',foto:'../fotos/foto-06.webp',
+      alt:'Plato de hummus sedoso con aceite de oliva y pan pita tostado',
+      desc:'Garbanzo sedoso, aceite de oliva, paprika y pan pita tostado. Para compartir — o no.'},
+    'alitas':{cat:'brunch',name:'Alitas de Pollo',price:'$1.00',foto:'../fotos/foto-07.webp',
+      alt:'Alitas de pollo bañadas en salsa de la casa con ajonjolí',
+      desc:'Bañadas en salsa de la casa, doraditas y con ajonjolí. Pide servilletas extra.'},
+    'cinnamon':{cat:'postres',name:'Cinnamon Roll',price:'$1.00',foto:'../fotos/foto-04.webp',
+      alt:'Cinnamon roll horneado en casa con glaseado tibio',
+      desc:'Rollo de canela horneado en casa, con glaseado tibio que se derrite encima.'},
+    'waffles':{cat:'postres',name:'Waffles Doboré',price:'$1.00',foto:'../fotos/foto-09.webp',destacado:true,
+      pos:'50% 96%',ratio:'5/4',
+      alt:'Waffles Doboré dorados con miel y frutas frescas',
+      desc:'Dorados por fuera, suaves por dentro, con miel y frutas. El favorito de la casa para cerrar.'},
+    'cheesecake':{cat:'postres',name:'Cheesecake de maracuyá',price:'$4.75',foto:null,
+      desc:'Cremoso, con coulis de maracuyá bien panameño. Ácido y dulce en el punto.'},
+    'brownie':{cat:'postres',name:'Brownie de chocolate',price:'$4.25',foto:null,
+      desc:'Denso, húmedo, con nuez tostada. Pídelo con un espresso al lado.'}
+  };
+
+  /* ---------------- ticker / marquee ---------------- */
+  var FRASE = 'granos locales <b>·</b> tueste fresco <b>·</b> hecho en casa <b>·</b> ';
+  var tracks = [];
+  document.querySelectorAll('.ticker-track').forEach(function(track){
+    var html = '';
+    for (var i=0;i<10;i++) html += '<span>'+FRASE+'</span>';
+    track.innerHTML = html;
+    tracks.push({el:track, x:0, half:0});
+  });
+  function medirTickers(){
+    tracks.forEach(function(t){
+      var span = t.el.querySelector('span');
+      t.half = span ? span.offsetWidth * 5 : 0;
+    });
+  }
+  var marqSpeed = 0.55, marqBoost = 0;
+  if (!reduced){
+    medirTickers();
+    window.addEventListener('resize', medirTickers);
+    (function marq(){
+      var v = marqSpeed + marqBoost;
+      marqBoost *= 0.94; /* el toque decae */
+      tracks.forEach(function(t){
+        if (!t.half) return;
+        t.x -= v;
+        if (t.x <= -t.half) t.x += t.half;
+        t.el.style.transform = 'translateX('+t.x+'px)';
+      });
+      requestAnimationFrame(marq);
+    })();
+    /* micro-delicia: el marquee acelera un instante al tocar */
+    document.addEventListener('pointerdown', function(){ marqBoost = 5; }, {passive:true});
+  }
+
+  /* ---------------- scroll vivo (GSAP) ---------------- */
+  if (hasGsap){
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* intro del hero: el colibrí llega volando y se queda aleteando */
+    var intro = gsap.timeline({defaults:{ease:'power3.out'}});
+    intro.from('.hero-top', {y:-20, autoAlpha:0, duration:.6})
+      .from('.hero .colibri', {x:60, y:-30, rotation:-14, scale:.5, autoAlpha:0, transformOrigin:'40% 60%', duration:.9, ease:'back.out(1.6)'}, '-=.2')
+      .from('.hero-la', {y:24, autoAlpha:0, duration:.5}, '-=.5')
+      .from('.hero-carta', {clipPath:'inset(0% 0% 100% 0%)', y:60, duration:.9, ease:'power4.out'}, '-=.4')
+      .from('.hero-sub', {y:24, autoAlpha:0, duration:.5}, '-=.4')
+      .from('.chips .chip', {y:18, autoAlpha:0, stagger:.08, duration:.45}, '-=.3')
+      .from('.hero-cue', {autoAlpha:0, duration:.5}, '-=.2');
+
+    /* el colibrí flota y aletea mientras esperas */
+    gsap.to('.hero .colibri', {y:-7, duration:1.7, ease:'sine.inOut', yoyo:true, repeat:-1, delay:1.4});
+    gsap.to('.hero .colibri .ala', {rotation:8, transformOrigin:'15% 90%', duration:.16, ease:'sine.inOut', yoyo:true, repeat:-1, delay:1.4});
+
+    document.querySelectorAll('.sec').forEach(function(sec){
+      /* numeral gigante con parallax */
+      gsap.to(sec.querySelector('.sec-num'), {yPercent:-32, ease:'none',
+        scrollTrigger:{trigger:sec, start:'top bottom', end:'bottom top', scrub:true}});
+      /* titular entra deslizando con clip-path */
+      gsap.from(sec.querySelector('.ttl'), {clipPath:'inset(-10% 100% -10% 0%)', x:-46, duration:1, ease:'power4.out',
+        scrollTrigger:{trigger:sec, start:'top 74%', once:true}});
+      gsap.from(sec.querySelectorAll('.sec-kicker, .sec-intro'), {y:22, autoAlpha:0, stagger:.12, duration:.7, ease:'power3.out',
+        scrollTrigger:{trigger:sec, start:'top 74%', once:true}});
+    });
+
+    /* las ventanas orgánicas se abren (clip-path circle) */
+    gsap.utils.toArray('.dish .win').forEach(function(w){
+      gsap.from(w, {clipPath:'circle(9% at 50% 52%)', duration:1.15, ease:'power3.inOut',
+        scrollTrigger:{trigger:w, start:'top 84%', once:true}});
+    });
+
+    /* nombres enormes */
+    gsap.utils.toArray('.dish-name').forEach(function(n){
+      gsap.from(n, {y:42, autoAlpha:0, duration:.8, ease:'power3.out',
+        scrollTrigger:{trigger:n, start:'top 92%', once:true}});
+    });
+    gsap.utils.toArray('.dish-tease, .dish-cta').forEach(function(n){
+      gsap.from(n, {y:20, autoAlpha:0, duration:.6, ease:'power3.out',
+        scrollTrigger:{trigger:n, start:'top 94%', once:true}});
+    });
+
+    /* precios: giran-estampan */
+    gsap.utils.toArray('.sec .stamp').forEach(function(s){
+      gsap.from(s, {scale:2.1, rotation:18, autoAlpha:0, duration:.55, ease:'back.out(2.4)',
+        scrollTrigger:{trigger:s, start:'top 90%', once:true}});
+    });
+
+    /* badges destacado caen con rebote */
+    gsap.utils.toArray('.badge').forEach(function(b){
+      gsap.from(b, {scale:0, rotation:-90, autoAlpha:0, duration:.7, ease:'back.out(1.8)',
+        scrollTrigger:{trigger:b, start:'top 86%', once:true}});
+    });
+
+    /* filas sin foto: entran en fila */
+    ScrollTrigger.batch('.row', {start:'top 92%', once:true, onEnter:function(els){
+      gsap.from(els, {x:-30, autoAlpha:0, stagger:.09, duration:.7, ease:'power3.out'});
+    }});
+    gsap.utils.toArray('.rows-title').forEach(function(t){
+      gsap.from(t, {x:-20, autoAlpha:0, duration:.6, scrollTrigger:{trigger:t, start:'top 94%', once:true}});
+    });
+
+    /* footer */
+    gsap.from('.footer .wrap > *', {y:26, autoAlpha:0, stagger:.1, duration:.7, ease:'power3.out',
+      scrollTrigger:{trigger:'.footer', start:'top 85%', once:true}});
+
+    /* press con squash sutil */
+    document.querySelectorAll('.dish, .row').forEach(function(el){
+      el.addEventListener('pointerdown', function(){
+        gsap.to(el, {scale:.965, duration:.16, ease:'power2.out'});
+      });
+      ['pointerup','pointerleave','pointercancel'].forEach(function(ev){
+        el.addEventListener(ev, function(){
+          gsap.to(el, {scale:1, duration:.5, ease:'elastic.out(1,.55)'});
+        });
+      });
+    });
+  }
+
+  /* ---------------- detalle: la ventana se expande ---------------- */
+  var detail = document.querySelector('.detail');
+  var dInner = detail.querySelector('.detail-inner');
+  var dClose = detail.querySelector('.detail-close');
+  var dKicker = detail.querySelector('.d-kicker');
+  var dName = detail.querySelector('.d-name');
+  var dWin = detail.querySelector('.d-win');
+  var dDesc = detail.querySelector('.d-desc');
+  var dPrice = detail.querySelector('.d-price');
+  var lastTap = {x: window.innerWidth/2, y: window.innerHeight/2};
+  var lastFocus = null;
+  var scrollLockY = 0;
+  var ARTE_SIN_FOTO = '<svg class="arte" viewBox="0 0 120 120" aria-hidden="true">' +
+    '<path d="M28 52 L86 52 L80 96 C79 102 74 106 68 106 L46 106 C40 106 35 102 34 96 Z"/>' +
+    '<path d="M86 58 C 98 58, 104 66, 100 76 C 97 84, 89 86, 82 84"/>' +
+    '<ellipse cx="57" cy="52" rx="29" ry="7"/>' +
+    '<path d="M48 38 C 44 32, 48 28, 46 22"/>' +
+    '<path d="M62 38 C 58 32, 62 28, 60 22"/>' +
+    '<path d="M12 116 C 30 110, 50 110, 60 114 C 72 110, 92 110, 108 116"/></svg>';
+
+  function lockScroll(){
+    scrollLockY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = (-scrollLockY)+'px';
+    document.body.style.width = '100%';
+  }
+  function unlockScroll(){
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    window.scrollTo(0, scrollLockY);
+  }
+
+  function openDetail(id, x, y){
+    var d = DISHES[id]; if (!d) return;
+    lastTap.x = x; lastTap.y = y;
+    dKicker.textContent = CATS[d.cat] + (d.destacado ? ' · destacado de la casa' : '');
+    dName.textContent = d.name;
+    dDesc.textContent = d.desc;
+    dPrice.textContent = d.price;
+    detail.dataset.cat = d.cat;
+    dWin.style.aspectRatio = d.ratio || '';
+    if (d.foto){
+      dWin.classList.remove('sin-foto');
+      dWin.innerHTML = '<img src="'+d.foto+'" style="object-position:'+(d.pos||'50% 50%')+'" alt="'+(d.alt||d.name)+'">';
+    } else {
+      dWin.classList.add('sin-foto');
+      dWin.innerHTML = ARTE_SIN_FOTO;
+    }
+    lastFocus = document.activeElement;
+    detail.hidden = false;
+    detail.scrollTop = 0;
+    lockScroll();
+    if (hasGsap){
+      var r = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+      var kids = dInner.children;
+      gsap.set(kids, {clearProps:'all'});
+      gsap.set(detail, {clipPath:'circle(0px at '+x+'px '+y+'px)'});
+      gsap.timeline()
+        .to(detail, {clipPath:'circle('+(r+60)+'px at '+x+'px '+y+'px)', duration:.62, ease:'expo.inOut'})
+        .set(detail, {clipPath:'none'})
+        .from(kids, {y:28, autoAlpha:0, stagger:.07, duration:.5, ease:'power3.out'}, '-=.12')
+        .add(function(){ dClose.focus(); });
+    } else {
+      detail.style.clipPath = 'none';
+      dClose.focus();
+    }
+  }
+
+  function closeDetail(){
+    if (detail.hidden) return;
+    function fin(){
+      detail.hidden = true;
+      unlockScroll();
+      if (lastFocus) lastFocus.focus();
+    }
+    if (hasGsap){
+      gsap.timeline()
+        .to(detail, {clipPath:'circle(0px at '+lastTap.x+'px '+lastTap.y+'px)', duration:.5, ease:'expo.inOut'})
+        .add(fin);
+    } else { fin(); }
+  }
+
+  document.querySelectorAll('[data-dish]').forEach(function(el){
+    el.addEventListener('click', function(ev){
+      var x = ev.clientX, y = ev.clientY;
+      if (!x && !y){ /* teclado */
+        var rct = el.getBoundingClientRect();
+        x = rct.left + rct.width/2; y = rct.top + rct.height/2;
+      }
+      openDetail(el.dataset.dish, x, y);
+    });
+  });
+  dClose.addEventListener('click', closeDetail);
+  document.addEventListener('keydown', function(ev){
+    if (ev.key === 'Escape') closeDetail();
+  });
+})();
+</script>
+</body>
+</html>
