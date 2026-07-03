@@ -18,5 +18,16 @@
   "DSC_8733.jpg": "duplicada de la 12",
   "DSC_8770.jpg": "duplicada de la 15",
   "DSC_8775.jpg": "duplicada de la 15"
+ },
+ "nombres_del_cliente": {
+  "foto-01.webp": "Espresso Sunrise",
+  "foto-02.webp": "Sandwich de Huevo (toma 1)",
+  "foto-03.webp": "Hamburguesa Dobore Suprema",
+  "foto-04.webp": "Cinnamon Roll",
+  "foto-05.webp": "Tortilla de la Abuela",
+  "foto-06.webp": "Hummus",
+  "foto-07.webp": "Alitas de Pollo",
+  "foto-08.webp": "Sandwich de Huevo (toma 2)",
+  "foto-09.webp": "Waffles Dobore"
  }
 }
