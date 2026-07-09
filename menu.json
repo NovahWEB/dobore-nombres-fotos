@@ -1,0 +1,462 @@
+{
+  "_generated": "build-carta-json.mjs — data compartida para las 12 protos",
+  "_notion": "Cuando NOTION_TOKEN funcione, el sync repuebla desde las DBs Carta; las imágenes bajan a /images/cms via imageRef. Hoy: fotos reales locales del cliente por nombre.",
+  "categories": [
+    {
+      "id": "cafe",
+      "name": {
+        "es": "Café",
+        "en": "Coffee"
+      },
+      "icon": "cup",
+      "footnote": {
+        "es": "Granos locales y tueste fresco",
+        "en": "Local beans, freshly roasted"
+      },
+      "items": [
+        {
+          "key": "espresso",
+          "name": {
+            "es": "Espresso",
+            "en": "Espresso"
+          },
+          "price": {
+            "es": "2.50",
+            "en": "2.50"
+          },
+          "desc": {
+            "es": "Intenso, balanceado y de aroma profundo.",
+            "en": "Bold, balanced and deeply aromatic."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": "fotos/foto-01.webp"
+        },
+        {
+          "key": "cappuccino",
+          "name": {
+            "es": "Cappuccino",
+            "en": "Cappuccino"
+          },
+          "price": {
+            "es": "3.25",
+            "en": "3.25"
+          },
+          "desc": {
+            "es": "Espresso con leche texturizada y sedosa.",
+            "en": "Espresso with silky, textured milk."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "latte",
+          "name": {
+            "es": "Latte",
+            "en": "Latte"
+          },
+          "price": {
+            "es": "3.75",
+            "en": "3.75"
+          },
+          "desc": {
+            "es": "Suave y cremoso, perfecto para cualquier hora.",
+            "en": "Smooth and creamy, perfect any time of day."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "cold-brew",
+          "name": {
+            "es": "Cold Brew",
+            "en": "Cold Brew"
+          },
+          "price": {
+            "es": "4.00",
+            "en": "4.00"
+          },
+          "desc": {
+            "es": "Extracción en frío, dulce y refrescante.",
+            "en": "Cold-brewed, sweet and refreshing."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "coffee-tonic",
+          "name": {
+            "es": "Tónica de café",
+            "en": "Coffee Tonic"
+          },
+          "price": {
+            "es": "4.50",
+            "en": "4.50"
+          },
+          "desc": {
+            "es": "Cítrica y burbujeante, con espresso de la casa.",
+            "en": "Bright, fizzy and citrusy, with our house espresso."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "espresso-sunrise",
+          "name": {
+            "es": "Espresso Sunrise",
+            "en": "Espresso Sunrise"
+          },
+          "price": {
+            "es": "1.00",
+            "en": "1.00"
+          },
+          "desc": {
+            "es": "Agua tónica, espresso y jugo de naranja natural",
+            "en": "Tonic water, espresso and fresh orange juice"
+          },
+          "footnote": null,
+          "wide": false,
+          "image": "fotos/foto-01.webp"
+        }
+      ]
+    },
+    {
+      "id": "brunch",
+      "name": {
+        "es": "Brunch",
+        "en": "Brunch"
+      },
+      "icon": "utensils",
+      "footnote": {
+        "es": "Ingredientes frescos y de origen local",
+        "en": "Fresh, locally sourced ingredients"
+      },
+      "items": [
+        {
+          "key": "sourdough-toast",
+          "name": {
+            "es": "Tostada de masa madre",
+            "en": "Sourdough Toast"
+          },
+          "price": {
+            "es": "6.50",
+            "en": "6.50"
+          },
+          "desc": {
+            "es": "Con aguacate, semillas y aceite de oliva.",
+            "en": "With avocado, seeds and olive oil."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "fruit-bowl",
+          "name": {
+            "es": "Bowl de frutas de temporada",
+            "en": "Seasonal Fruit Bowl"
+          },
+          "price": {
+            "es": "5.75",
+            "en": "5.75"
+          },
+          "desc": {
+            "es": "Con yogurt artesanal y granola de la casa.",
+            "en": "With artisan yogurt and house-made granola."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "eggs",
+          "name": {
+            "es": "Huevos al gusto",
+            "en": "Eggs Your Way"
+          },
+          "price": {
+            "es": "6.50",
+            "en": "6.50"
+          },
+          "desc": {
+            "es": "Con vegetales salteados y pan artesanal.",
+            "en": "With sautéed vegetables and artisan bread."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "house-bread",
+          "name": {
+            "es": "Pan de la casa",
+            "en": "House Bread"
+          },
+          "price": {
+            "es": "3.50",
+            "en": "3.50"
+          },
+          "desc": {
+            "es": "Con mantequilla de café y mermelada local.",
+            "en": "With coffee butter and local jam."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "soup",
+          "name": {
+            "es": "Sopa del día",
+            "en": "Soup of the Day"
+          },
+          "price": {
+            "es": "5.00",
+            "en": "5.00"
+          },
+          "desc": {
+            "es": "Receta de temporada con ingredientes frescos.",
+            "en": "A seasonal recipe made with fresh ingredients."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "sandwich-de-huevo",
+          "name": {
+            "es": "Sandwich de Huevo",
+            "en": "Egg Sandwich"
+          },
+          "price": {
+            "es": "1.00",
+            "en": "1.00"
+          },
+          "desc": {
+            "es": "Pan artesanal, huevos, queso cheddar o Pepper Jack, tomate asado, orégano fresco y salsa de la casa",
+            "en": "Artisan bread, eggs, cheddar or Pepper Jack cheese, roasted tomato, fresh oregano and house sauce"
+          },
+          "footnote": null,
+          "wide": false,
+          "image": "fotos/foto-02.webp"
+        },
+        {
+          "key": "hamburguesa-dobore-suprema",
+          "name": {
+            "es": "Hamburguesa Doboré Suprema",
+            "en": "Doboré Supreme Burger"
+          },
+          "price": {
+            "es": "1.00",
+            "en": "1.00"
+          },
+          "desc": {
+            "es": "Pan artesanal, media libra de carne, queso cheddar y Pepper Jack, cebolla encurtida y salsa de la casa",
+            "en": "Artisan bun, half-pound beef patty, cheddar and Pepper Jack cheese, pickled onion and house sauce"
+          },
+          "footnote": null,
+          "wide": false,
+          "image": "fotos/foto-03.webp"
+        },
+        {
+          "key": "tortilla-de-la-abuela",
+          "name": {
+            "es": "Tortilla de la Abuela",
+            "en": "Grandma's Tortilla"
+          },
+          "price": {
+            "es": "1.00",
+            "en": "1.00"
+          },
+          "desc": {
+            "es": "Tortilla de maíz asada rellena de queso cheddar o Pepper Jack, bacon, huevos revueltos y queso blanco",
+            "en": "Grilled corn tortilla filled with cheddar or Pepper Jack cheese, bacon, scrambled eggs and white cheese"
+          },
+          "footnote": null,
+          "wide": false,
+          "image": "fotos/foto-05.webp"
+        },
+        {
+          "key": "hummus",
+          "name": {
+            "es": "Hummus",
+            "en": "Hummus"
+          },
+          "price": {
+            "es": "1.00",
+            "en": "1.00"
+          },
+          "desc": {
+            "es": "Fusión de receta mediterránea y panameña, acompañado de vegetales frescos y pan artesanal",
+            "en": "A fusion of Mediterranean and Panamanian recipes, served with fresh vegetables and artisan bread"
+          },
+          "footnote": null,
+          "wide": false,
+          "image": "fotos/foto-06.webp"
+        },
+        {
+          "key": "alitas-de-pollo",
+          "name": {
+            "es": "Alitas de Pollo",
+            "en": "Chicken Wings"
+          },
+          "price": {
+            "es": "1.00",
+            "en": "1.00"
+          },
+          "desc": {
+            "es": "Crujientes alitas de pollo acompañadas de plátano, yuca y camote frito",
+            "en": "Crispy chicken wings served with fried plantain, cassava and sweet potato"
+          },
+          "footnote": null,
+          "wide": false,
+          "image": "fotos/foto-07.webp"
+        },
+        {
+          "key": "waffles-dobore",
+          "name": {
+            "es": "Waffles Doboré",
+            "en": "Doboré Waffles"
+          },
+          "price": {
+            "es": "1.00",
+            "en": "1.00"
+          },
+          "desc": {
+            "es": "Waffles acompañados de bacon y torta de huevo",
+            "en": "Waffles served with bacon and an egg omelette"
+          },
+          "footnote": null,
+          "wide": false,
+          "image": "fotos/foto-09.webp"
+        }
+      ]
+    },
+    {
+      "id": "postres",
+      "name": {
+        "es": "Postres / Panadería",
+        "en": "Desserts / Bakery"
+      },
+      "icon": "croissant",
+      "footnote": {
+        "es": "Hecho en casa, todos los días",
+        "en": "House-made, every day"
+      },
+      "items": [
+        {
+          "key": "cheesecake-maracuya",
+          "name": {
+            "es": "Cheesecake de maracuyá",
+            "en": "Passion Fruit Cheesecake"
+          },
+          "price": {
+            "es": "4.75",
+            "en": "4.75"
+          },
+          "desc": {
+            "es": "Cremoso, con fruta de la región.",
+            "en": "Creamy, made with fruit from the region."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "brownie",
+          "name": {
+            "es": "Brownie de chocolate",
+            "en": "Chocolate Brownie"
+          },
+          "price": {
+            "es": "4.25",
+            "en": "4.25"
+          },
+          "desc": {
+            "es": "Con nibs de cacao chiricano.",
+            "en": "With cacao nibs from Chiriquí."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "croissant",
+          "name": {
+            "es": "Croissant de mantequilla",
+            "en": "Butter Croissant"
+          },
+          "price": {
+            "es": "3.25",
+            "en": "3.25"
+          },
+          "desc": {
+            "es": "Horneado cada mañana.",
+            "en": "Baked fresh every morning."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "oat-cacao-cookie",
+          "name": {
+            "es": "Galleta de avena y cacao",
+            "en": "Oat & Cacao Cookie"
+          },
+          "price": {
+            "es": "2.75",
+            "en": "2.75"
+          },
+          "desc": {
+            "es": "Crujiente por fuera, suave por dentro.",
+            "en": "Crisp on the outside, soft within."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "banana-bread",
+          "name": {
+            "es": "Pan de banano",
+            "en": "Banana Bread"
+          },
+          "price": {
+            "es": "20",
+            "en": "20"
+          },
+          "desc": {
+            "es": "Receta de la casa, con nueces.",
+            "en": "Our house recipe, with walnuts."
+          },
+          "footnote": null,
+          "wide": false,
+          "image": null
+        },
+        {
+          "key": "cinnamon-roll",
+          "name": {
+            "es": "Cinnamon Roll",
+            "en": "Cinnamon Roll"
+          },
+          "price": {
+            "es": "1.00",
+            "en": "1.00"
+          },
+          "desc": {
+            "es": "Horneado en casa",
+            "en": "Baked in-house"
+          },
+          "footnote": null,
+          "wide": false,
+          "image": "fotos/foto-04.webp"
+        }
+      ]
+    }
+  ]
+}

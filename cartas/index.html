@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doboré · La carta, 12 maneras</title>
+<meta name="description" content="Doce prototipos vivos de la carta de Doboré. Elegí la dirección que te haga agua la boca.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4ECDC; --cream-2:#EFE4CF; --paper:#FBF6EC;
+    --ink:#2A1E17; --ink-soft:#6B5A49; --line:#E0D2BA;
+    --copper:#A8622F; --copper-deep:#8A4E23;
+    --serif:'Playfair Display',Georgia,serif; --sans:'Manrope',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;overflow-x:clip}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  /* textura de papel muy sutil */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(168,98,47,.10), transparent 60%),
+      radial-gradient(100% 60% at 100% 110%, rgba(138,78,35,.08), transparent 55%);
+  }
+  .wrap{position:relative;z-index:1;max-width:940px;margin:0 auto;padding:34px 20px 72px}
+
+  header{text-align:center;padding:22px 0 10px}
+  .kicker{
+    font-size:11px;letter-spacing:.42em;text-transform:uppercase;
+    color:var(--copper-deep);font-weight:700;margin:0 0 18px
+  }
+  .kicker span{opacity:.5}
+  h1{
+    font-family:var(--serif);font-weight:900;line-height:.98;
+    font-size:clamp(38px,12vw,72px);margin:0 0 4px;letter-spacing:-.01em
+  }
+  h1 em{font-style:italic;font-weight:500;color:var(--copper)}
+  .lede{
+    max-width:34ch;margin:16px auto 6px;color:var(--ink-soft);
+    font-size:15.5px
+  }
+  .hint{
+    display:inline-flex;align-items:center;gap:8px;margin-top:14px;
+    font-size:12.5px;color:var(--copper-deep);font-weight:600;
+    background:var(--paper);border:1px solid var(--line);
+    padding:8px 14px;border-radius:999px
+  }
+  .hint b{font-weight:700}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--copper);display:inline-block}
+
+  .group-label{
+    display:flex;align-items:center;gap:14px;
+    margin:46px 2px 18px;font-size:12px;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--ink-soft);font-weight:700
+  }
+  .group-label::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:560px){ .grid{grid-template-columns:1fr 1fr;gap:16px} }
+
+  .card{
+    position:relative;display:block;text-decoration:none;color:inherit;
+    background:var(--paper);
+    border:1px solid var(--line);border-radius:16px;
+    padding:20px 20px 20px 22px;overflow:hidden;
+    transition:transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s, border-color .28s;
+    box-shadow:0 1px 0 rgba(42,30,23,.03)
+  }
+  .card::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:8px;
+    background:var(--accent,var(--copper));
+    transform:scaleX(.6);transform-origin:left center;
+    transition:transform .28s
+  }
+  .card:hover,.card:focus-visible{
+    transform:translateY(-3px);
+    box-shadow:0 14px 34px -18px rgba(42,30,23,.42);
+    border-color:var(--accent,var(--copper));outline:none
+  }
+  .card:hover::before,.card:focus-visible::before{transform:scaleX(1)}
+  .card:active{transform:translateY(-1px)}
+
+  .card-top{display:flex;align-items:baseline;gap:12px;margin-bottom:8px}
+  .glyph{
+    font-family:var(--serif);font-weight:900;font-size:34px;line-height:1;
+    color:var(--accent,var(--copper));min-width:1.1em
+  }
+  .name{font-family:var(--serif);font-weight:700;font-size:21px;line-height:1.1;letter-spacing:-.01em;margin:0}
+  .name em{font-style:italic;font-weight:500}
+  .desc{margin:6px 0 0;color:var(--ink-soft);font-size:14px;line-height:1.5}
+  .go{
+    display:inline-flex;align-items:center;gap:7px;margin-top:14px;
+    font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--accent,var(--copper-deep));
+    text-transform:uppercase
+  }
+  .go .arrow{transition:transform .28s}
+  .card:hover .go .arrow{transform:translateX(4px)}
+
+  .fav{
+    position:absolute;top:14px;right:14px;
+    font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+    color:var(--copper-deep);background:rgba(168,98,47,.10);
+    border:1px solid rgba(168,98,47,.28);border-radius:999px;padding:4px 9px
+  }
+
+  footer{
+    margin-top:50px;padding-top:22px;border-top:1px solid var(--line);
+    text-align:center;color:var(--ink-soft);font-size:12.5px;line-height:1.7
+  }
+  footer .colibri{font-family:var(--serif);font-style:italic;color:var(--copper);font-size:15px}
+
+  @media(prefers-reduced-motion:reduce){
+    .card,.card::before,.go .arrow{transition:none}
+    .card:hover,.card:focus-visible{transform:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="kicker">Doboré <span>·</span> Boquete, Panamá</p>
+    <h1>La carta,<br><em>doce maneras</em></h1>
+    <p class="lede">Doce prototipos vivos de la misma carta. Cada uno con su propia alma, su color y su movimiento. Elegí la dirección que te haga agua la boca.</p>
+    <span class="hint"><span class="dot"></span> Abrí cada una en el <b>teléfono</b>: el motion es la mitad de la gracia</span>
+  </header>
+
+  <p class="group-label">Los dos que ya te gustaron</p>
+  <div class="grid">
+    <a class="card" style="--accent:#7A6A55" href="../proto-a/">
+      <span class="fav">El primero</span>
+      <div class="card-top"><span class="glyph">A</span><h2 class="name">El mantel vivo</h2></div>
+      <p class="desc">La mesa del café: polaroids pegadas con cinta washi, sellos de tinta y el colibrí volando entre categorías.</p>
+      <span class="go">Ver la carta <span class="arrow">&rarr;</span></span>
+    </a>
+    <a class="card" style="--accent:#B06A3A" href="../proto-b/">
+      <span class="fav">El primero</span>
+      <div class="card-top"><span class="glyph">B</span><h2 class="name">Fuego y cobre</h2></div>
+      <p class="desc">Bloques de color profundos por categoría y titulares gigantes en Playfair, con la palabra clave en itálica cobre.</p>
+      <span class="go">Ver la carta <span class="arrow">&rarr;</span></span>
+    </a>
+  </div>
+
+  <p class="group-label">Las diez nuevas direcciones</p>
+  <div class="grid">
+    <a class="card" style="--accent:#C88A3E" href="../proto-c/">
+      <div class="card-top"><span class="glyph">C</span><h2 class="name">Vapor</h2></div>
+      <p class="desc">La primera taza: vapor que sube de las tazas y las fotos; los platos emergen de la neblina de la mañana.</p>
+      <span class="go">Ver la carta <span class="arrow">&rarr;</span></span>
+    </a>
+    <a class="card" style="--accent:#8A5A2B" href="../proto-d/">
+      <div class="card-top"><span class="glyph">D</span><h2 class="name">El tostador</h2></div>
+      <p class="desc">El viaje del grano: granos que ruedan, etiquetas de costal cosidas y un medidor de tueste que llena la carta.</p>
+      <span class="go">Ver la carta <span class="arrow">&rarr;</span></span>
+    </a>
+    <a class="card" style="--accent:#4C5B4A" href="../proto-e/">
+      <div class="card-top"><span class="glyph">E</span><h2 class="name">Pizarra viva</h2></div>
+      <p class="desc">Chalkboard de cafetería: los nombres se dibujan en tiza y un borrador barre la pizarra al cambiar de categoría.</p>
+      <span class="go">Ver la carta <span class="arrow">&rarr;</span></span>
+    </a>
+    <a class="card" style="--accent:#3B2E25" href="../proto-f/">
+      <div class="card-top"><span class="glyph">F</span><h2 class="name">Revista gastronómica</h2></div>
+      <p class="desc">Editorial couture: páginas que se pasan, drop caps enormes y fotos en columnas con pie editorial.</p>
+      <span class="go">Ver la carta <span class="arrow">&rarr;</span></span>
+    </a>
+    <a class="card" style="--accent:#6E7A3C" href="../proto-g/">
+      <div class="card-top"><span class="glyph">G</span><h2 class="name">Jardín botánico</h2></div>
+      <p class="desc">La carta crece: enredaderas que se dibujan conectando los platos y el colibrí que se posa en las ramas.</p>
+      <span class="go">Ver la carta <span class="arrow">&rarr;</span></span>
+    </a>
+    <a class="card" style="--accent:#B5702E" href="../proto-h/">
+      <div class="card-top"><span class="glyph">H</span><h2 class="name">Neón de barrio</h2></div>
+      <p class="desc">El café de noche: letreros de neón cobre que parpadean al encenderse, con halos y reflejos húmedos.</p>
+      <span class="go">Ver la carta <span class="arrow">&rarr;</span></span>
+    </a>
+    <a class="card" style="--accent:#7C7266" href="../proto-i/">
+      <div class="card-top"><span class="glyph">I</span><h2 class="name">El recibo de la casa</h2></div>
+      <p class="desc">Un ticket térmico que se imprime línea a línea mientras scrolleás, con sellos y subtotales por categoría.</p>
+      <span class="go">Ver la carta <span class="arrow">&rarr;</span></span>
+    </a>
+    <a class="card" style="--accent:#C58A2C" href="../proto-j/">
+      <div class="card-top"><span class="glyph">J</span><h2 class="name">Mercado de especias</h2></div>
+      <p class="desc">Bazar de color: cada plato con su pigmento (cúrcuma, paprika, cacao) que explota en polvo al entrar.</p>
+      <span class="go">Ver la carta <span class="arrow">&rarr;</span></span>
+    </a>
+    <a class="card" style="--accent:#9C3B2E" href="../proto-k/">
+      <div class="card-top"><span class="glyph">K</span><h2 class="name">Cine de sabor</h2></div>
+      <p class="desc">Matiné apetitosa: fotos en cinemascope, títulos como créditos de cine y marquesina con bombillas.</p>
+      <span class="go">Ver la carta <span class="arrow">&rarr;</span></span>
+    </a>
+    <a class="card" style="--accent:#B0673F" href="../proto-l/">
+      <div class="card-top"><span class="glyph">L</span><h2 class="name">Acuarela de Boquete</h2></div>
+      <p class="desc">Pintada a mano: manchas de acuarela que florecen detrás de cada plato y pinceladas que se pintan al scrollear.</p>
+      <span class="go">Ver la carta <span class="arrow">&rarr;</span></span>
+    </a>
+  </div>
+
+  <footer>
+    <p class="colibri">Doboré</p>
+    <p>Maquetas para elegir dirección. Los precios de los platos con foto son provisionales<br>hasta cargar los reales del cliente.</p>
+  </footer>
+</div>
+</body>
+</html>

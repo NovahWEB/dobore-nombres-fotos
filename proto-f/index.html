@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Doboré — La Carta · Revista</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F4E9D4'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='22' font-style='italic' text-anchor='middle' fill='%23A23918'%3ED%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,500;1,700;1,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Archivo:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:      #F4E9D4;
+    --paper-2:    #EEDFC3;
+    --paper-3:    #E7D4B2;
+    --ink:        #241309;
+    --ink-soft:   #5E3E27;
+    --ink-faint:  #8A6A4E;
+    --terracota:  #A23918;
+    --cobre:      #B4682E;
+    --cobre-claro:#CE9256;
+    --miel:       #8A600F;
+    --olivo:      #6E6A34;
+    --line:       rgba(60,32,14,.24);
+    --line-soft:  rgba(60,32,14,.14);
+    --grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='170' height='170' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    --turn: .92s cubic-bezier(.62,.04,.18,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  html,body{overflow:hidden;overscroll-behavior:none}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Newsreader',Georgia,serif;
+    font-size:17px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    -webkit-tap-highlight-color:transparent;
+  }
+  img{max-width:100%;display:block}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit;-webkit-tap-highlight-color:transparent}
+  :focus-visible{outline:2.5px solid var(--terracota);outline-offset:3px;border-radius:3px}
+
+  /* ---------------- texturas globales ---------------- */
+  .grain{position:fixed;inset:0;z-index:900;pointer-events:none;background-image:var(--grano);opacity:.07;mix-blend-mode:multiply}
+  .vignette{position:fixed;inset:0;z-index:899;pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 42%, transparent 58%, rgba(40,22,8,.10) 100%);}
+
+  .tag{font-family:'Archivo',system-ui,sans-serif;text-transform:uppercase;letter-spacing:.24em;font-weight:600}
+
+  /* ============================================================ DECK / LIBRO */
+  .deck{
+    position:fixed;inset:0;z-index:1;
+    perspective:1700px;perspective-origin:60% 50%;
+    overflow:hidden;background:#c9b48c;
+  }
+  /* canto/lomo del libro */
+  .deck::before{content:"";position:absolute;left:0;top:0;bottom:0;width:26px;z-index:40;pointer-events:none;
+    background:linear-gradient(90deg, rgba(30,16,6,.42), rgba(30,16,6,.10) 55%, transparent);}
+  /* grosor de páginas al canto derecho */
+  .deck::after{content:"";position:absolute;right:0;top:10px;bottom:10px;width:9px;z-index:40;pointer-events:none;
+    background:repeating-linear-gradient(180deg,#d8c39a 0 2px,#c2ab7f 2px 4px);
+    box-shadow:-2px 0 6px rgba(0,0,0,.18);border-radius:0 3px 3px 0;opacity:.9}
+
+  .page{
+    position:absolute;inset:0;
+    background:var(--paper);
+    transform-origin:left center;
+    transform:rotateY(0deg);
+    transition:transform var(--turn), filter var(--turn);
+    backface-visibility:hidden;
+    will-change:transform;
+    overflow-y:auto;overflow-x:hidden;
+    overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    pointer-events:none;
+    box-shadow:inset 20px 0 46px -26px rgba(48,26,10,.7), inset -8px 0 26px -20px rgba(48,26,10,.4);
+  }
+  .page.is-active{pointer-events:auto}
+  .page.turned{transform:rotateY(-172deg);filter:brightness(.5) contrast(1.05)}
+
+  .sheet{
+    position:relative;max-width:462px;margin-inline:auto;
+    min-height:100%;
+    padding:16px 22px calc(92px + env(safe-area-inset-bottom,0px));
+    display:flex;flex-direction:column;
+  }
+  .sheet > *{position:relative;z-index:1}
+  .sheet > .layer-back{position:absolute;z-index:0}
+
+  /* capa de fondo (parallax): folio fantasma + botánica */
+  .layer-back{inset:0;pointer-events:none;overflow:hidden}
+  .ghost{
+    position:absolute;font-family:'Playfair Display',serif;font-style:italic;font-weight:900;
+    line-height:.8;color:transparent;-webkit-text-stroke:1.3px rgba(120,74,36,.20);
+    font-size:clamp(190px,64vw,340px);user-select:none;letter-spacing:-.03em;
+  }
+  .botanica{position:absolute;color:var(--miel);opacity:.16}
+  .botanica path{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ---------------- cabecera de página (running head) ---------------- */
+  .runhead{display:flex;justify-content:space-between;align-items:center;
+    font-size:.62rem;color:var(--ink-soft);padding-bottom:9px;border-bottom:1px solid var(--line);}
+  .runhead .r-r{color:var(--terracota)}
+
+  /* ---------------- apertura de sección ---------------- */
+  .opener{padding-top:12px}
+  .kicker{font-size:.64rem;color:var(--cobre);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+  .kicker::before{content:"";width:26px;height:1.4px;background:var(--cobre);display:inline-block}
+  .op-title{font-family:'Playfair Display',serif;font-style:italic;font-weight:900;
+    font-size:clamp(3.4rem,20vw,5.6rem);line-height:.86;letter-spacing:-.02em;color:var(--terracota);}
+  .standfirst{font-style:italic;font-size:1.24rem;line-height:1.4;color:var(--ink-soft);
+    margin-top:16px;max-width:26ch}
+  .rule{height:1px;background:var(--line);margin:14px 0}
+  .rule.thin{background:var(--line-soft)}
+
+  /* prosa con capitular */
+  .lede{font-size:1.02rem;line-height:1.66;color:var(--ink);}
+  .lede .dropcap{float:left;font-family:'Playfair Display',serif;font-style:italic;font-weight:900;
+    font-size:4.9rem;line-height:.72;color:var(--cobre);margin:6px 12px -2px 0;}
+
+  /* ---------------- figura editorial (plato con foto) ---------------- */
+  .feature{margin-top:18px}
+  .feature.dish{display:block;width:100%}
+  .figure{position:relative;background:#efe2c8;padding:9px 9px 0;
+    box-shadow:0 16px 34px -18px rgba(40,22,8,.7), 0 2px 0 rgba(255,255,255,.5) inset;
+    border:1px solid rgba(120,74,36,.28);}
+  .figure .frame{position:relative;overflow:hidden;background:#1c0f07;aspect-ratio:5/4;border:1px solid rgba(120,74,36,.35)}
+  .figure .frame img{width:100%;height:100%;object-fit:cover;filter:saturate(.98) contrast(1.03);
+    transform:scale(1.02)}
+  .figure.wide .frame{aspect-ratio:5/4}
+  /* recorte específico para disimular fondo de foto-09 */
+  .figure.waffle .frame{aspect-ratio:4/3}
+  .figure.waffle .frame img{object-position:50% 86%;transform:scale(1.16)}
+  .figure .frame::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg, rgba(28,15,7,.16), transparent 26%, transparent 70%, rgba(28,15,7,.28));}
+  .kb .frame img{animation:kb 20s ease-in-out infinite alternate;transform-origin:56% 46%}
+  @keyframes kb{from{transform:scale(1.04)}to{transform:scale(1.2) translate(-2%,-3%)}}
+  .figure.waffle.kb .frame img{animation:kbw 20s ease-in-out infinite alternate}
+  @keyframes kbw{from{transform:scale(1.16)}to{transform:scale(1.3) translate(-1.5%,-2%)}}
+
+  .figcap{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;
+    padding:9px 4px 2px;border-bottom:1px solid var(--line-soft)}
+  .figcap .cap{font-style:italic;font-size:.82rem;line-height:1.32;color:var(--ink-soft);max-width:30ch}
+  .figcap .cap b{font-style:normal;font-family:'Archivo',sans-serif;font-weight:600;font-size:.6rem;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--cobre);display:block;margin-bottom:2px}
+  .price{font-family:'Playfair Display',serif;font-weight:700;font-size:1.02rem;color:var(--terracota);
+    white-space:nowrap;flex:none;border:1.4px solid var(--terracota);border-radius:2px;padding:.16em .5em;line-height:1}
+
+  .dish-head{display:flex;align-items:baseline;gap:12px;margin:11px 0 2px}
+  .dish-no{font-family:'Archivo',sans-serif;font-weight:700;font-size:.62rem;letter-spacing:.14em;
+    color:var(--cobre);flex:none;transform:translateY(-2px)}
+  .dish-name{font-family:'Playfair Display',serif;font-weight:900;line-height:.98;letter-spacing:-.01em;
+    font-size:clamp(1.7rem,8vw,2.3rem);overflow-wrap:break-word}
+  .dish-name em{font-style:italic;color:var(--cobre)}
+  .dish-read{font-family:'Archivo',sans-serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);display:inline-flex;align-items:center;gap:7px;margin-top:8px}
+  .dish-read::after{content:"";width:30px;height:1px;background:var(--ink-faint);transform:scaleX(.5);transform-origin:left;transition:transform .3s ease}
+  .feature.dish:hover .dish-read::after,.feature.dish:focus-visible .dish-read::after{transform:scaleX(1)}
+
+  /* sello editorial: plato de la casa */
+  .seal{position:absolute;top:-11px;right:12px;z-index:3;
+    background:var(--terracota);color:var(--paper);padding:.4em .7em;
+    font-family:'Archivo',sans-serif;font-size:.56rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+    box-shadow:0 8px 18px -8px rgba(120,30,10,.8);transform:rotate(-2deg)}
+  .seal::before{content:"";position:absolute;left:8px;top:100%;border:6px solid transparent;border-top-color:var(--terracota);border-left-color:var(--terracota)}
+
+  .pullquote{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;
+    font-size:1.5rem;line-height:1.24;color:var(--terracota);margin:26px 0 8px;
+    padding-left:16px;border-left:2px solid var(--cobre-claro)}
+  .pullquote span{display:block;font-family:'Archivo',sans-serif;font-style:normal;font-weight:600;
+    font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-top:10px}
+
+  /* ---------------- índice de barra (platos sin foto) ---------------- */
+  .index{margin-top:22px}
+  .index-h{display:flex;align-items:baseline;justify-content:space-between;
+    border-bottom:2px solid var(--ink);padding-bottom:6px;margin-bottom:4px}
+  .index-h .t{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:1.5rem;color:var(--ink)}
+  .index-h .n{font-size:.6rem;color:var(--ink-faint)}
+  .irow{display:flex;align-items:baseline;gap:8px;width:100%;padding:9px 0;
+    border-bottom:1px solid var(--line-soft);text-align:left}
+  .irow .in{font-family:'Playfair Display',serif;font-weight:700;font-size:1.14rem;color:var(--ink);line-height:1.15}
+  .irow .id{font-style:italic;font-size:.78rem;color:var(--ink-faint);display:block;margin-top:1px;line-height:1.3;max-width:30ch}
+  .irow .lead{flex:1;border-bottom:1.5px dotted var(--line);transform:translateY(-5px);min-width:14px}
+  .irow .ip{font-family:'Playfair Display',serif;font-weight:700;font-size:1.05rem;color:var(--terracota);flex:none;white-space:nowrap}
+  .irow .col{display:flex;flex-direction:column}
+  .irow:hover .in,.irow:focus-visible .in{color:var(--terracota)}
+
+  /* ---------------- pie de página: folio + continúa ---------------- */
+  .tail{margin-top:auto;padding-top:22px}
+  .folio{text-align:center;font-family:'Playfair Display',serif;font-style:italic;color:var(--ink-faint);
+    font-size:1rem;letter-spacing:.1em}
+  .continua{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:14px;
+    font-style:italic;color:var(--cobre);font-size:.98rem}
+  .continua .arw{font-family:'Archivo',sans-serif;font-style:normal;transition:transform .3s ease}
+  .continua:hover .arw,.continua:focus-visible .arw{transform:translateX(5px)}
+
+  /* ============================================================ PORTADA */
+  .cover .sheet{padding-top:26px;justify-content:flex-start}
+  .masthead{display:flex;justify-content:space-between;align-items:center;
+    font-size:.6rem;color:var(--ink-soft);border-bottom:1.5px solid var(--ink);padding-bottom:10px}
+  .cover-h{text-align:center;margin-top:22px}
+  .cover-h .colibri{width:70px;margin:0 auto 6px;color:var(--terracota)}
+  .cover-title{font-family:'Playfair Display',serif;font-style:italic;font-weight:900;color:var(--terracota);
+    font-size:clamp(4.6rem,30vw,7.4rem);line-height:.82;letter-spacing:-.02em}
+  .cover-sub{font-family:'Archivo',sans-serif;font-size:.62rem;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--ink-soft);margin-top:12px}
+  .cover-fig{position:relative;margin:20px auto 0;max-width:290px;background:#efe2c8;padding:10px 10px 0;
+    border:1px solid rgba(120,74,36,.3);box-shadow:0 22px 44px -22px rgba(40,22,8,.8);transform:rotate(-1.4deg)}
+  .cover-fig .frame{position:relative;overflow:hidden;aspect-ratio:3/4;background:#1c0f07;border:1px solid rgba(120,74,36,.35)}
+  .cover-fig .frame img{width:100%;height:100%;object-fit:cover}
+  .cover-fig .frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(28,15,7,.4))}
+  .cover-fig figcaption{font-style:italic;font-size:.74rem;color:var(--ink-soft);padding:8px 4px 2px;text-align:center}
+  .cover-blurb{font-style:italic;font-size:1.06rem;line-height:1.45;color:var(--ink);text-align:center;
+    max-width:28ch;margin:22px auto 0}
+  .cover-blurb b{font-style:normal;color:var(--terracota)}
+  .toc{margin:26px auto 0;max-width:340px;width:100%}
+  .toc-h{font-family:'Archivo',sans-serif;font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--ink-faint);border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:2px}
+  .toc-row{display:flex;align-items:baseline;gap:10px;width:100%;padding:12px 0;border-bottom:1px solid var(--line-soft);text-align:left}
+  .toc-row .tn{font-family:'Playfair Display',serif;font-weight:700;font-size:.9rem;color:var(--cobre);flex:none;width:22px}
+  .toc-row .tt{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:1.3rem;color:var(--ink)}
+  .toc-row .td{font-style:italic;font-size:.76rem;color:var(--ink-faint);display:block}
+  .toc-row .lead{flex:1;border-bottom:1.5px dotted var(--line);transform:translateY(-5px)}
+  .toc-row .tp{font-family:'Playfair Display',serif;font-weight:700;color:var(--terracota);flex:none}
+  .toc-row:hover .tt,.toc-row:focus-visible .tt{color:var(--terracota)}
+  .cover-cue{text-align:center;margin-top:26px;font-family:'Archivo',sans-serif;font-size:.6rem;
+    letter-spacing:.24em;text-transform:uppercase;color:var(--ink-faint);display:flex;align-items:center;justify-content:center;gap:10px}
+  .cover-cue .swipe{width:34px;height:1.4px;background:var(--cobre);transform-origin:left;animation:cue 2.1s ease-in-out infinite}
+  @keyframes cue{0%,100%{transform:scaleX(.3)}50%{transform:scaleX(1)}}
+
+  /* ============================================================ COLOFÓN */
+  .colofon .sheet{justify-content:center;align-items:center;text-align:center;gap:0}
+  .colofon .colibri{width:96px;color:var(--terracota);margin-bottom:14px}
+  .colofon-name{font-family:'Playfair Display',serif;font-style:italic;font-weight:900;font-size:3.4rem;color:var(--terracota);line-height:.9}
+  .colofon-line{font-family:'Archivo',sans-serif;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--miel);margin-top:12px}
+  .colofon-note{font-style:italic;font-size:1.12rem;line-height:1.5;color:var(--ink);max-width:26ch;margin:24px auto 0}
+  .colofon-meta{margin-top:30px;font-size:.72rem;color:var(--ink-faint);line-height:1.7;max-width:30ch}
+  .colofon-meta b{font-family:'Archivo',sans-serif;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:.58rem;color:var(--ink-soft);display:block;margin-bottom:3px}
+
+  .colibri path{fill:currentColor}
+  .colibri .ojo{fill:var(--paper)}
+  .wing{transform-origin:16% 84%}
+
+  /* ============================================================ NAV FIJA */
+  .nav{position:fixed;left:0;right:0;bottom:0;z-index:200;
+    padding:9px 12px calc(9px + env(safe-area-inset-bottom,0px));
+    background:linear-gradient(0deg, var(--paper) 68%, rgba(244,233,212,.86));
+    border-top:1.5px solid var(--ink);
+    display:flex;align-items:center;gap:8px;justify-content:space-between;
+    box-shadow:0 -8px 22px -16px rgba(40,22,8,.6)}
+  .nav-arw{flex:none;width:40px;height:40px;border:1.4px solid var(--ink);border-radius:50%;
+    display:grid;place-items:center;color:var(--ink);transition:background .2s ease,color .2s ease,transform .2s ease}
+  .nav-arw svg{width:15px;height:15px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .nav-arw:hover{background:var(--ink);color:var(--paper)}
+  .nav-arw:active{transform:scale(.92)}
+  .nav-arw[aria-disabled="true"]{opacity:.28;pointer-events:none}
+  .nav-cats{flex:1;display:flex;justify-content:center;gap:4px;min-width:0}
+  .nav-cat{font-family:'Archivo',sans-serif;font-size:.66rem;font-weight:600;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-soft);padding:8px 9px;position:relative;white-space:nowrap;border-radius:4px}
+  .nav-cat::after{content:"";position:absolute;left:9px;right:9px;bottom:3px;height:2px;background:var(--terracota);
+    transform:scaleX(0);transform-origin:center;transition:transform .3s cubic-bezier(.62,.04,.18,1)}
+  .nav-cat[aria-current="true"]{color:var(--terracota)}
+  .nav-cat[aria-current="true"]::after{transform:scaleX(1)}
+  .nav-folio{flex:none;font-family:'Playfair Display',serif;font-style:italic;font-size:.82rem;
+    color:var(--ink-faint);min-width:52px;text-align:right;letter-spacing:.04em}
+
+  /* ============================================================ DETALLE (gatefold) */
+  .modal{position:fixed;inset:0;z-index:500;display:flex;flex-direction:column;
+    overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    opacity:0;transition:opacity .34s ease;
+    padding:0 16px}
+  .modal[hidden]{display:none}
+  .modal.is-open{opacity:1}
+  .modal-bg{position:fixed;inset:0;z-index:0;
+    background:radial-gradient(120% 100% at 50% 30%, rgba(40,22,8,.72), rgba(20,11,4,.9));
+    -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+  .modal-bg::after{content:"";position:absolute;inset:0;background-image:var(--grano);opacity:.1;mix-blend-mode:overlay}
+  .m-close{position:fixed;top:14px;right:14px;z-index:6;width:44px;height:44px;border-radius:50%;
+    border:1.6px solid var(--paper);color:var(--paper);background:rgba(20,11,4,.35);
+    display:grid;place-items:center;transition:transform .25s ease,background .25s ease}
+  .m-close:hover{background:rgba(20,11,4,.6);transform:rotate(90deg)}
+  .m-close svg{width:17px;height:17px;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;fill:none}
+
+  .modal-scroll{position:relative;z-index:2;margin:auto;width:100%;max-width:430px;
+    padding:60px 0 40px;perspective:1500px}
+  .spread{transform-style:preserve-3d;position:relative;
+    box-shadow:0 40px 90px -30px rgba(0,0,0,.75)}
+  .leaf{background:var(--paper);position:relative;backface-visibility:hidden;
+    transition:transform .62s cubic-bezier(.5,.02,.2,1),opacity .5s ease;opacity:0}
+  .leaf--photo{transform-origin:bottom center;transform:rotateX(-92deg);z-index:2}
+  .leaf--text{transform-origin:top center;transform:rotateX(92deg)}
+  .modal.is-open .leaf{opacity:1}
+  .modal.is-open .leaf--photo{transform:rotateX(0deg);transition-delay:.06s}
+  .modal.is-open .leaf--text{transform:rotateX(0deg);transition-delay:.16s}
+  /* línea de doblez central */
+  .spread::before{content:"";position:absolute;left:0;right:0;top:50%;height:22px;transform:translateY(-11px);z-index:3;pointer-events:none;
+    background:linear-gradient(180deg,transparent,rgba(40,22,8,.16),transparent)}
+
+  .m-figure{position:relative;overflow:hidden;background:#1c0f07;aspect-ratio:1/1;
+    border-bottom:3px solid var(--paper-3)}
+  .m-figure img{width:100%;height:100%;object-fit:cover}
+  .m-figure.waffle img{object-position:50% 86%;transform:scale(1.16)}
+  .m-figure .m-badge{position:absolute;left:14px;top:14px;z-index:2;
+    font-family:'Archivo',sans-serif;font-size:.55rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--paper);background:var(--terracota);padding:.4em .7em;box-shadow:0 6px 14px -6px rgba(0,0,0,.6)}
+  .m-figure.art{display:grid;place-items:center;background:var(--paper-2);aspect-ratio:4/3}
+  .m-figure.art svg{width:44%;color:var(--cobre);opacity:.92}
+  .m-art path,.m-art ellipse,.m-art line,.m-art circle{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+  .leaf--text{padding:24px 26px 30px}
+  .m-kicker{font-family:'Archivo',sans-serif;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--cobre);display:flex;align-items:center;gap:9px}
+  .m-kicker::before{content:"";width:20px;height:1.3px;background:var(--cobre)}
+  .m-name{font-family:'Playfair Display',serif;font-weight:900;line-height:.98;letter-spacing:-.01em;
+    font-size:clamp(2rem,10vw,2.7rem);color:var(--terracota);margin:12px 0 4px;overflow-wrap:break-word}
+  .m-name em{font-style:italic;color:var(--cobre)}
+  .m-desc{font-size:1.04rem;line-height:1.62;color:var(--ink);margin-top:14px}
+  .m-desc .dropcap{float:left;font-family:'Playfair Display',serif;font-style:italic;font-weight:900;
+    font-size:3.6rem;line-height:.7;color:var(--cobre);margin:5px 10px -2px 0}
+  .m-cap{font-style:italic;font-size:.82rem;color:var(--ink-faint);margin-top:14px;
+    padding-top:12px;border-top:1px solid var(--line-soft)}
+  .m-foot{display:flex;align-items:center;gap:16px;margin-top:20px}
+  .m-price{font-family:'Playfair Display',serif;font-weight:700;font-size:1.5rem;color:var(--terracota);
+    border:1.6px solid var(--terracota);border-radius:3px;padding:.18em .55em;line-height:1;flex:none}
+  .m-note{font-family:'Archivo',sans-serif;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);line-height:1.5}
+
+  /* ============================================================ MOVIMIENTO REDUCIDO */
+  @media (prefers-reduced-motion: reduce){
+    .page{transition:none !important;transform:none !important;filter:none !important;
+      opacity:0;pointer-events:none;visibility:hidden}
+    .page.is-active{opacity:1;pointer-events:auto;visibility:visible}
+    .kb .frame img,.kbw .frame img,.cover-cue .swipe,.wing{animation:none !important}
+    .leaf{transition:opacity .25s ease !important;transform:none !important}
+    .modal{transition:opacity .2s ease}
+    *{scroll-behavior:auto !important}
+  }
+
+  /* ---------------- compacto en móvil (menú QR) ---------------- */
+  @media (max-width:520px){
+    body{font-size:16px}
+    .feature{margin-top:14px}
+    .dish-head{margin:9px 0 2px}
+    .dish-name{font-size:clamp(1.5rem,7vw,2rem)}
+    .figcap .cap{font-size:.78rem}
+    .index{margin-top:18px}
+    .irow{padding:8px 0}
+    .lede{font-size:.98rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<main class="deck" id="deck" aria-label="Carta de Doboré, revista"></main>
+
+<!-- =================================================== NAV FIJA -->
+<nav class="nav" aria-label="Navegación de la carta">
+  <button class="nav-arw" id="prev" aria-label="Página anterior"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div class="nav-cats" role="tablist"><!-- pestañas: generadas por JS desde menu.json --></div>
+  <span class="nav-folio" id="folio" aria-live="polite">Portada</span>
+  <button class="nav-arw" id="next" aria-label="Página siguiente"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+</nav>
+
+<!-- =================================================== DETALLE (gatefold) -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-name" hidden>
+  <div class="modal-bg" data-close aria-hidden="true"></div>
+  <button class="m-close" id="mClose" aria-label="Cerrar detalle">
+    <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <div class="modal-scroll">
+    <article class="spread">
+      <div class="leaf leaf--photo"><figure class="m-figure" id="mFigure"></figure></div>
+      <div class="leaf leaf--text">
+        <p class="m-kicker" id="mKicker"></p>
+        <h2 class="m-name" id="m-name"></h2>
+        <p class="m-desc" id="mDesc"></p>
+        <p class="m-cap" id="mCap"></p>
+        <div class="m-foot"><span class="m-price" id="mPrice"></span><span class="m-note">Pídelo en barra o levanta la mano.</span></div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function hasGsap(){ return !reduced && typeof window.gsap !== 'undefined'; }
+  var slice = function(a){ return Array.prototype.slice.call(a); };
+
+  var deck    = document.getElementById('deck');
+  var navCats = document.querySelector('.nav-cats');
+
+  /* --------------------------------------------------- helpers */
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function txt(o){ return (o && (o.es!=null?o.es:o.en)) || ''; }         // prefiere español
+  function emName(name){                                                 // acentúa la última palabra en cobre
+    var s = esc(name).trim();
+    var i = s.lastIndexOf(' ');
+    if(i < 0) return '<em>'+s+'</em>';
+    return s.slice(0,i)+' <em>'+s.slice(i+1)+'</em>';
+  }
+  function money(p){
+    p = (p==null?'':String(p)).trim();
+    if(!p) return '';
+    return /^\d+(\.\d+)?$/.test(p) ? 'B/. ' + Number(p).toFixed(2) : ('B/. ' + esc(p));
+  }
+  function pad2(n){ n = Number(n)||0; return (n<10?'0':'') + n; }
+  function shortName(s){ return String(s).split(/[\/·|]/)[0].trim() || String(s); }
+
+  var ROMAN = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+  var WORDS = ['Uno','Dos','Tres','Cuatro','Cinco','Seis','Siete','Ocho','Nueve','Diez','Once','Doce'];
+  var GHOST_POS = ['top:2%;right:-8%','top:1%;left:-10%','bottom:2%;right:-10%','top:1%;left:-8%','bottom:3%;left:-9%','top:2%;right:-9%'];
+  var BOT_STYLE = [
+    'width:150px;left:-46px;bottom:6%;transform:rotate(-14deg)',
+    'width:140px;right:-42px;top:30%;transform:rotate(150deg)',
+    'width:130px;left:-40px;top:16%;transform:rotate(-158deg)',
+    'width:150px;right:-44px;bottom:8%;transform:rotate(-12deg)',
+    'width:135px;left:-42px;top:22%;transform:rotate(-150deg)',
+    'width:145px;right:-40px;bottom:10%;transform:rotate(158deg)'
+  ];
+  var COLIBRI =
+    '<svg class="colibri" viewBox="0 0 110 90" aria-hidden="true">' +
+      '<path class="wing" d="M62 37 C 63 26, 71 14, 84 8 C 90 5.5, 97 4.5, 103 5.5 C 97 13, 90 21, 83 28 C 77 33.5, 70 37, 64 38.5 Z"/>' +
+      '<path d="M6 44 C 18 42.5, 30 43.5, 40 44.5 C 43 37, 50 32, 57 33 C 62 34, 66 38, 67 43 C 73 45, 77.5 50, 78.5 55 C 85 61, 89.5 71, 88.5 83 C 84.5 78, 81 73, 78 68 C 77.5 74.5, 74.5 79.5, 69.5 83 C 69.5 76.5, 68.5 70, 66 64.5 C 59.5 66, 51 63.5, 45.5 57 C 42.5 53.5, 41 49.5, 40.5 47.5 C 30 46.5, 17 45.5, 6 45.5 Z"/>' +
+      '<circle class="ojo" cx="51.5" cy="40" r="2"/>' +
+    '</svg>';
+  function botanica(style){
+    return '<svg class="botanica" style="'+style+'" viewBox="0 0 100 170">' +
+      '<path d="M50 6 C 50 60, 50 116, 50 164"/>' +
+      '<path d="M50 32 C 33 28, 21 15, 19 3 C 36 7, 46 18, 50 32Z"/>' +
+      '<path d="M50 66 C 67 62, 79 49, 81 37 C 64 41, 54 52, 50 66Z"/>' +
+      '<path d="M50 102 C 33 98, 21 85, 19 73 C 36 77, 46 88, 50 102Z"/>' +
+      '<path d="M50 138 C 67 134, 79 121, 81 109 C 64 113, 54 124, 50 138Z"/>' +
+    '</svg>';
+  }
+
+  /* placeholders editoriales para platos sin foto (por categoría, con respaldo) */
+  var ART = {
+    cafe:'<svg class="m-art" viewBox="0 0 120 120" aria-hidden="true"><path d="M30 46 L86 46 L82 84 C81 94 73 100 63 100 L53 100 C43 100 35 94 34 84 Z"/><path d="M86 54 C100 54 106 64 101 74 C97 82 89 84 82 82"/><path d="M46 34 C42 28 47 24 45 18"/><path d="M60 34 C56 28 61 24 59 18"/><path d="M74 34 C70 28 75 24 73 18"/><line x1="24" y1="110" x2="96" y2="110"/></svg>',
+    brunch:'<svg class="m-art" viewBox="0 0 120 120" aria-hidden="true"><ellipse cx="60" cy="66" rx="38" ry="12"/><ellipse cx="60" cy="62" rx="26" ry="8"/><path d="M22 66 C22 84 40 96 60 96 C80 96 98 84 98 66"/><path d="M96 30 L96 58"/><path d="M100 30 L100 58"/><path d="M92 30 L92 44 C92 50 100 50 100 44"/></svg>',
+    postres:'<svg class="m-art" viewBox="0 0 120 120" aria-hidden="true"><path d="M30 52 L90 52 L84 96 L36 96 Z"/><path d="M30 52 C30 44 90 44 90 52"/><path d="M42 40 C40 34 46 32 44 26"/><path d="M60 38 C58 32 64 30 62 24"/><path d="M78 40 C76 34 82 32 80 26"/><line x1="34" y1="72" x2="86" y2="72"/></svg>'
+  };
+  var DEFAULT_ART = ART.cafe;
+
+  /* mapas que llenamos al renderizar */
+  var CATS   = {};   // id -> "Sección I · Café"  (kicker del detalle)
+  var DISHES = {};   // uid -> { cat, name, price, foto, alt, desc, cap, destacado, waffle }
+
+  /* --------------------------------------------------- plantillas (render modular) */
+  function uniqueId(key){
+    var base = (key!=null && String(key)) ? String(key) : 'plato';
+    var id = base, n = 2;
+    while (Object.prototype.hasOwnProperty.call(DISHES, id)){ id = base + '-' + n; n++; }
+    return id;
+  }
+
+  function registerDish(uid, cat, item, i){
+    CATS[cat.id] = 'Sección ' + (ROMAN[i]||String(i+1)) + ' · ' + txt(cat.name);
+    var img = item.image;
+    DISHES[uid] = {
+      cat: cat.id,
+      name: emName(txt(item.name)),
+      price: money(txt(item.price)),
+      foto: img ? '../' + img : null,
+      alt: esc(txt(item.name)),
+      desc: txt(item.desc),
+      cap: txt(item.footnote) || txt(cat.footnote) || '',
+      destacado: !!(item.destacado || item.featured),
+      waffle: !!(img && /foto-09/.test(img))
+    };
+  }
+
+  function featureHTML(item, figNo, uid){
+    var img = item.image;
+    var isWaffle = !!(img && /foto-09/.test(img));
+    var wide = !!item.wide;
+    var destacado = !!(item.destacado || item.featured);
+    var cls = 'figure' + (wide ? ' wide' : '') + (isWaffle ? ' waffle' : '') + ' kb';
+    var seal = destacado ? '<span class="seal">Plato de la casa</span>' : '';
+    var name = txt(item.name);
+    var cap  = esc(txt(item.desc));
+    return '<button class="feature dish anim" data-dish="'+esc(uid)+'" aria-label="Ver '+esc(name)+'">' +
+      '<figure class="'+cls+'">' + seal +
+        '<div class="frame"><img src="../'+esc(img)+'" loading="lazy" alt="'+esc(name)+'"></div>' +
+        '<figcaption class="figcap">' +
+          '<span class="cap"><b>Pie de foto</b>'+cap+'</span>' +
+          '<span class="price">'+esc(money(txt(item.price)))+'</span>' +
+        '</figcaption>' +
+      '</figure>' +
+      '<span class="dish-head"><span class="dish-no">Fig. '+figNo+'</span><span class="dish-name">'+emName(name)+'</span></span>' +
+      '<span class="dish-read">Toca para leer el plato</span>' +
+    '</button>';
+  }
+
+  function indexRowHTML(item, uid){
+    return '<button class="irow" data-dish="'+esc(uid)+'">' +
+      '<span class="col"><span class="in">'+esc(txt(item.name))+'</span>' +
+      '<span class="id">'+esc(txt(item.desc))+'</span></span>' +
+      '<span class="lead"></span>' +
+      '<span class="ip">'+esc(money(txt(item.price)))+'</span></button>';
+  }
+
+  function categoryPageHTML(cat, i, parts){
+    var roman = ROMAN[i] || String(i+1);
+    var word  = WORDS[i] || String(i+1);
+    var name  = txt(cat.name);
+    var foot  = txt(cat.footnote);
+    var ghostPos = GHOST_POS[i % GHOST_POS.length];
+    var botStyle = BOT_STYLE[i % BOT_STYLE.length];
+    var pageIdx  = i + 1;
+    var tlen = name.length;
+    var opStyle = tlen > 13 ? ' style="font-size:clamp(2rem,10vw,3.1rem)"'
+                : tlen > 7  ? ' style="font-size:clamp(2.6rem,15vw,4.2rem)"' : '';
+    var standfirst = foot ? '<p class="standfirst">'+esc(foot)+'</p>' : '';
+    var indexHtml = parts.rows.length ?
+      ('<section class="index anim" aria-label="'+esc(name)+', más de la carta">' +
+        '<div class="index-h"><span class="t">También en la carta</span><span class="n tag">'+esc(foot)+'</span></div>' +
+        parts.rows.join('') +
+      '</section>') : '';
+    return '<section class="page" data-cat="'+esc(cat.id)+'" aria-label="'+esc(name)+'"><div class="sheet">' +
+      '<div class="layer-back" aria-hidden="true"><span class="ghost" style="'+ghostPos+'">'+pad2(pageIdx)+'</span>'+botanica(botStyle)+'</div>' +
+      '<div class="runhead"><span class="tag">Doboré · La Carta</span><span class="tag r-r">Sección '+roman+'</span></div>' +
+      '<header class="opener anim"><p class="kicker tag">Sección '+word+'</p>' +
+        '<h2 class="op-title"'+opStyle+'>'+esc(name)+'</h2>'+standfirst+'</header>' +
+      '<div class="rule anim"></div>' +
+      parts.feat +
+      indexHtml +
+      '<div class="tail"><p class="folio">— '+pad2(pageIdx+1)+' —</p>' +
+        '<button class="continua anim" data-goto="'+parts.nextIdx+'">Continúa · '+esc(parts.nextLabel)+' <span class="arw">→</span></button>' +
+      '</div>' +
+    '</div></section>';
+  }
+
+  function coverHTML(cats, hero){
+    var sub = cats.map(function(c){ return esc(txt(c.name)); }).join(' · ');
+    var toc = cats.map(function(c, i){
+      var idx = i + 1;
+      return '<button class="toc-row" data-goto="'+idx+'">' +
+        '<span class="tn">'+(ROMAN[i]||String(i+1))+'</span>' +
+        '<span class="col"><span class="tt">'+esc(shortName(txt(c.name)))+'</span>' +
+        '<span class="td">'+esc(txt(c.footnote))+'</span></span>' +
+        '<span class="lead"></span><span class="tp">'+pad2(idx+1)+'</span></button>';
+    }).join('');
+    var fig = '';
+    if (hero && hero.image){
+      var hn = esc(txt(hero.name));
+      fig = '<figure class="cover-fig"><div class="frame"><img src="../'+esc(hero.image)+'" alt="'+hn+'"></div>' +
+            '<figcaption>En portada, '+hn+', foto de la casa.</figcaption></figure>';
+    }
+    return '<section class="page cover is-active" data-cat="portada" aria-label="Portada"><div class="sheet">' +
+      '<div class="masthead"><span class="tag">Doboré · Café</span><span class="tag">N.º 01</span></div>' +
+      '<div class="cover-h">'+COLIBRI +
+        '<h1 class="cover-title">La<br>Carta</h1>' +
+        '<p class="cover-sub">'+sub+' · Boquete, Panamá</p></div>' +
+      fig +
+      '<p class="cover-blurb">Grano de altura, brunch de fogón y algo dulce para cerrar. <b>Toca cualquier plato</b> para verlo de cerca.</p>' +
+      '<nav class="toc" aria-label="Contenido de este número"><p class="toc-h">En este número</p>'+toc+'</nav>' +
+      '<p class="cover-cue"><span class="swipe" aria-hidden="true"></span> Desliza o toca la flecha para hojear</p>' +
+    '</div></section>';
+  }
+
+  function colofonHTML(cats){
+    var line = cats.map(function(c){ return esc(shortName(txt(c.name))); }).join(' · ');
+    return '<section class="page colofon" data-cat="colofon" aria-label="Colofón"><div class="sheet">' +
+      COLIBRI +
+      '<p class="colofon-name">Doboré</p>' +
+      '<p class="colofon-line">'+line+'</p>' +
+      '<p class="colofon-note">Pide en barra o levanta la mano, que vamos a ti. Gracias por hojear la carta.</p>' +
+      '<div class="colofon-meta"><b>Colofón</b>La Carta, N.º 01. Boquete, Panamá. Fotografía y cocina de la casa. Grano de las tierras altas de Chiriquí.</div>' +
+    '</div></section>';
+  }
+
+  /* --------------------------------------------------- construir desde menu.json */
+  function build(data){
+    var cats = (data && data.categories) || [];
+    cats = cats.filter(function(c){ return c && c.id && c.items && c.items.length; });
+    if (!cats.length) throw new Error('menu.json sin categorías');
+
+    var totalPages = 1 + cats.length + 1;   // portada + categorías + colofón
+    var hero = null, figNo = 0, pagesHtml = '';
+
+    cats.forEach(function(cat, i){
+      var items = cat.items || [];
+      var featArr = [], rowArr = [];
+      items.forEach(function(item){
+        if (!item) return;
+        var uid = uniqueId(item.key);
+        registerDish(uid, cat, item, i);
+        if (item.image){
+          if (!hero) hero = item;
+          figNo++;
+          featArr.push(featureHTML(item, figNo, uid));
+        } else {
+          rowArr.push(indexRowHTML(item, uid));
+        }
+      });
+      var nextIdx = (i + 1) + 1;
+      var nextLabel = (i < cats.length - 1)
+        ? shortName(txt(cats[i+1].name)) + ', pág. ' + (nextIdx + 1)
+        : 'Colofón, pág. ' + (nextIdx + 1);
+      pagesHtml += categoryPageHTML(cat, i, {
+        feat: featArr.join(''),
+        rows: rowArr,
+        nextIdx: nextIdx,
+        nextLabel: nextLabel
+      });
+    });
+
+    deck.innerHTML = coverHTML(cats, hero) + pagesHtml + colofonHTML(cats);
+
+    navCats.innerHTML = cats.map(function(c, i){
+      return '<button class="nav-cat" data-goto="'+(i+1)+'" data-range="'+(i+1)+'">'+esc(shortName(txt(c.name)))+'</button>';
+    }).join('');
+
+    var folios = ['Portada'];
+    for (var k = 1; k < totalPages; k++){ folios.push(pad2(k+1) + ' / ' + pad2(totalPages)); }
+    return folios;
+  }
+
+  /* =================================================== LIBRO / PÁGINAS + DETALLE */
+  function setupBook(FOLIOS){
+    var pages = slice(deck.querySelectorAll('.page'));
+    var total = pages.length;
+    var current = 0;
+
+    pages.forEach(function(p, i){ p.style.zIndex = String(total - i); });
+
+    var prevBtn  = document.getElementById('prev');
+    var nextBtn  = document.getElementById('next');
+    var folioOut = document.getElementById('folio');
+    var cats     = slice(document.querySelectorAll('.nav-cat'));
+
+    function inRange(range, idx){
+      if (range.indexOf('-') > -1){
+        var parts = range.split('-'); return idx >= +parts[0] && idx <= +parts[1];
+      }
+      return idx === +range;
+    }
+
+    function playEntrance(page){
+      if (!hasGsap()) return;
+      var back = page.querySelector('.layer-back');
+      var fore = page.querySelectorAll('.anim');
+      window.gsap.killTweensOf([back]);
+      window.gsap.killTweensOf(fore);
+      var tl = window.gsap.timeline({delay:.14, defaults:{ease:'power3.out'}});
+      if (back){ tl.fromTo(back, {autoAlpha:0}, {autoAlpha:1, duration:1.1}, 0); }
+      if (fore.length){
+        tl.fromTo(fore, {y:30, autoAlpha:0}, {y:0, autoAlpha:1, stagger:.09, duration:.72}, .08);
+      }
+    }
+
+    var parallaxPage = null, parallaxFn = null;
+    function attachParallax(page){
+      if (parallaxPage && parallaxFn){ parallaxPage.removeEventListener('scroll', parallaxFn); }
+      parallaxPage = null; parallaxFn = null;
+      if (reduced) return;
+      var back = page.querySelector('.layer-back');
+      if (!back) return;
+      parallaxPage = page;
+      parallaxFn = function(){ back.style.transform = 'translate3d(0,' + (page.scrollTop * 0.16) + 'px,0)'; };
+      page.addEventListener('scroll', parallaxFn, {passive:true});
+    }
+
+    function updateChrome(){
+      folioOut.textContent = FOLIOS[current] || (current + ' / ' + (total-1));
+      prevBtn.setAttribute('aria-disabled', current <= 0 ? 'true' : 'false');
+      nextBtn.setAttribute('aria-disabled', current >= total-1 ? 'true' : 'false');
+      cats.forEach(function(c){
+        c.setAttribute('aria-current', inRange(c.dataset.range, current) ? 'true' : 'false');
+      });
+    }
+
+    function goTo(i){
+      i = Math.max(0, Math.min(total-1, i));
+      if (i === current){ return; }
+      current = i;
+      pages.forEach(function(p, idx){
+        p.classList.toggle('turned', idx < current);
+        p.classList.toggle('is-active', idx === current);
+        if (idx === current){ p.scrollTop = 0; }
+      });
+      updateChrome();
+      var page = pages[current];
+      attachParallax(page);
+      playEntrance(page);
+      try { page.setAttribute('tabindex','-1'); page.focus({preventScroll:true}); } catch(e){}
+    }
+
+    prevBtn.addEventListener('click', function(){ goTo(current - 1); });
+    nextBtn.addEventListener('click', function(){ goTo(current + 1); });
+    document.querySelectorAll('[data-goto]').forEach(function(el){
+      el.addEventListener('click', function(){ goTo(parseInt(el.dataset.goto, 10)); });
+    });
+
+    /* teclado: flechas cambian de página (si el modal está cerrado) */
+    document.addEventListener('keydown', function(ev){
+      if (!modal.hidden) return;
+      if (ev.key === 'ArrowRight'){ goTo(current + 1); }
+      else if (ev.key === 'ArrowLeft'){ goTo(current - 1); }
+    });
+
+    /* gesto de deslizar para pasar la página */
+    var sx=0, sy=0, st=0, tracking=false, suppressClick=false;
+    deck.addEventListener('pointerdown', function(ev){
+      tracking = true; sx = ev.clientX; sy = ev.clientY; st = Date.now();
+    }, {passive:true});
+    deck.addEventListener('pointerup', function(ev){
+      if (!tracking) return; tracking = false;
+      var dx = ev.clientX - sx, dy = ev.clientY - sy, dt = Date.now() - st;
+      if (Math.abs(dx) >= 58 && Math.abs(dx) > Math.abs(dy) * 1.4 && dt < 800){
+        suppressClick = true;
+        setTimeout(function(){ suppressClick = false; }, 80);
+        if (dx < 0) goTo(current + 1); else goTo(current - 1);
+      }
+    }, {passive:true});
+    deck.addEventListener('click', function(ev){
+      if (suppressClick){ ev.preventDefault(); ev.stopPropagation(); suppressClick = false; }
+    }, true);
+
+    /* micro-presión al tocar un plato */
+    document.querySelectorAll('.feature.dish, .irow, .toc-row').forEach(function(el){
+      el.addEventListener('pointerdown', function(){
+        if (hasGsap()) window.gsap.to(el, {scale:.975, duration:.16, ease:'power2.out'});
+      }, {passive:true});
+      ['pointerup','pointerleave','pointercancel'].forEach(function(evn){
+        el.addEventListener(evn, function(){
+          if (hasGsap()) window.gsap.to(el, {scale:1, duration:.5, ease:'elastic.out(1,.5)'});
+        }, {passive:true});
+      });
+    });
+
+    /* =================================================== DETALLE (gatefold) */
+    var modal   = document.getElementById('modal');
+    var mBg     = modal.querySelector('.modal-bg');
+    var mClose  = document.getElementById('mClose');
+    var mFigure = document.getElementById('mFigure');
+    var mKicker = document.getElementById('mKicker');
+    var mName   = document.getElementById('m-name');
+    var mDesc   = document.getElementById('mDesc');
+    var mCap    = document.getElementById('mCap');
+    var mPrice  = document.getElementById('mPrice');
+    var lastFocus = null;
+    var closeTimer = null;
+
+    function dropcapify(text){
+      text = String(text);
+      if (!text){ return ''; }
+      var first = text.charAt(0), rest = text.slice(1);
+      return '<span class="dropcap">' + esc(first) + '</span>' + esc(rest);
+    }
+
+    function openDetail(id){
+      var d = DISHES[id]; if (!d) return;
+      if (closeTimer){ clearTimeout(closeTimer); closeTimer = null; }
+      mKicker.textContent = (CATS[d.cat] || 'De la carta') + (d.destacado ? ' · Plato de la casa' : '');
+      mName.innerHTML = d.name;
+      mDesc.innerHTML = dropcapify(d.desc);
+      mCap.textContent = d.cap || '';
+      mPrice.textContent = d.price;
+      if (d.foto){
+        mFigure.className = 'm-figure' + (d.waffle ? ' waffle' : '');
+        mFigure.innerHTML = (d.destacado ? '<span class="m-badge">Plato de la casa</span>' : '') +
+          '<img src="' + esc(d.foto) + '" alt="' + (d.alt || '') + '">';
+      } else {
+        mFigure.className = 'm-figure art';
+        mFigure.innerHTML = ART[d.cat] || DEFAULT_ART;
+      }
+      lastFocus = document.activeElement;
+      modal.hidden = false;
+      modal.scrollTop = 0;
+      document.body.style.overflow = 'hidden';
+      void modal.offsetWidth;
+      modal.classList.add('is-open');
+      setTimeout(function(){ try { mClose.focus(); } catch(e){} }, reduced ? 0 : 60);
+    }
+
+    function closeDetail(){
+      if (modal.hidden) return;
+      modal.classList.remove('is-open');
+      var done = function(){
+        modal.hidden = true;
+        document.body.style.overflow = '';
+        if (lastFocus){ try { lastFocus.focus({preventScroll:true}); } catch(e){} }
+      };
+      if (reduced){ done(); }
+      else { closeTimer = setTimeout(done, 560); }
+    }
+
+    document.querySelectorAll('[data-dish]').forEach(function(el){
+      el.addEventListener('click', function(){ openDetail(el.dataset.dish); });
+    });
+    mClose.addEventListener('click', closeDetail);
+    mBg.addEventListener('click', closeDetail);
+    document.addEventListener('keydown', function(ev){
+      if (modal.hidden) return;
+      if (ev.key === 'Escape'){ closeDetail(); return; }
+      if (ev.key === 'Tab'){
+        ev.preventDefault();
+        try { mClose.focus(); } catch(e){}
+      }
+    });
+
+    /* =================================================== ARRANQUE */
+    updateChrome();
+    attachParallax(pages[0]);
+    if (hasGsap()){
+      window.gsap.to('.cover .wing', {rotation:9, transformOrigin:'16% 84%', duration:.16, yoyo:true, repeat:-1, ease:'sine.inOut'});
+      window.gsap.to('.cover .colibri', {y:-6, duration:1.7, yoyo:true, repeat:-1, ease:'sine.inOut'});
+      playEntrance(pages[0]);
+    }
+  }
+
+  /* --------------------------------------------------- error de carga */
+  function showError(err){
+    try { if (window.console) console.error('No se pudo cargar la carta:', err); } catch(e){}
+    if (navCats) navCats.innerHTML = '';
+    deck.innerHTML =
+      '<section class="page cover is-active" data-cat="portada" aria-label="Error"><div class="sheet" style="justify-content:center;align-items:center;text-align:center;gap:6px">' +
+        COLIBRI +
+        '<p class="colofon-name" style="font-size:2.6rem">Doboré</p>' +
+        '<p class="colofon-note">No pudimos cargar la carta en este momento. Actualiza la página o vuelve a intentarlo en un momento.</p>' +
+      '</div></section>';
+  }
+
+  /* --------------------------------------------------- carga */
+  fetch('../menu.json', {cache:'no-cache'})
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(function(data){ var folios = build(data); setupBook(folios); })
+    .catch(showError);
+})();
+</script>
+</body>
+</html>

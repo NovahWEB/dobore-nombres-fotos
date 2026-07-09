@@ -147,7 +147,7 @@ body::before{
 
 /* ============ NAV CHIPS ============ */
 .chips{
-  position:sticky;top:0;z-index:40;display:flex;gap:8px;justify-content:center;
+  position:sticky;top:0;z-index:40;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
   padding:10px 14px;background:rgba(231,215,186,.88);
   -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);
   border-bottom:1.5px dashed rgba(43,29,20,.25);
@@ -168,7 +168,7 @@ body::before{
 .chip[data-cat="postres"]{--chip-accent:var(--postres)}
 
 /* ============ SECCIONES ============ */
-.cat{position:relative;padding:30px 18px 78px;overflow:clip}
+.cat{position:relative;padding:24px 18px 50px;overflow:clip}
 .cat-cafe{--accent:var(--cafe)}
 .cat-brunch{--accent:var(--brunch)}
 .cat-postres{--accent:var(--postres)}
@@ -180,7 +180,7 @@ body::before{
 .ghost-l{left:-9vw}
 
 /* vuelo del colibrí entre categorías */
-.flight{position:relative;height:78px;margin-bottom:2px;z-index:1}
+.flight{position:relative;height:56px;margin-bottom:2px;z-index:1}
 .flight .trail{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .flight .trail path{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-dasharray:1 9;stroke-linecap:round;opacity:.55}
 .flyer{position:absolute;left:-64px;top:24px;width:52px;height:40px;color:var(--accent);will-change:transform}
@@ -190,7 +190,7 @@ body::before{
 @keyframes flap{from{transform:rotate(-24deg)}to{transform:rotate(16deg)}}
 @media (prefers-reduced-motion: reduce){ .flyer.flying .wing{animation:none} }
 
-.cat-head{position:relative;z-index:1;text-align:center;margin-bottom:30px}
+.cat-head{position:relative;z-index:1;text-align:center;margin-bottom:18px}
 .stamp-title{
   display:inline-block;padding:10px 22px 11px;
   border:3px solid var(--accent);border-radius:var(--rough);
@@ -205,20 +205,20 @@ body::before{
 .cat-sub{font-family:Caveat,cursive;font-size:21px;color:var(--ink-soft);margin-top:13px;transform:rotate(-1deg)}
 
 /* ============ COLLAGE / POLAROIDS ============ */
-.collage{position:relative;z-index:1;display:flex;flex-direction:column;gap:34px}
+.collage{position:relative;z-index:1;display:flex;flex-direction:column;gap:22px}
 .polaroid{
   position:relative;display:block;width:86%;max-width:340px;text-align:left;
-  background:var(--cream);padding:11px 11px 15px;border-radius:3px;
+  background:var(--cream);padding:9px 9px 12px;border-radius:3px;
   box-shadow:var(--shadow-paper);
   transform:rotate(var(--rot,0deg));
   will-change:transform;
 }
 .polaroid.side-l{align-self:flex-start}
 .polaroid.side-r{align-self:flex-end}
-.polaroid.hero-dish{width:94%;max-width:360px;align-self:center;padding:13px 13px 17px}
-.polaroid figure{aspect-ratio:5/4;overflow:hidden;border-radius:2px;background:var(--kraft-deep)}
+.polaroid.hero-dish{width:94%;max-width:360px;align-self:center;padding:11px 11px 14px}
+.polaroid figure{aspect-ratio:3/2;overflow:hidden;border-radius:2px;background:var(--kraft-deep)}
 .polaroid img{width:100%;height:100%;object-fit:cover}
-.polaroid .caption{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:11px}
+.polaroid .caption{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:8px}
 .polaroid .name{
   font-family:Caveat,cursive;font-weight:700;font-size:23px;line-height:1.05;color:var(--ink);
 }
@@ -256,7 +256,7 @@ body::before{
 }
 
 /* ============ SLIPS (sin foto) ============ */
-.slips{display:grid;grid-template-columns:1fr 1fr;gap:16px 13px;margin-top:6px}
+.slips{display:grid;grid-template-columns:1fr 1fr;gap:12px 11px;margin-top:6px}
 .slips-title{
   grid-column:1/-1;font-family:Caveat,cursive;font-size:22px;color:var(--ink-soft);
   transform:rotate(-1.4deg);justify-self:start;
@@ -446,196 +446,10 @@ body.locked{overflow:hidden}
   </svg>
 </header>
 
-<!-- ============ NAV ============ -->
-<nav class="chips" aria-label="Categorías de la carta">
-  <a class="chip active" data-cat="cafe" href="#cafe">Café</a>
-  <a class="chip" data-cat="brunch" href="#brunch">Brunch</a>
-  <a class="chip" data-cat="postres" href="#postres">Postres</a>
-</nav>
+<!-- ============ NAV (se llena desde menu.json) ============ -->
+<nav class="chips" id="chips" aria-label="Categorías de la carta"></nav>
 
-<main id="carta">
-
-  <!-- ============ CAFÉ ============ -->
-  <section id="cafe" class="cat cat-cafe" style="scroll-margin-top:58px">
-    <span class="ghost ghost-r" aria-hidden="true">C</span>
-
-    <div class="flight" aria-hidden="true">
-      <svg class="trail" viewBox="0 0 390 78" preserveAspectRatio="none">
-        <path class="trail-path" d="M-20 52 C 80 18, 150 66, 230 34 S 370 20, 420 30"/>
-      </svg>
-      <span class="flyer"><svg viewBox="0 0 64 48" width="52" height="40" fill="currentColor"><use href="#colibri-fill"/></svg></span>
-    </div>
-
-    <header class="cat-head">
-      <div class="stamp-title stamped">CAFÉ</div>
-      <p class="cat-sub">para empezar el día con calma</p>
-    </header>
-
-    <div class="collage">
-      <button class="polaroid hero-dish" data-item="espresso-sunrise" style="--rot:-1.6deg" aria-haspopup="dialog">
-        <span class="tape" aria-hidden="true"></span>
-        <figure><img src="../fotos/foto-01.webp" alt="Espresso Sunrise" loading="lazy"></figure>
-        <span class="caption">
-          <span>
-            <span class="name">Espresso Sunrise</span>
-            <span class="desc-peek">Agua tónica, espresso y jugo de naranja natural</span>
-          </span>
-          <span class="price-stamp stamped">$1.00</span>
-        </span>
-      </button>
-
-      <div class="slips">
-        <p class="slips-title">y de la barra, <b>lo de siempre</b>:</p>
-        <button class="slip" data-item="espresso" style="--rot:-1.8deg" aria-haspopup="dialog">
-          <span class="name">Espresso</span>
-          <span class="leader" aria-hidden="true"></span>
-          <span class="price-stamp stamped">$2.50</span>
-        </button>
-        <button class="slip" data-item="cappuccino" style="--rot:1.4deg" aria-haspopup="dialog">
-          <span class="name">Cappuccino</span>
-          <span class="leader" aria-hidden="true"></span>
-          <span class="price-stamp stamped">$3.25</span>
-        </button>
-        <button class="slip" data-item="latte" style="--rot:1.1deg" aria-haspopup="dialog">
-          <span class="name">Latte</span>
-          <span class="leader" aria-hidden="true"></span>
-          <span class="price-stamp stamped">$3.75</span>
-        </button>
-        <button class="slip" data-item="coldbrew" style="--rot:-1.2deg" aria-haspopup="dialog">
-          <span class="name">Cold Brew</span>
-          <span class="leader" aria-hidden="true"></span>
-          <span class="price-stamp stamped">$4.00</span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ BRUNCH ============ -->
-  <section id="brunch" class="cat cat-brunch" style="scroll-margin-top:58px">
-    <span class="ghost ghost-l" aria-hidden="true">B</span>
-
-    <div class="flight" aria-hidden="true">
-      <svg class="trail" viewBox="0 0 390 78" preserveAspectRatio="none">
-        <path class="trail-path" d="M-20 30 C 90 62, 170 14, 250 46 S 380 56, 420 40"/>
-      </svg>
-      <span class="flyer"><svg viewBox="0 0 64 48" width="52" height="40" fill="currentColor"><use href="#colibri-fill"/></svg></span>
-    </div>
-
-    <header class="cat-head">
-      <div class="stamp-title stamped">BRUNCH</div>
-      <p class="cat-sub">sin apuro, que la mesa es tuya</p>
-    </header>
-
-    <div class="collage">
-      <button class="polaroid side-l" data-item="sandwich-huevo" style="--rot:-2.2deg" aria-haspopup="dialog">
-        <span class="tape" aria-hidden="true"></span>
-        <figure><img src="../fotos/foto-02.webp" alt="Sandwich de Huevo" loading="lazy"></figure>
-        <span class="caption">
-          <span><span class="name">Sandwich de Huevo</span></span>
-          <span class="price-stamp stamped">$1.00</span>
-        </span>
-      </button>
-
-      <button class="polaroid hero-dish" data-item="burger" style="--rot:1.4deg" aria-haspopup="dialog">
-        <span class="tape" aria-hidden="true"></span>
-        <span class="tape tape-b" aria-hidden="true"></span>
-        <svg class="seal stamped" viewBox="0 0 100 100" aria-hidden="true"><use href="#sello-fav"/></svg>
-        <figure><img src="../fotos/foto-03.webp" alt="Hamburguesa Doboré Suprema" loading="lazy"></figure>
-        <span class="caption">
-          <span>
-            <span class="name">Hamburguesa Doboré Suprema</span>
-            <span class="desc-peek">Media libra, doble queso y salsa de la casa</span>
-          </span>
-          <span class="price-stamp stamped">$1.00</span>
-        </span>
-      </button>
-
-      <button class="polaroid side-r" data-item="tortilla" style="--rot:2.1deg" aria-haspopup="dialog">
-        <span class="tape" aria-hidden="true"></span>
-        <figure><img src="../fotos/foto-05.webp" alt="Tortilla de la Abuela" loading="lazy"></figure>
-        <span class="caption">
-          <span><span class="name">Tortilla de la Abuela</span></span>
-          <span class="price-stamp stamped">$1.00</span>
-        </span>
-      </button>
-
-      <button class="polaroid side-l" data-item="hummus" style="--rot:-1.7deg" aria-haspopup="dialog">
-        <span class="tape" aria-hidden="true"></span>
-        <figure><img src="../fotos/foto-06.webp" alt="Hummus" loading="lazy"></figure>
-        <span class="caption">
-          <span><span class="name">Hummus</span></span>
-          <span class="price-stamp stamped">$1.00</span>
-        </span>
-      </button>
-
-      <button class="polaroid side-r" data-item="alitas" style="--rot:1.8deg" aria-haspopup="dialog">
-        <span class="tape" aria-hidden="true"></span>
-        <figure><img src="../fotos/foto-07.webp" alt="Alitas de Pollo" loading="lazy"></figure>
-        <span class="caption">
-          <span><span class="name">Alitas de Pollo</span></span>
-          <span class="price-stamp stamped">$1.00</span>
-        </span>
-      </button>
-    </div>
-  </section>
-
-  <!-- ============ POSTRES ============ -->
-  <section id="postres" class="cat cat-postres" style="scroll-margin-top:58px">
-    <span class="ghost ghost-r" aria-hidden="true">P</span>
-
-    <div class="flight" aria-hidden="true">
-      <svg class="trail" viewBox="0 0 390 78" preserveAspectRatio="none">
-        <path class="trail-path" d="M-20 44 C 70 12, 160 60, 250 26 S 380 16, 420 34"/>
-      </svg>
-      <span class="flyer"><svg viewBox="0 0 64 48" width="52" height="40" fill="currentColor"><use href="#colibri-fill"/></svg></span>
-    </div>
-
-    <header class="cat-head">
-      <div class="stamp-title stamped">POSTRES</div>
-      <p class="cat-sub">porque tú también te lo mereces</p>
-    </header>
-
-    <div class="collage">
-      <button class="polaroid side-l" data-item="cinnamon" style="--rot:-2deg" aria-haspopup="dialog">
-        <span class="tape" aria-hidden="true"></span>
-        <figure><img src="../fotos/foto-04.webp" alt="Cinnamon Roll" loading="lazy"></figure>
-        <span class="caption">
-          <span><span class="name">Cinnamon Roll</span></span>
-          <span class="price-stamp stamped">$1.00</span>
-        </span>
-      </button>
-
-      <button class="polaroid hero-dish" data-item="waffles" style="--rot:1.6deg" aria-haspopup="dialog">
-        <span class="tape" aria-hidden="true"></span>
-        <span class="tape tape-b" aria-hidden="true"></span>
-        <svg class="seal stamped" viewBox="0 0 100 100" aria-hidden="true"><use href="#sello-fav"/></svg>
-        <figure><img src="../fotos/foto-09.webp" alt="Waffles Doboré" loading="lazy"></figure>
-        <span class="caption">
-          <span>
-            <span class="name">Waffles Doboré</span>
-            <span class="desc-peek">Dorados por fuera, suaves por dentro</span>
-          </span>
-          <span class="price-stamp stamped">$1.00</span>
-        </span>
-      </button>
-
-      <div class="slips">
-        <p class="slips-title">y para cerrar <b>dulce</b>:</p>
-        <button class="slip" data-item="cheesecake" style="--rot:1.5deg" aria-haspopup="dialog">
-          <span class="name">Cheesecake de maracuyá</span>
-          <span class="leader" aria-hidden="true"></span>
-          <span class="price-stamp stamped">$4.75</span>
-        </button>
-        <button class="slip" data-item="brownie" style="--rot:-1.3deg" aria-haspopup="dialog">
-          <span class="name">Brownie de chocolate</span>
-          <span class="leader" aria-hidden="true"></span>
-          <span class="price-stamp stamped">$4.25</span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-</main>
+<main id="carta"></main>
 
 <!-- ============ FOOTER ============ -->
 <footer class="foot">
@@ -708,25 +522,7 @@ var RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 var hasGsap = typeof window.gsap !== "undefined";
 if (hasGsap && typeof window.ScrollTrigger !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
-/* ---------- datos de la carta ---------- */
-var DATA = {
-  "espresso-sunrise":{name:"Espresso Sunrise",desc:"Agua tónica, espresso y jugo de naranja natural. Burbujea, despierta y amanece contigo.",price:"$1.00",img:"../fotos/foto-01.webp",cat:"cafe",catLabel:"Café"},
-  "espresso":{name:"Espresso",desc:"Corto, intenso y sin rodeos. El origen de todo.",price:"$2.50",cat:"cafe",catLabel:"Café"},
-  "cappuccino":{name:"Cappuccino",desc:"Espresso y espuma de leche en paz perfecta.",price:"$3.25",cat:"cafe",catLabel:"Café"},
-  "latte":{name:"Latte",desc:"Suave y cremoso, para quedarse conversando un rato largo.",price:"$3.75",cat:"cafe",catLabel:"Café"},
-  "coldbrew":{name:"Cold Brew",desc:"Extraído en frío, con calma: suave, limpio y refrescante.",price:"$4.00",cat:"cafe",catLabel:"Café"},
-  "sandwich-huevo":{name:"Sandwich de Huevo",desc:"El clásico que nunca falla, hecho al momento y servido caliente.",price:"$1.00",img:"../fotos/foto-02.webp",cat:"brunch",catLabel:"Brunch"},
-  "burger":{name:"Hamburguesa Doboré Suprema",desc:"Pan artesanal, media libra de carne, queso cheddar y Pepper Jack, cebolla encurtida y salsa de la casa.",price:"$1.00",img:"../fotos/foto-03.webp",cat:"brunch",catLabel:"Brunch",fav:true},
-  "tortilla":{name:"Tortilla de la Abuela",desc:"Como la hacía la abuela: sartén, paciencia y mucho cariño.",price:"$1.00",img:"../fotos/foto-05.webp",cat:"brunch",catLabel:"Brunch"},
-  "hummus":{name:"Hummus",desc:"Cremoso, con su hilo de aceite de oliva, para untar y compartir.",price:"$1.00",img:"../fotos/foto-06.webp",cat:"brunch",catLabel:"Brunch"},
-  "alitas":{name:"Alitas de Pollo",desc:"Doraditas y jugosas. Para compartir... o no.",price:"$1.00",img:"../fotos/foto-07.webp",cat:"brunch",catLabel:"Brunch"},
-  "cinnamon":{name:"Cinnamon Roll",desc:"Tibio, perfumado a canela y recién salido del horno.",price:"$1.00",img:"../fotos/foto-04.webp",cat:"postres",catLabel:"Postres"},
-  "waffles":{name:"Waffles Doboré",desc:"Dorados por fuera, suaves por dentro. El favorito de la casa, con todas las de ganar.",price:"$1.00",img:"../fotos/foto-09.webp",cat:"postres",catLabel:"Postres",fav:true},
-  "cheesecake":{name:"Cheesecake de maracuyá",desc:"Ácido, dulce y cremoso: el equilibrio perfecto para cerrar.",price:"$4.75",cat:"postres",catLabel:"Postres"},
-  "brownie":{name:"Brownie de chocolate",desc:"Denso, chocolatoso y con el centro húmedo, como debe ser.",price:"$4.25",cat:"postres",catLabel:"Postres"}
-};
-var LETRAS = {cafe:"C",brunch:"B",postres:"P"};
-
+/* ---------- refs estáticas del overlay ---------- */
 var page = document.getElementById("page");
 var overlay = document.getElementById("overlay");
 var backdrop = document.getElementById("backdrop");
@@ -741,19 +537,163 @@ var dPrice = document.getElementById("d-price");
 var dDesc = document.getElementById("d-desc");
 var closeX = document.getElementById("close-x");
 var closeB = document.getElementById("close-b");
+var chipsBar = document.getElementById("chips");
+var carta = document.getElementById("carta");
 var lastCard = null;
 var detailOpen = false;
 
-/* ---------- motion de entrada ---------- */
-if (hasGsap && !RM) {
+/* ---------- la carta se arma sola desde menu.json ---------- */
+var DATA = {};      /* key -> detalle para el modal */
+var LETRAS = {};    /* id categoría -> inicial (placa sin foto) */
+var CAT_IDS = [];   /* orden de categorías renderizadas */
 
-  /* hero: el colibrí se dibuja, la marca entra */
-  document.querySelectorAll(".hero-colibri .draw path, .hero-colibri .draw circle").forEach(function(p){
-    if (p.getTotalLength) {
-      var L = p.getTotalLength() + 2;
-      p.style.strokeDasharray = L;
-      p.style.strokeDashoffset = L;
+var ACCENTS = ["var(--cafe)","var(--brunch)","var(--postres)","var(--mostaza)","var(--copper)"];
+var TRAILS = [
+  "M-20 52 C 80 18, 150 66, 230 34 S 370 20, 420 30",
+  "M-20 30 C 90 62, 170 14, 250 46 S 380 56, 420 40",
+  "M-20 44 C 70 12, 160 60, 250 26 S 380 16, 420 34"
+];
+var POLA_ROTS = [-1.6,1.4,-2.2,2.1,-1.7,1.8,-1.2,1.5,-2.0,1.6,-1.9,1.3];
+var SLIP_ROTS = [-1.8,1.4,1.1,-1.2,1.5,-1.3,1.7,-1.6];
+
+function esc(s){
+  return String(s==null?"":s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function pick(o){ return (o && typeof o==="object") ? (o.es!=null?o.es:o.en) : o; }
+function money(p){ p = pick(p); if(p==null||p==="") return ""; p=String(p).trim(); return p.charAt(0)==="$"?p:"$"+p; }
+function letterOf(name){ name=String(pick(name)||"·").trim(); return (name.charAt(0)||"·").toUpperCase(); }
+function teaser(s){
+  s=String(pick(s)||"").trim();
+  var dot=s.indexOf(". ");
+  if(dot>16 && dot<78) s=s.slice(0,dot);
+  if(s.length>84) s=s.slice(0,82).replace(/[,;\s]+\S*$/,"")+"…";
+  return s;
+}
+
+/* ---------- construir la carta ---------- */
+function build(menu){
+  var cats = (menu && menu.categories) || [];
+  var chipsHTML = "", cartaHTML = "";
+
+  cats.forEach(function(cat, ci){
+    var id = cat.id || ("cat-"+ci);
+    var nm = pick(cat.name) || id;
+    var accent = ACCENTS[ci % ACCENTS.length];
+    CAT_IDS.push(id);
+    LETRAS[id] = letterOf(cat.name);
+
+    chipsHTML += '<a class="chip'+(ci===0?" active":"")+'" data-cat="'+esc(id)+'" href="#'+esc(id)+'" style="--chip-accent:'+accent+'">'+esc(nm)+'</a>';
+
+    var items = cat.items || [];
+    var cardsHTML = "", slipsHTML = "", sideFlip = 0, polaRot = 0, plainN = 0;
+
+    items.forEach(function(it){
+      if (it && it.image){
+        registerItem(it, id, nm, accent);
+        var isHero = (cardsHTML === "");
+        var role = isHero ? "hero-dish" : (sideFlip++ % 2 === 0 ? "side-l" : "side-r");
+        cardsHTML += polaroidHTML(it, role, POLA_ROTS[polaRot++ % POLA_ROTS.length], isHero);
+      }
+    });
+    items.forEach(function(it){
+      if (it && !it.image){
+        registerItem(it, id, nm, accent);
+        slipsHTML += slipHTML(it, SLIP_ROTS[plainN++ % SLIP_ROTS.length]);
+      }
+    });
+    if (slipsHTML){
+      slipsHTML = '<div class="slips"><p class="slips-title">también <b>a la carta</b></p>'+slipsHTML+'</div>';
     }
+
+    var ghostCls = (ci % 2 === 0) ? "ghost-r" : "ghost-l";
+    var sub = pick(cat.footnote);
+
+    cartaHTML +=
+      '<section id="'+esc(id)+'" class="cat cat-'+esc(id)+'" style="scroll-margin-top:58px;--accent:'+accent+'">'+
+        '<span class="ghost '+ghostCls+'" aria-hidden="true">'+esc(letterOf(cat.name))+'</span>'+
+        '<div class="flight" aria-hidden="true">'+
+          '<svg class="trail" viewBox="0 0 390 78" preserveAspectRatio="none"><path class="trail-path" d="'+TRAILS[ci % TRAILS.length]+'"/></svg>'+
+          '<span class="flyer"><svg viewBox="0 0 64 48" width="52" height="40" fill="currentColor"><use href="#colibri-fill"/></svg></span>'+
+        '</div>'+
+        '<header class="cat-head">'+
+          '<div class="stamp-title stamped">'+esc(String(nm).toUpperCase())+'</div>'+
+          (sub ? '<p class="cat-sub">'+esc(sub)+'</p>' : '')+
+        '</header>'+
+        '<div class="collage">'+ cardsHTML + slipsHTML +'</div>'+
+      '</section>';
+  });
+
+  chipsBar.innerHTML = chipsHTML;
+  carta.innerHTML = cartaHTML;
+}
+
+function registerItem(it, catId, catLabel, accent){
+  var key = it.key || (catId + "-" + Object.keys(DATA).length);
+  it.__key = key;
+  DATA[key] = {
+    name: pick(it.name) || "",
+    desc: pick(it.desc) || "",
+    price: money(it.price),
+    img: it.image ? ("../" + it.image) : null,
+    cat: catId,
+    catLabel: catLabel,
+    accent: accent,
+    letra: LETRAS[catId] || "·"
+  };
+}
+
+function polaroidHTML(it, role, rot, isHero){
+  var key = it.__key;
+  var name = pick(it.name) || "";
+  var price = money(it.price);
+  var fav = it.fav === true;
+  var seal = fav ? '<svg class="seal stamped" viewBox="0 0 100 100" aria-hidden="true"><use href="#sello-fav"/></svg>' : '';
+  var tapeB = fav ? '<span class="tape tape-b" aria-hidden="true"></span>' : '';
+  var peek = (isHero && teaser(it.desc)) ? '<span class="desc-peek">'+esc(teaser(it.desc))+'</span>' : '';
+  return (
+    '<button class="polaroid '+role+'" data-item="'+esc(key)+'" style="--rot:'+rot+'deg" aria-haspopup="dialog">'+
+      '<span class="tape" aria-hidden="true"></span>'+ tapeB + seal +
+      '<figure><img src="'+esc("../"+it.image)+'" alt="'+esc(name)+'" loading="lazy"></figure>'+
+      '<span class="caption">'+
+        '<span><span class="name">'+esc(name)+'</span>'+ peek +'</span>'+
+        (price ? '<span class="price-stamp stamped">'+esc(price)+'</span>' : '')+
+      '</span>'+
+    '</button>'
+  );
+}
+
+function slipHTML(it, rot){
+  var name = pick(it.name) || "";
+  var price = money(it.price);
+  return (
+    '<button class="slip" data-item="'+esc(it.__key)+'" style="--rot:'+rot+'deg" aria-haspopup="dialog">'+
+      '<span class="name">'+esc(name)+'</span>'+
+      '<span class="leader" aria-hidden="true"></span>'+
+      (price ? '<span class="price-stamp stamped">'+esc(price)+'</span>' : '')+
+    '</button>'
+  );
+}
+
+function renderError(){
+  chipsBar.innerHTML = "";
+  carta.innerHTML =
+    '<section class="cat" style="--accent:var(--copper);padding:46px 22px 70px">'+
+      '<div class="collage">'+
+        '<div class="polaroid hero-dish" style="--rot:-1.4deg;padding:22px 18px 24px;align-self:center">'+
+          '<span class="tape" aria-hidden="true"></span>'+
+          '<p class="name" style="font-size:26px">Se nos cayó la carta</p>'+
+          '<p class="desc-peek" style="font-size:14px;margin-top:8px">No pudimos cargar el menú. Revisa tu conexión y vuelve a cargar la página.</p>'+
+        '</div>'+
+      '</div>'+
+    '</section>';
+}
+
+/* ---------- motion del hero (estático: corre ya, sin parpadeo) ---------- */
+function heroMotion(){
+  document.querySelectorAll(".hero-colibri .draw path, .hero-colibri .draw circle").forEach(function(p){
+    if (p.getTotalLength){ var L = p.getTotalLength() + 2; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; }
   });
   var heroTl = gsap.timeline({defaults:{ease:"power3.out"}});
   heroTl
@@ -767,12 +707,13 @@ if (hasGsap && !RM) {
     .from(".hero-tag",{y:14,opacity:0,duration:.5},.95)
     .from(".hero-hint",{scale:.8,opacity:0,rotation:3,duration:.5,ease:"back.out(1.8)"},1.15)
     .from(".hero-leaf",{opacity:0,duration:.9},.3);
-
-  /* hojas del hero: vaivén perpetuo muy sutil */
   gsap.to(".leaf-l",{rotation:19,duration:5.2,yoyo:true,repeat:-1,ease:"sine.inOut",transformOrigin:"0% 100%"});
   gsap.to(".leaf-r",{rotation:-154,duration:6,yoyo:true,repeat:-1,ease:"sine.inOut",transformOrigin:"100% 100%"});
   gsap.to(".scroll-cue",{y:7,duration:.9,yoyo:true,repeat:-1,ease:"sine.inOut"});
+}
 
+/* ---------- motion de las categorías (tras render) ---------- */
+function initCatMotion(){
   /* polaroids: entran torcidas y se ENDEREZAN al asentarse */
   document.querySelectorAll(".polaroid").forEach(function(card,i){
     var rot = parseFloat((card.style.getPropertyValue("--rot")||"0").replace("deg",""))||0;
@@ -818,7 +759,7 @@ if (hasGsap && !RM) {
   document.querySelectorAll(".flight").forEach(function(zone){
     var flyer = zone.querySelector(".flyer");
     var trail = zone.querySelector(".trail-path");
-    var L = trail.getTotalLength();
+    if(!flyer || !trail) return;
     trail.style.strokeDasharray = "1 9";
     trail.style.strokeDashoffset = 0;
     trail.style.opacity = 0;
@@ -854,32 +795,45 @@ if (hasGsap && !RM) {
     card.addEventListener("pointercancel",up);
     card.addEventListener("pointerleave",up);
   });
+}
 
-} else {
-  /* reduced motion o sin GSAP: estela visible, colibrí posado al final del camino */
+/* ---------- fallback sin motion: colibrí posado al final del camino ---------- */
+function flightFallback(){
   document.querySelectorAll(".flight").forEach(function(zone){
     var flyer = zone.querySelector(".flyer");
+    if(!flyer) return;
     flyer.style.left = "auto"; flyer.style.right = "18px"; flyer.style.top = "8px";
   });
 }
 
-/* ---------- chips activos ---------- */
-var chips = document.querySelectorAll(".chip");
-function setActive(cat){
-  chips.forEach(function(c){ c.classList.toggle("active", c.dataset.cat === cat); });
-}
-if (hasGsap && typeof ScrollTrigger !== "undefined") {
-  ["cafe","brunch","postres"].forEach(function(id){
-    ScrollTrigger.create({
-      trigger:"#"+id, start:"top 55%", end:"bottom 55%",
-      onToggle:function(self){ if(self.isActive) setActive(id); }
+/* ---------- chips activos según scroll ---------- */
+function initChips(){
+  var chips = chipsBar.querySelectorAll(".chip");
+  function setActive(cat){
+    chips.forEach(function(c){ c.classList.toggle("active", c.dataset.cat === cat); });
+  }
+  if (hasGsap && typeof ScrollTrigger !== "undefined") {
+    CAT_IDS.forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el) return;
+      ScrollTrigger.create({
+        trigger:el, start:"top 55%", end:"bottom 55%",
+        onToggle:function(self){ if(self.isActive) setActive(id); }
+      });
     });
+  } else {
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting) setActive(e.target.id); });
+    },{rootMargin:"-40% 0px -55% 0px"});
+    CAT_IDS.forEach(function(id){ var el = document.getElementById(id); if(el) obs.observe(el); });
+  }
+}
+
+/* ---------- click en cualquier plato -> detalle ---------- */
+function initInteractions(){
+  carta.querySelectorAll("[data-item]").forEach(function(card){
+    card.addEventListener("click",function(){ openDetail(card); });
   });
-} else {
-  var obs = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting) setActive(e.target.id); });
-  },{rootMargin:"-40% 0px -55% 0px"});
-  ["cafe","brunch","postres"].forEach(function(id){ obs.observe(document.getElementById(id)); });
 }
 
 /* ---------- detalle: la polaroid se levanta de la mesa ---------- */
@@ -894,12 +848,13 @@ function openDetail(card){
   dPrice.textContent = d.price;
   dCat.textContent = d.catLabel;
   detail.dataset.cat = d.cat;
+  detail.style.setProperty("--accent", d.accent || "var(--copper)");
   if (d.img){
     dFig.hidden = false; dPlaca.hidden = true;
     dImg.src = d.img; dImg.alt = d.name;
   } else {
     dFig.hidden = true; dPlaca.hidden = false;
-    dLetra.textContent = LETRAS[d.cat] || "D";
+    dLetra.textContent = d.letra || LETRAS[d.cat] || "·";
   }
 
   overlay.hidden = false;
@@ -910,10 +865,10 @@ function openDetail(card){
 
   if (hasGsap && !RM){
     var r = card.getBoundingClientRect();
-    var c = detail.getBoundingClientRect();
-    var dx = (r.left + r.width/2) - (c.left + c.width/2);
-    var dy = (r.top + r.height/2) - (c.top + c.height/2);
-    var s = Math.max(.25, r.width / c.width);
+    var cc = detail.getBoundingClientRect();
+    var dx = (r.left + r.width/2) - (cc.left + cc.width/2);
+    var dy = (r.top + r.height/2) - (cc.top + cc.height/2);
+    var s = Math.max(.25, r.width / cc.width);
     var cardRot = parseFloat((card.style.getPropertyValue("--rot")||"0").replace("deg",""))||0;
     gsap.fromTo(backdrop,{opacity:0},{opacity:1,duration:.4,ease:"power2.out"});
     gsap.fromTo(detail,
@@ -938,13 +893,13 @@ function closeDetail(){
     page.removeAttribute("inert");
     if (lastCard) lastCard.focus({preventScroll:true});
   }
-  page.classList.remove("blurred"); /* que se enfoque mientras baja */
+  page.classList.remove("blurred");
   if (hasGsap && !RM && lastCard){
     var r = lastCard.getBoundingClientRect();
-    var c = detail.getBoundingClientRect();
-    var dx = (r.left + r.width/2) - (c.left + c.width/2);
-    var dy = (r.top + r.height/2) - (c.top + c.height/2);
-    var s = Math.max(.25, r.width / c.width);
+    var cc = detail.getBoundingClientRect();
+    var dx = (r.left + r.width/2) - (cc.left + cc.width/2);
+    var dy = (r.top + r.height/2) - (cc.top + cc.height/2);
+    var s = Math.max(.25, r.width / cc.width);
     gsap.to(backdrop,{opacity:0,duration:.34,ease:"power2.in"});
     gsap.to(detail,{x:dx,y:dy,scale:s,rotation:0,opacity:0,duration:.42,ease:"power3.in",
       onComplete:function(){ gsap.set(detail,{clearProps:"all"}); done(); }});
@@ -953,9 +908,7 @@ function closeDetail(){
   }
 }
 
-document.querySelectorAll("[data-item]").forEach(function(card){
-  card.addEventListener("click",function(){ openDetail(card); });
-});
+/* handlers estáticos del overlay */
 closeX.addEventListener("click",closeDetail);
 closeB.addEventListener("click",closeDetail);
 backdrop.addEventListener("click",closeDetail);
@@ -969,7 +922,20 @@ document.addEventListener("keydown",function(e){
   }
 });
 
-/* refresco de medidas al cargar imágenes */
+/* ---------- arranque ---------- */
+if (hasGsap && !RM) heroMotion();
+
+fetch("../menu.json", {cache:"no-store"})
+  .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
+  .then(function(menu){
+    build(menu);
+    if (hasGsap && !RM) initCatMotion(); else flightFallback();
+    initChips();
+    initInteractions();
+    if (hasGsap && typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
+  })
+  .catch(function(err){ if(window.console) console.error("carta:", err); renderError(); });
+
 if (hasGsap && typeof ScrollTrigger !== "undefined"){
   window.addEventListener("load",function(){ ScrollTrigger.refresh(); });
 }

@@ -1,0 +1,963 @@
+<!doctype html>
+<html lang="es-PA">
+<meta charset="utf-8">
+<!-- PROTOTIPO I · EL RECIBO DE LA CASA -->
+<!-- Doboré · carta como ticket térmico que se imprime al desplazarte · datos desde ../menu.json -->
+<title>Doboré — La Carta · El Recibo de la Casa</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#160c05">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --paper:#F3E8D4;
+  --paper-2:#EBDCC0;
+  --paper-edge:#E2CFA9;
+  --ink:#2a1c11;
+  --ink-2:#3c2a1a;
+  --ink-soft:#8a7358;
+  --stamp:#b0361b;
+  --stamp-2:#c34327;
+  --cobre:#c67f43;
+  --gold:#e0a96d;
+  --counter:#160c05;
+  --counter-2:#26170b;
+  --mono:'Courier Prime', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --serif:'Playfair Display', Georgia, 'Times New Roman', serif;
+  --nav-h:56px;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+html,body{margin:0; overflow-x:hidden; max-width:100%}
+body{
+  background:var(--counter);
+  color:var(--ink);
+  font-family:var(--mono);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  min-height:100dvh;
+}
+a{color:inherit}
+img{max-width:100%; display:block}
+button{font:inherit; color:inherit}
+
+/* ============ FONDO: la barra / mostrador de madera ============ */
+.counter{
+  position:relative;
+  min-height:100dvh;
+  padding:0 0 60px;
+  background:
+    radial-gradient(140% 70% at 50% -8%, #35200f 0%, #1c1006 46%, #120a04 100%),
+    repeating-linear-gradient(91deg, rgba(255,255,255,.016) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 3px, transparent 3px 26px);
+  background-blend-mode:normal, overlay, multiply;
+}
+.counter::before{
+  content:"";
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:radial-gradient(120% 80% at 50% 40%, transparent 55%, rgba(0,0,0,.5) 100%);
+}
+
+/* ============ EL "PRINTER" / NAV STICKY ============ */
+.printer{
+  position:sticky; top:0; z-index:40;
+  background:linear-gradient(180deg, #0f0803, #1b1007 88%, #0c0602);
+  border-bottom:1px solid rgba(0,0,0,.6);
+  box-shadow:0 8px 22px -8px rgba(0,0,0,.8);
+}
+.printer-inner{
+  max-width:520px; margin:0 auto;
+  height:var(--nav-h);
+  display:flex; align-items:center; gap:10px;
+  padding:0 14px;
+}
+.brand{
+  display:flex; align-items:center; gap:7px;
+  color:var(--paper);
+  font-family:var(--serif); font-weight:800;
+  letter-spacing:.06em; font-size:18px; line-height:1;
+  flex:0 0 auto; white-space:nowrap;
+}
+.brand svg{width:26px; height:auto; flex:0 0 auto; filter:drop-shadow(0 1px 0 rgba(0,0,0,.5))}
+.brand .g{fill:var(--gold)}
+.tabs{
+  margin-left:auto;
+  display:flex; gap:6px; align-items:center;
+  overflow-x:auto; -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{
+  text-decoration:none;
+  font-family:var(--mono); font-weight:700;
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:#c9b291;
+  padding:7px 11px; border-radius:2px;
+  border:1px solid rgba(224,169,109,.28);
+  background:rgba(224,169,109,.05);
+  white-space:nowrap; flex:0 0 auto;
+  transition:color .2s ease, background .2s ease, border-color .2s ease;
+}
+.tabs a[aria-current="true"]{
+  color:#1a0f06;
+  background:var(--gold);
+  border-color:var(--gold);
+}
+.slot{
+  height:7px;
+  background:
+    linear-gradient(180deg, #050301, #1a0f06),
+    radial-gradient(60% 100% at 50% 0%, rgba(0,0,0,.9), transparent 70%);
+  box-shadow:inset 0 3px 5px -2px rgba(0,0,0,.9);
+  max-width:520px; margin:0 auto;
+  border-radius:0 0 3px 3px;
+}
+
+@media (hover:hover) and (pointer:fine){
+  .tabs a:hover{color:#1a0f06; background:var(--gold); border-color:var(--gold)}
+}
+
+/* ============ EL RECIBO ============ */
+.stage{
+  position:relative; z-index:2;
+  padding:0 12px;
+  max-width:520px; margin:0 auto;
+}
+.receipt{
+  --scallop:11px;
+  position:relative;
+  width:100%;
+  max-width:430px;
+  margin:0 auto;
+  padding:calc(var(--scallop) + 20px) 22px calc(var(--scallop) + 24px);
+  color:var(--ink);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.35), transparent 90px),
+    repeating-linear-gradient(0deg, rgba(120,85,45,.045) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--paper), var(--paper) 60%, var(--paper-2));
+  filter:drop-shadow(0 20px 30px rgba(0,0,0,.55)) drop-shadow(0 2px 4px rgba(0,0,0,.4));
+  -webkit-mask:
+    radial-gradient(var(--scallop) at 50% 0, #0000 98%, #000) 0 100%/22px var(--scallop) repeat-x,
+    radial-gradient(var(--scallop) at 50% 100%, #0000 98%, #000) 0 0/22px var(--scallop) repeat-x,
+    linear-gradient(#000 0 0) 50%/100% calc(100% - 2*var(--scallop)) no-repeat;
+          mask:
+    radial-gradient(var(--scallop) at 50% 0, #0000 98%, #000) 0 100%/22px var(--scallop) repeat-x,
+    radial-gradient(var(--scallop) at 50% 100%, #0000 98%, #000) 0 0/22px var(--scallop) repeat-x,
+    linear-gradient(#000 0 0) 50%/100% calc(100% - 2*var(--scallop)) no-repeat;
+}
+/* grano/ruido térmico muy sutil sobre el papel */
+.receipt::before{
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:0;
+  opacity:.5; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='120' height='120' filter='url(%23n)' opacity='0.05'/></svg>");
+}
+.receipt > *{position:relative; z-index:1}
+
+/* ---- letterhead ---- */
+.head-mark{
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  gap:4px; padding-bottom:10px;
+}
+.head-mark .bird{width:52px; height:auto}
+.head-mark .bird .b{fill:var(--ink)}
+.wordmark{
+  font-family:var(--serif); font-weight:800;
+  font-size:34px; line-height:.9; letter-spacing:.02em;
+  margin:2px 0 0;
+}
+.wordmark .acc{color:var(--stamp)}
+.tag{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.34em;
+  text-transform:uppercase; color:var(--ink-soft);
+}
+
+.dash{
+  border:0; height:0; margin:12px 0;
+  border-top:1.5px dashed var(--ink-soft);
+}
+.dash.solid{border-top-style:solid; opacity:.5}
+.dash.thick{border-top:3px double var(--ink); opacity:.75}
+
+.meta{
+  font-size:11.5px; color:var(--ink-2); letter-spacing:.02em;
+}
+.meta .row{display:flex; justify-content:space-between; gap:8px}
+.meta .row + .row{margin-top:2px}
+.meta b{font-weight:700}
+
+/* ---- section head ---- */
+.sec{scroll-margin-top:calc(var(--nav-h) + 12px)}
+.sec-head{
+  text-align:center; margin:6px 0 4px;
+}
+.sec-head .stars{
+  font-size:12px; letter-spacing:.5em; color:var(--ink-soft);
+  padding-left:.5em;
+}
+.sec-head .name{
+  font-family:var(--serif); font-weight:700; font-style:italic;
+  font-size:23px; margin:1px 0;
+}
+.sec-head .sub{
+  font-size:10.5px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+}
+
+/* ---- item ---- */
+.item{
+  position:relative;
+  display:block; width:100%;
+  text-align:left;
+  background:transparent; border:0;
+  padding:7px 2px;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .16s var(--ease-out), background .2s ease;
+  border-radius:4px;
+}
+.item + .item{border-top:1px dotted rgba(138,115,88,.4)}
+.item:active{transform:scale(.985)}
+.item:focus-visible{outline:2px solid var(--stamp); outline-offset:2px}
+@media (hover:hover) and (pointer:fine){
+  .item:hover{background:rgba(198,127,67,.09)}
+}
+
+.line{display:flex; align-items:baseline; gap:0}
+.line .nm{
+  font-weight:700; letter-spacing:.01em;
+  font-size:15px; color:var(--ink);
+  padding-right:2px;
+}
+.line .dots{
+  flex:1 1 auto; min-width:14px; align-self:center;
+  border-bottom:1.6px dotted var(--ink-soft);
+  margin:0 7px; height:.6em; transform:translateY(-2px);
+}
+.line .pr{
+  font-weight:700; font-size:14px; white-space:nowrap;
+  color:var(--ink); font-variant-numeric:tabular-nums;
+}
+
+.item .teaser{
+  font-size:11.5px; font-style:italic; color:var(--ink-2);
+  margin-top:2px; padding-right:4px; line-height:1.4;
+}
+.item .more{
+  display:inline-block; margin-top:3px;
+  font-size:10px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--stamp); font-weight:700;
+}
+
+/* thumbnail térmico */
+.shot{margin:8px 0 4px}
+.thermal{
+  position:relative; overflow:hidden;
+  width:min(206px, 60%); margin:0 auto;
+  background:var(--paper-2);
+  padding:6px 6px 8px;
+  border:1px solid rgba(120,85,45,.35);
+  box-shadow:0 6px 14px -8px rgba(40,20,8,.55), inset 0 0 0 1px rgba(255,255,255,.25);
+}
+.thermal .frame{position:relative; overflow:hidden}
+.thermal.port .frame{aspect-ratio:4/5}
+.thermal.land .frame{aspect-ratio:5/4}
+.thermal img{
+  width:100%; height:100%; object-fit:cover; object-position:center;
+}
+.thermal img.crop{transform:scale(1.6); transform-origin:38% 84%}
+.thermal .cap{
+  margin-top:5px; text-align:center;
+  font-size:9px; letter-spacing:.24em; text-transform:uppercase; color:var(--ink-soft);
+}
+/* líneas de impresión térmica sobre la foto */
+.thermal .frame::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(30,16,6,.05) 0 1px, transparent 1px 3px);
+  mix-blend-mode:multiply;
+}
+/* cabezal de impresión */
+.head-bar{
+  position:absolute; left:-3%; right:-3%; top:-14%; height:10%;
+  pointer-events:none; opacity:0;
+  background:linear-gradient(180deg, rgba(255,244,214,0), rgba(255,240,205,.9) 45%, rgba(180,90,40,.35) 75%, transparent);
+  mix-blend-mode:screen;
+  filter:blur(.4px);
+}
+
+/* sello RECOMENDADO */
+.stamp{
+  position:absolute; top:2px; right:0;
+  transform:rotate(-9deg);
+  color:var(--stamp);
+  border:2px solid var(--stamp);
+  border-radius:4px;
+  padding:2px 7px;
+  font-size:9px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  opacity:.82; pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(176,54,27,.35);
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='40'><filter id='r'><feTurbulence type='fractalNoise' baseFrequency='0.35' numOctaves='2'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='linear' slope='0.7' intercept='0.35'/></feComponentTransfer></filter><rect width='80' height='40' filter='url(%23r)'/></svg>");
+          mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='40'><filter id='r'><feTurbulence type='fractalNoise' baseFrequency='0.35' numOctaves='2'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='linear' slope='0.7' intercept='0.35'/></feComponentTransfer></filter><rect width='80' height='40' filter='url(%23r)'/></svg>");
+}
+
+/* ---- subtotal ---- */
+.subtotal{margin:8px 0 2px}
+.subtotal .line .nm{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2); font-weight:700}
+.subtotal .line .pr{font-size:12px; font-style:italic; font-weight:400; color:var(--ink-2)}
+
+.perf{
+  position:relative; text-align:center; margin:16px 0;
+  border-top:2px dashed var(--ink-soft);
+}
+.perf span{
+  position:absolute; top:-8px; left:50%; transform:translateX(-50%);
+  background:var(--paper); padding:0 10px;
+  font-size:9px; letter-spacing:.3em; text-transform:uppercase; color:var(--ink-soft);
+}
+
+/* ---- total ---- */
+.total{margin-top:6px; text-align:center}
+.total .grand{
+  display:flex; align-items:baseline; justify-content:space-between;
+  font-family:var(--mono); font-weight:700;
+  font-size:19px; letter-spacing:.04em; margin:2px 0 4px;
+}
+.total .grand .dots{flex:1 1 auto; border-bottom:2px dotted var(--ink); margin:0 8px; height:.55em; transform:translateY(-3px)}
+.total .grand .rhs{font-family:var(--serif); font-style:italic; font-weight:700; font-size:18px; color:var(--stamp)}
+.total .fine{font-size:10.5px; color:var(--ink-soft); letter-spacing:.05em}
+.total .fine .row{display:flex; justify-content:space-between}
+
+.cta{
+  display:block; text-decoration:none; text-align:center;
+  margin:16px auto 4px; max-width:280px;
+  padding:14px 18px;
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--mono); font-weight:700;
+  letter-spacing:.16em; text-transform:uppercase; font-size:12px;
+  border-radius:3px;
+  box-shadow:0 8px 18px -8px rgba(0,0,0,.6);
+  transition:transform .16s var(--ease-out), box-shadow .2s ease;
+  position:relative; overflow:hidden;
+}
+.cta small{display:block; font-family:var(--serif); font-style:italic; text-transform:none; letter-spacing:0; font-size:15px; color:var(--gold); margin-top:4px; font-weight:600}
+.cta:active{transform:scale(.97)}
+@media (hover:hover) and (pointer:fine){ .cta:hover{box-shadow:0 12px 24px -8px rgba(0,0,0,.7)} }
+
+/* ---- barcode / footer ---- */
+.barcode-wrap{text-align:center; margin-top:20px}
+.barcode{
+  height:48px; margin:0 auto; width:min(240px,80%);
+  background-image:
+    repeating-linear-gradient(90deg,
+      var(--ink) 0 2px, transparent 2px 4px,
+      var(--ink) 4px 5px, transparent 5px 8px,
+      var(--ink) 8px 11px, transparent 11px 12px,
+      var(--ink) 12px 13px, transparent 13px 17px,
+      var(--ink) 17px 20px, transparent 20px 21px,
+      var(--ink) 21px 24px, transparent 24px 26px);
+}
+.barcode-num{
+  margin-top:6px; font-size:11px; letter-spacing:.4em; color:var(--ink-2);
+}
+.thanks{
+  margin-top:12px; font-family:var(--serif); font-style:italic; font-size:15px; color:var(--ink);
+}
+.bird-foot{width:30px; margin:10px auto 0}
+.bird-foot .b{fill:var(--ink-soft)}
+
+/* estado de carga / error de la carta */
+.loading, .load-error{
+  text-align:center; padding:26px 6px;
+  font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft);
+}
+.load-error{color:var(--stamp)}
+
+/* ============ REVELADO / IMPRESIÓN (motion) ============ */
+.js [data-print]{
+  opacity:0;
+  clip-path:inset(0 100% 0 0);
+  transform:translateY(7px);
+  will-change:clip-path, opacity, transform;
+}
+.js [data-print].printed{
+  opacity:1;
+  clip-path:inset(0 0 0 0);
+  transform:none;
+  transition:clip-path .34s linear, opacity .18s ease-out, transform .34s var(--ease-out);
+}
+/* foto: revela de arriba a abajo + del gris al color */
+.js .thermal img{
+  clip-path:inset(0 0 100% 0);
+  filter:grayscale(1) sepia(.42) contrast(.9) brightness(1.03);
+}
+.js .shot.dev .thermal img{
+  clip-path:inset(0 0 0 0);
+  filter:none;
+  transition:clip-path .72s linear, filter .6s ease .4s;
+}
+.js .shot.dev .head-bar{ animation:printhead .74s linear both }
+@keyframes printhead{
+  0%{top:-14%; opacity:.95}
+  8%{opacity:.95}
+  92%{opacity:.9}
+  100%{top:104%; opacity:0}
+}
+
+/* ============ MODAL — la foto grapada ============ */
+.modal{
+  position:fixed; inset:0; z-index:100;
+  display:none;
+  align-items:flex-start; justify-content:center;
+  padding:22px 14px 30px;
+  overflow-y:auto; overscroll-behavior:contain;
+}
+.modal.show{display:flex}
+.backdrop{
+  position:fixed; inset:0;
+  background:radial-gradient(120% 90% at 50% 0%, rgba(30,17,7,.72), rgba(8,4,2,.9));
+  -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+  opacity:0; transition:opacity .28s ease;
+}
+.modal.open .backdrop{opacity:1}
+
+.slip{
+  position:relative; z-index:2;
+  width:100%; max-width:340px; margin:auto;
+  --scallop:9px;
+  padding:calc(var(--scallop) + 30px) 20px calc(var(--scallop) + 20px);
+  background:
+    repeating-linear-gradient(0deg, rgba(120,85,45,.05) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--paper), var(--paper-2));
+  filter:drop-shadow(0 26px 40px rgba(0,0,0,.6));
+  -webkit-mask:
+    radial-gradient(var(--scallop) at 50% 0, #0000 98%, #000) 0 100%/20px var(--scallop) repeat-x,
+    radial-gradient(var(--scallop) at 50% 100%, #0000 98%, #000) 0 0/20px var(--scallop) repeat-x,
+    linear-gradient(#000 0 0) 50%/100% calc(100% - 2*var(--scallop)) no-repeat;
+          mask:
+    radial-gradient(var(--scallop) at 50% 0, #0000 98%, #000) 0 100%/20px var(--scallop) repeat-x,
+    radial-gradient(var(--scallop) at 50% 100%, #0000 98%, #000) 0 0/20px var(--scallop) repeat-x,
+    linear-gradient(#000 0 0) 50%/100% calc(100% - 2*var(--scallop)) no-repeat;
+  opacity:0; transform:translateY(14px) scale(.97);
+  transition:opacity .3s ease, transform .38s var(--ease-out);
+}
+.modal.open .slip{opacity:1; transform:none}
+
+.x{
+  position:absolute; top:14px; right:12px; z-index:6;
+  width:34px; height:34px; border-radius:50%;
+  border:1.5px solid var(--ink);
+  background:var(--paper);
+  color:var(--ink); font-size:20px; line-height:1;
+  display:grid; place-items:center; cursor:pointer;
+  transition:transform .16s var(--ease-out), background .2s ease;
+}
+.x:active{transform:scale(.92)}
+.x:focus-visible{outline:2px solid var(--stamp); outline-offset:2px}
+@media (hover:hover) and (pointer:fine){ .x:hover{background:var(--stamp); color:#fff; border-color:var(--stamp)} }
+
+/* foto que escupe la máquina, grapada */
+.photo-out{
+  position:relative; width:78%; max-width:230px; margin:2px auto 14px;
+  padding:9px 9px 12px;
+  background:#fbf6ec;
+  box-shadow:0 12px 22px -10px rgba(30,15,6,.7);
+  transform:rotate(-2.2deg);
+}
+.photo-out .frame{position:relative; overflow:hidden}
+.photo-out.port .frame{aspect-ratio:4/5}
+.photo-out.land .frame{aspect-ratio:5/4}
+.photo-out img{width:100%; height:100%; object-fit:cover}
+.photo-out img.crop{transform:scale(1.55); transform-origin:38% 84%}
+.photo-out .pcap{margin-top:7px; text-align:center; font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-soft)}
+.staple{
+  position:absolute; top:-9px; left:50%; transform:translateX(-50%) rotate(-3deg);
+  width:38px; height:16px; z-index:3;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.35));
+}
+/* estado inicial (para que "salga" al abrir) */
+.modal .photo-out{opacity:0; transform:translateY(-26px) rotate(-8deg)}
+.modal .staple{opacity:0; transform:translateX(-50%) rotate(-3deg) scale(1.5)}
+.modal.open .photo-out{opacity:1; transform:rotate(-2.2deg); transition:opacity .34s ease .1s, transform .5s var(--ease-out) .1s}
+.modal.open .staple{opacity:1; transform:translateX(-50%) rotate(-3deg) scale(1); transition:opacity .18s ease .42s, transform .32s var(--ease-out) .42s}
+
+/* stub sin foto */
+.nostub{
+  width:70%; max-width:200px; margin:2px auto 14px; aspect-ratio:1/1;
+  display:grid; place-items:center; text-align:center;
+  border:1.5px dashed var(--ink-soft);
+  color:var(--ink-soft);
+  background:repeating-linear-gradient(0deg, rgba(120,85,45,.07) 0 2px, transparent 2px 5px);
+  padding:14px;
+}
+.nostub svg{width:44px; margin:0 auto 8px}
+.nostub .b{fill:var(--ink-soft)}
+.nostub p{margin:0; font-size:9.5px; letter-spacing:.22em; text-transform:uppercase}
+
+.slip .dish{
+  font-family:var(--serif); font-weight:700; font-size:24px; line-height:1.05;
+  text-align:center; margin:0 0 3px;
+}
+.slip .kind{
+  text-align:center; font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--stamp); font-weight:700; margin-bottom:12px;
+}
+.slip .desc{
+  font-size:13px; line-height:1.6; color:var(--ink-2);
+  text-align:center; margin:0 0 14px;
+}
+.slip .price-line{
+  display:flex; align-items:baseline; font-weight:700; font-size:16px; margin-top:6px;
+}
+.slip .price-line .dots{flex:1; border-bottom:2px dotted var(--ink); margin:0 8px; height:.55em; transform:translateY(-3px)}
+.slip .note{
+  margin-top:14px; text-align:center;
+  font-family:var(--serif); font-style:italic; font-size:14px; color:var(--ink);
+}
+.slip .modal-bird{width:26px; margin:10px auto 0}
+.slip .modal-bird .b{fill:var(--ink-soft)}
+
+/* ============ REDUCED MOTION — fallback digno ============ */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js [data-print],
+  .js [data-print].printed{opacity:1 !important; clip-path:none !important; transform:none !important; transition:none !important}
+  .js .thermal img{clip-path:none !important; filter:none !important; transition:none !important}
+  .head-bar{display:none !important}
+  .js .shot.dev .head-bar{animation:none !important}
+  .modal .photo-out,.modal.open .photo-out{opacity:1 !important; transform:rotate(-2.2deg) !important; transition:none !important}
+  .modal .staple,.modal.open .staple{opacity:1 !important; transform:translateX(-50%) rotate(-3deg) !important; transition:none !important}
+  .slip{transition:opacity .12s linear !important}
+  .modal.open .slip{transform:none !important}
+  .backdrop{transition:opacity .12s linear !important}
+  .item,.cta,.x{transition:none !important}
+}
+
+@media (max-width:360px){
+  .brand{font-size:16px}
+  .brand svg{width:22px}
+  .tabs a{padding:6px 8px; font-size:10px; letter-spacing:.08em}
+  .receipt{padding-left:16px; padding-right:16px}
+}
+</style>
+
+<div class="counter" id="top">
+
+  <header class="printer">
+    <div class="printer-inner">
+      <span class="brand">
+        <svg viewBox="0 0 80 56" aria-hidden="true">
+          <g class="g">
+            <path d="M28 30 C 14 8, 44 6, 40 26 C 37 33, 31 34, 28 30 Z"/>
+            <ellipse cx="35" cy="33" rx="15" ry="9" transform="rotate(-8 35 33)"/>
+            <circle cx="52" cy="24" r="7"/>
+            <polygon points="58,22 79,18 58,27"/>
+            <polygon points="22,37 3,47 12,37 2,41 21,32"/>
+          </g>
+        </svg>
+        Doboré
+      </span>
+      <nav class="tabs" aria-label="Categorías de la carta"></nav>
+    </div>
+    <div class="slot" aria-hidden="true"></div>
+  </header>
+
+  <main class="stage">
+    <article class="receipt" aria-label="Carta de Doboré, impresa como recibo">
+
+      <!-- LETTERHEAD -->
+      <div class="head-mark" data-print>
+        <svg class="bird" viewBox="0 0 80 56" aria-hidden="true">
+          <g class="b">
+            <path d="M28 30 C 14 8, 44 6, 40 26 C 37 33, 31 34, 28 30 Z"/>
+            <ellipse cx="35" cy="33" rx="15" ry="9" transform="rotate(-8 35 33)"/>
+            <circle cx="52" cy="24" r="7"/>
+            <polygon points="58,22 79,18 58,27"/>
+            <polygon points="22,37 3,47 12,37 2,41 21,32"/>
+          </g>
+        </svg>
+        <h1 class="wordmark">DOBOR<span class="acc">É</span></h1>
+        <div class="tag">Café de especialidad</div>
+      </div>
+
+      <div class="meta" data-print>
+        <div class="row"><span>BOQUETE · PANAMÁ</span><span>1.600 msnm</span></div>
+        <div class="row"><span>FECHA <b>04/07/2026</b></span><span>MESA <b>—</b></span></div>
+        <div class="row"><span>ATIENDE <b>LA CASA</b></span><span>ORDEN <b>#0704</b></span></div>
+      </div>
+      <hr class="dash" data-print>
+      <div class="meta" data-print style="text-align:center; letter-spacing:.18em; font-size:10px; text-transform:uppercase; color:var(--ink-soft)">
+        Toca un plato para ver la foto
+      </div>
+      <hr class="dash thick" data-print>
+
+      <!-- ============ CARTA (render desde ../menu.json) ============ -->
+      <div id="menu-root">
+        <div class="loading">Imprimiendo la carta…</div>
+      </div>
+
+      <hr class="dash thick" data-print>
+
+      <!-- ============ TOTAL / CTA ============ -->
+      <div class="total">
+        <div class="grand" data-print><span>TOTAL</span><span class="dots" aria-hidden="true"></span><span class="rhs">la casa te espera</span></div>
+        <div class="fine" data-print>
+          <div class="row"><span>PROPINA</span><span>tu sonrisa</span></div>
+          <div class="row"><span>IMPUESTO</span><span>incluido en el cariño</span></div>
+        </div>
+        <a class="cta" href="#top" data-print>
+          Te esperamos en Boquete
+          <small>abierto todos los días</small>
+        </a>
+      </div>
+
+      <div class="barcode-wrap" data-print>
+        <div class="barcode" aria-hidden="true"></div>
+        <div class="barcode-num">0 704 · DOBORÉ · 2026</div>
+        <div class="thanks">Gracias por tu visita</div>
+        <svg class="bird-foot" viewBox="0 0 80 56" aria-hidden="true">
+          <g class="b">
+            <path d="M28 30 C 14 8, 44 6, 40 26 C 37 33, 31 34, 28 30 Z"/>
+            <ellipse cx="35" cy="33" rx="15" ry="9" transform="rotate(-8 35 33)"/>
+            <circle cx="52" cy="24" r="7"/>
+            <polygon points="58,22 79,18 58,27"/>
+            <polygon points="22,37 3,47 12,37 2,41 21,32"/>
+          </g>
+        </svg>
+      </div>
+
+    </article>
+  </main>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-dish" aria-hidden="true">
+  <div class="backdrop" data-close></div>
+  <div class="slip" id="slip">
+    <button class="x" type="button" aria-label="Cerrar ficha" data-close>&times;</button>
+    <div id="m-media"></div>
+    <h2 class="dish" id="m-dish"></h2>
+    <div class="kind" id="m-kind"></div>
+    <p class="desc" id="m-desc"></p>
+    <div class="price-line"><span>Precio</span><span class="dots" aria-hidden="true"></span><span id="m-price"></span></div>
+    <div class="note">Se prepara al momento, con calma.</div>
+    <svg class="modal-bird" viewBox="0 0 80 56" aria-hidden="true">
+      <g class="b">
+        <path d="M28 30 C 14 8, 44 6, 40 26 C 37 33, 31 34, 28 30 Z"/>
+        <ellipse cx="35" cy="33" rx="15" ry="9" transform="rotate(-8 35 33)"/>
+        <circle cx="52" cy="24" r="7"/>
+        <polygon points="58,22 79,18 58,27"/>
+        <polygon points="22,37 3,47 12,37 2,41 21,32"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var root = document.documentElement;
+  root.classList.add('js');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- ilustraciones reutilizables ---------- */
+  var BIRD = "<svg viewBox='0 0 80 56' aria-hidden='true'><g class='b'>"+
+    "<path d='M28 30 C 14 8, 44 6, 40 26 C 37 33, 31 34, 28 30 Z'/>"+
+    "<ellipse cx='35' cy='33' rx='15' ry='9' transform='rotate(-8 35 33)'/>"+
+    "<circle cx='52' cy='24' r='7'/><polygon points='58,22 79,18 58,27'/>"+
+    "<polygon points='22,37 3,47 12,37 2,41 21,32'/></g></svg>";
+
+  var STAPLE = "<svg class='staple' viewBox='0 0 38 16' aria-hidden='true'>"+
+    "<defs><linearGradient id='stg' x1='0' y1='0' x2='0' y2='1'>"+
+      "<stop offset='0' stop-color='#e9e4dc'/><stop offset='0.5' stop-color='#9a948c'/><stop offset='1' stop-color='#6f6a63'/>"+
+    "</linearGradient></defs>"+
+    "<rect x='4' y='3' width='30' height='4' rx='1.5' fill='url(#stg)'/>"+
+    "<rect x='4' y='3' width='4' height='12' rx='1.5' fill='url(#stg)'/>"+
+    "<rect x='30' y='3' width='4' height='12' rx='1.5' fill='url(#stg)'/></svg>";
+
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function money(p){ return 'B/.' + (p == null ? '' : p); }
+
+  var ITEMS = {};                                   // id -> {name, price, cat, desc, image, o}
+  var navTabs = document.querySelector('.tabs');
+  var menuRoot = document.getElementById('menu-root');
+
+  /* ---------- render modular desde menu.json ---------- */
+  function render(data){
+    var cats = (data && data.categories) || [];
+
+    // pestañas de la nav
+    navTabs.innerHTML = cats.map(function(c){
+      return '<a href="#' + esc(c.id) + '">' + esc((c.name && c.name.es) || c.id) + '</a>';
+    }).join('');
+
+    var html = '';
+    cats.forEach(function(cat, ci){
+      var cname = (cat.name && cat.name.es) || cat.id;
+      var csub  = (cat.footnote && cat.footnote.es) || '';
+
+      html += '<section class="sec" id="' + esc(cat.id) + '">';
+      html += '<div class="sec-head" data-print>' +
+                '<div class="stars">* * *</div>' +
+                '<div class="name">' + esc(cname) + '</div>' +
+                (csub ? '<div class="sub">' + esc(csub) + '</div>' : '') +
+              '</div>';
+
+      (cat.items || []).forEach(function(it){
+        var id    = cat.id + '/' + it.key;
+        var name  = (it.name && it.name.es) || it.key;
+        var price = money(it.price && it.price.es);
+        var desc  = (it.desc && it.desc.es) || '';
+        var img   = it.image || null;
+
+        ITEMS[id] = { name:name, price:price, cat:cname, desc:desc, image:img, o:'port' };
+
+        if(img){
+          // plato con foto -> tarjeta completa con thumbnail térmico
+          html += '<button class="item" type="button" data-item="' + esc(id) + '" data-print>' +
+                    '<div class="line">' +
+                      '<span class="nm">' + esc(name) + '</span>' +
+                      '<span class="dots" aria-hidden="true"></span>' +
+                      '<span class="pr">' + esc(price) + '</span>' +
+                    '</div>' +
+                    '<figure class="shot" data-shot>' +
+                      '<div class="thermal port"><div class="frame">' +
+                        '<img src="' + esc('../' + img) + '" alt="' + esc(name) + '" loading="lazy">' +
+                        '<span class="head-bar" aria-hidden="true"></span>' +
+                      '</div><div class="cap">— impreso en casa —</div></div>' +
+                    '</figure>' +
+                    (desc ? '<p class="teaser">' + esc(desc) + '</p>' : '') +
+                    '<span class="more">Ver ficha</span>' +
+                  '</button>';
+        } else {
+          // plato sin foto -> fila compacta (abre ficha con placeholder)
+          html += '<button class="item mini" type="button" data-item="' + esc(id) + '" data-print>' +
+                    '<div class="line">' +
+                      '<span class="nm">' + esc(name) + '</span>' +
+                      '<span class="dots" aria-hidden="true"></span>' +
+                      '<span class="pr">' + esc(price) + '</span>' +
+                    '</div>' +
+                  '</button>';
+        }
+      });
+
+      var n = (cat.items || []).length;
+      html += '<div class="subtotal" data-print><div class="line">' +
+                '<span class="nm">Subtotal · ' + esc(cname) + '</span>' +
+                '<span class="dots" aria-hidden="true"></span>' +
+                '<span class="pr">' + n + (n === 1 ? ' plato' : ' platos') + '</span>' +
+              '</div></div>';
+      html += '</section>';
+
+      if(ci < cats.length - 1){
+        html += '<div class="perf" data-print><span>corte</span></div>';
+      }
+    });
+
+    menuRoot.innerHTML = html || '<div class="load-error">La carta está vacía por ahora.</div>';
+  }
+
+  /* ---------- orientación real de cada foto (port/land) ---------- */
+  function detectOrientations(){
+    Object.keys(ITEMS).forEach(function(id){
+      var it = ITEMS[id];
+      if(!it.image) return;
+      var im = new Image();
+      im.onload = function(){
+        it.o = (im.naturalWidth > im.naturalHeight) ? 'land' : 'port';
+        var btn = document.querySelector('[data-item="' + id + '"]');
+        var th = btn && btn.querySelector('.thermal');
+        if(th){ th.classList.remove('port','land'); th.classList.add(it.o); }
+      };
+      im.src = '../' + it.image;
+    });
+  }
+
+  /* ---------- impresión al desplazarte (reveal) ---------- */
+  function initMotion(){
+    var prints = Array.prototype.slice.call(document.querySelectorAll('[data-print]'));
+    var shots  = Array.prototype.slice.call(document.querySelectorAll('[data-shot]'));
+
+    function showAll(){
+      prints.forEach(function(el){ el.classList.add('printed'); });
+      shots.forEach(function(el){ el.classList.add('dev'); });
+    }
+
+    if(reduce || !('IntersectionObserver' in window)){
+      showAll();
+      return;
+    }
+
+    var io = new IntersectionObserver(function(entries, obs){
+      var batch = entries.filter(function(e){ return e.isIntersecting; });
+      batch.sort(function(a,b){ return a.boundingClientRect.top - b.boundingClientRect.top; });
+      batch.forEach(function(e, i){
+        var el = e.target;
+        var delay = Math.min(i, 8) * 45;
+        if(el.hasAttribute('data-shot')){
+          var img = el.querySelector('img');
+          var bar = el.querySelector('.head-bar');
+          if(bar) bar.style.animationDelay = delay + 'ms';
+          if(img) img.style.transitionDelay = delay + 'ms, ' + (delay + 400) + 'ms';
+          el.classList.add('dev');
+        } else {
+          el.style.transitionDelay = delay + 'ms';
+          el.classList.add('printed');
+        }
+        obs.unobserve(el);
+      });
+    }, { rootMargin:'0px 0px -8% 0px', threshold:0.12 });
+
+    prints.forEach(function(el){ io.observe(el); });
+    shots.forEach(function(el){ io.observe(el); });
+
+    // seguro anti-bloqueo: si algo quedó sin imprimir, revelarlo
+    setTimeout(function(){
+      prints.forEach(function(el){
+        if(!el.classList.contains('printed')){
+          var r = el.getBoundingClientRect();
+          if(r.top < window.innerHeight) el.classList.add('printed');
+        }
+      });
+      shots.forEach(function(el){
+        if(!el.classList.contains('dev')){
+          var r = el.getBoundingClientRect();
+          if(r.top < window.innerHeight) el.classList.add('dev');
+        }
+      });
+    }, 1400);
+  }
+
+  /* ---------- scrollspy (nav activa) ---------- */
+  function initSpy(){
+    if(!('IntersectionObserver' in window)) return;
+    var tabLinks = {};
+    Array.prototype.slice.call(document.querySelectorAll('.tabs a')).forEach(function(a){
+      tabLinks[a.getAttribute('href').slice(1)] = a;
+    });
+    var sections = Array.prototype.slice.call(document.querySelectorAll('.sec'));
+    var spy = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          for(var k in tabLinks){ tabLinks[k].removeAttribute('aria-current'); }
+          var id = e.target.id;
+          if(tabLinks[id]) tabLinks[id].setAttribute('aria-current','true');
+        }
+      });
+    }, { rootMargin:'-45% 0px -50% 0px', threshold:0 });
+    sections.forEach(function(s){ spy.observe(s); });
+  }
+
+  /* ---------- MODAL ---------- */
+  var modal = document.getElementById('modal');
+  var slip = document.getElementById('slip');
+  var mMedia = document.getElementById('m-media');
+  var mDish = document.getElementById('m-dish');
+  var mKind = document.getElementById('m-kind');
+  var mDesc = document.getElementById('m-desc');
+  var mPrice = document.getElementById('m-price');
+  var lastFocus = null;
+  var closeT = null;
+
+  function buildMedia(d){
+    if(d.image){
+      var cls = d.o === 'land' ? 'land' : 'port';
+      return '<figure class="photo-out ' + cls + '">' + STAPLE +
+               '<div class="frame"><img src="' + esc('../' + d.image) + '" alt="' + esc(d.name) + '"></div>' +
+               '<div class="pcap">Doboré · Boquete</div>' +
+             '</figure>';
+    }
+    return '<div class="nostub">' + BIRD + '<p>Foto en camino</p></div>';
+  }
+
+  function openModal(id){
+    var d = ITEMS[id];
+    if(!d) return;
+    if(closeT){ clearTimeout(closeT); closeT = null; }
+    lastFocus = document.activeElement;
+
+    mMedia.innerHTML = buildMedia(d);
+    mDish.textContent = d.name;
+    mKind.textContent = d.cat;
+    mDesc.textContent = d.desc;
+    mPrice.textContent = d.price;
+
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    slip.scrollTop = 0;
+    modal.scrollTop = 0;
+    // forzar reflow para que la transición de entrada corra
+    void slip.offsetWidth;
+    requestAnimationFrame(function(){ modal.classList.add('open'); });
+
+    var closeBtn = modal.querySelector('.x');
+    if(closeBtn) closeBtn.focus();
+  }
+
+  function closeModal(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+    var done = function(){
+      modal.classList.remove('show');
+      mMedia.innerHTML = '';
+      if(lastFocus && lastFocus.focus){ lastFocus.focus(); }
+    };
+    if(reduce){ done(); }
+    else { closeT = setTimeout(done, 300); }
+  }
+
+  // abrir desde items (delegado: sirve para el contenido renderizado)
+  document.addEventListener('click', function(e){
+    var item = e.target.closest ? e.target.closest('.item') : null;
+    if(item && item.hasAttribute('data-item')){
+      openModal(item.getAttribute('data-item'));
+      return;
+    }
+    if(e.target.closest && e.target.closest('[data-close]')){
+      closeModal();
+    }
+  });
+
+  // Esc + trampa de foco
+  document.addEventListener('keydown', function(e){
+    if(!modal.classList.contains('show')) return;
+    if(e.key === 'Escape'){ e.preventDefault(); closeModal(); return; }
+    if(e.key === 'Tab'){
+      var f = modal.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])');
+      if(!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
+  });
+
+  /* ---------- arranque: cargar la carta ---------- */
+  fetch('../menu.json', { cache:'no-cache' })
+    .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(data){
+      render(data);
+      initMotion();
+      initSpy();
+      detectOrientations();
+    })
+    .catch(function(err){
+      if(menuRoot){
+        menuRoot.innerHTML = '<div class="load-error">No pudimos imprimir la carta.<br>Revisa tu conexión y vuelve a intentar.</div>';
+      }
+      // que el resto del recibo (encabezado y total) igual se revele
+      initMotion();
+    });
+
+})();
+</script>
+</body>
+</html>

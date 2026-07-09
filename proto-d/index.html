@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Doboré — La Carta · El Tostador</title>
+<meta name="description" content="La carta de Doboré como el viaje del grano: de la finca al tueste a tu taza.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%232a1710'/%3E%3Cellipse cx='16' cy='16' rx='7' ry='11' fill='%23b5713c'/%3E%3Cpath d='M16 5 C 13 12, 13 20, 16 27' stroke='%232a1710' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,800;1,500;1,700&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --kraft:      #cfa869;
+    --kraft-cl:   #ddbd87;
+    --saco:       #a9793f;
+    --tostado:    #2a1710;
+    --cafe:       #3c2415;
+    --cafe-cl:    #5a3a20;
+    --cobre:      #b5713c;
+    --cobre-cl:   #d99a5e;
+    --crema:      #f4e9d4;
+    --verde:      #77823f;
+    --tinta:      #963a1a;
+    --topbar:     94px;
+    /* fibra de saco (yute) */
+    --fibra: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85 0.32' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23f)' opacity='0.6'/%3E%3C/svg%3E");
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html,body{overflow-x:clip}
+  body{
+    background:var(--tostado);
+    color:var(--crema);
+    font-family:'Oswald',system-ui,sans-serif;
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    padding-top:var(--topbar);
+  }
+  img{max-width:100%;display:block}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:3px solid var(--cobre-cl);outline-offset:3px;border-radius:4px}
+
+  .wrap{width:100%;max-width:480px;margin-inline:auto;padding-inline:20px}
+
+  /* trama de yute global, muy sutil, sobre todo */
+  .weave{
+    position:fixed;inset:0;z-index:5;pointer-events:none;opacity:.5;mix-blend-mode:soft-light;
+    background-image:var(--fibra);
+    background-size:180px 180px;
+  }
+
+  /* granos que caen y ruedan */
+  #beans{position:fixed;inset:0;z-index:30;pointer-events:none}
+
+  /* ---------------------------------------------------- TOPBAR / MEDIDOR DE TUESTE */
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;
+    background:linear-gradient(180deg,#1c0f08,#160b05);
+    border-bottom:2px solid #0d0603;
+    box-shadow:0 6px 18px rgba(0,0,0,.4);
+  }
+  .topbar::after{content:"";position:absolute;inset:0;background-image:var(--fibra);background-size:160px;opacity:.14;pointer-events:none}
+  .bar-in{max-width:480px;margin-inline:auto;padding:9px 20px 11px;position:relative;z-index:1}
+  .brand{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .brand b{font-family:'Playfair Display',serif;font-weight:800;font-size:1.02rem;letter-spacing:.01em;color:var(--crema)}
+  .brand span{font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--cobre-cl);font-weight:500}
+
+  .roast{margin-top:8px}
+  .roast-nodes{display:flex;justify-content:space-between;gap:4px;margin-bottom:6px}
+  .node{
+    flex:1;text-align:center;font-size:.66rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:rgba(244,233,212,.5);padding:2px 2px 3px;position:relative;transition:color .3s ease;white-space:nowrap;
+  }
+  .node .lvl{display:block;font-size:.5rem;letter-spacing:.2em;color:rgba(217,154,94,.55);font-weight:500;margin-top:1px}
+  .node[aria-current="true"]{color:var(--crema)}
+  .node[aria-current="true"] .lvl{color:var(--cobre-cl)}
+  .roast-meter{position:relative}
+  .roast-track{
+    position:relative;height:9px;border-radius:6px;overflow:hidden;
+    background:linear-gradient(90deg,#8a9350 0%,#b5713c 52%,#2a1710 100%);
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.5);
+  }
+  .roast-fill{
+    position:absolute;inset:0;transform:scaleX(0);transform-origin:left center;
+    background:linear-gradient(90deg,rgba(20,10,4,0),rgba(20,10,4,.5) 82%,rgba(20,10,4,.7));
+    transition:transform .18s linear;
+  }
+  .roast-bean{
+    position:absolute;top:50%;left:0;width:13px;height:19px;z-index:2;
+    transform:translate(-50%,-50%) rotate(12deg);
+    transition:transform .18s linear;
+    filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));
+  }
+  .roast-bean svg{width:100%;height:100%;display:block}
+
+  /* ---------------------------------------------------- HERO */
+  .hero{
+    position:relative;overflow:hidden;
+    background:radial-gradient(120% 90% at 50% -10%,#e3c78e 0%,var(--kraft) 46%,#b98a4d 100%);
+    color:var(--cafe);
+    padding:40px 0 52px;
+  }
+  .hero::before{content:"";position:absolute;inset:0;background-image:var(--fibra);background-size:180px;opacity:.22;mix-blend-mode:multiply;pointer-events:none}
+  .hero-top{display:flex;align-items:center;gap:10px;font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;font-weight:600;color:var(--cafe-cl)}
+  .hero-top .ln{flex:1;height:1.5px;background:rgba(60,36,21,.4)}
+  .colibri{width:70px;height:auto;color:var(--tinta);margin:20px 0 6px -2px;overflow:visible}
+  .colibri path{fill:currentColor}
+  .colibri .ojo{fill:var(--kraft-cl)}
+  .hero-eyebrow{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;font-size:1.15rem;color:var(--cafe-cl)}
+  .hero-title{
+    font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:clamp(3.3rem,17vw,5.2rem);line-height:.9;letter-spacing:-.01em;
+    color:var(--cafe);margin:2px 0 0;
+  }
+  .hero-title .grano{color:var(--tinta);position:relative;display:inline-block}
+  .hero-stamp{
+    display:inline-block;margin-top:16px;font-family:'Special Elite',monospace;font-size:.72rem;
+    letter-spacing:.08em;color:var(--tinta);border:2px solid var(--tinta);border-radius:4px;
+    padding:.42em .7em;transform:rotate(-2.4deg);text-transform:uppercase;
+    background:rgba(150,58,26,.05);
+  }
+  .hero-sub{margin:20px 2px 0;font-size:1rem;max-width:32ch;color:var(--cafe);line-height:1.55}
+  .hero-sub b{color:var(--tinta);font-weight:600}
+  .hero-cue{display:flex;align-items:center;gap:10px;margin-top:26px;font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--cafe-cl);font-weight:600}
+  .hero-cue .bar{width:44px;height:8px;border-radius:5px;background:linear-gradient(90deg,var(--verde),var(--tostado));position:relative;overflow:hidden}
+  .hero-cue .bar::after{content:"";position:absolute;inset:0;background:rgba(244,233,212,.6);width:40%;animation:fillcue 2.4s ease-in-out infinite}
+  @keyframes fillcue{0%{transform:translateX(-110%)}60%,100%{transform:translateX(260%)}}
+  .hero-branch{position:absolute;right:-30px;bottom:-10px;width:150px;color:var(--tinta);opacity:.2;transform:rotate(8deg);pointer-events:none}
+  .branch path,.branch ellipse{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+  .branch ellipse{fill:currentColor;stroke:none}
+
+  /* ---------------------------------------------------- SECCIONES (etapas del tueste) */
+  .sec{position:relative;overflow:hidden;padding:34px 0 40px;color:var(--crema);scroll-margin-top:calc(var(--topbar) + 6px)}
+  .sec::before{content:"";position:absolute;inset:0;background-image:var(--fibra);background-size:180px;opacity:.16;mix-blend-mode:soft-light;pointer-events:none}
+  /* color de fondo por sección = progresión del tueste; se aplica inline desde JS.
+     Fallbacks de las 3 etapas base por si el JS no corre: */
+  .sec--cafe{background:#7a5233}
+  .sec--brunch{background:#5a3720}
+  .sec--postres{background:#2c1a0e}
+
+  .sec-num{
+    position:absolute;top:-20px;right:-8px;z-index:0;font-family:'Oswald',sans-serif;font-weight:700;
+    font-size:clamp(140px,44vw,220px);line-height:1;color:transparent;
+    -webkit-text-stroke:2px rgba(244,233,212,.12);pointer-events:none;user-select:none;
+  }
+  .sec-head{position:relative;z-index:2}
+  .sec-kicker{display:inline-flex;align-items:center;gap:8px;font-size:.64rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--cobre-cl)}
+  .sec-kicker .roastdot{width:12px;height:12px;border-radius:50%;box-shadow:0 0 0 2px rgba(244,233,212,.25)}
+  .sec--cafe .roastdot{background:#c98a4a}
+  .sec--brunch .roastdot{background:#8a5228}
+  .sec--postres .roastdot{background:#2f1c0f}
+  .sec-title{overflow:hidden;padding-top:4px}
+  .sec-title .ttl{
+    display:inline-block;font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:clamp(3rem,15vw,4.6rem);line-height:.92;letter-spacing:-.005em;color:var(--crema);
+  }
+  /* etiqueta de saco cosida con el lote/tueste */
+  .lote{
+    display:inline-block;margin-top:12px;font-family:'Special Elite',monospace;font-size:.66rem;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--crema);
+    background:rgba(0,0,0,.22);border:1.5px dashed rgba(244,233,212,.45);border-radius:4px;
+    padding:.45em .7em;transform:rotate(-1.4deg);
+  }
+  .sec-intro{margin-top:14px;font-size:.95rem;max-width:33ch;color:rgba(244,233,212,.82);position:relative;z-index:2}
+
+  /* ---------------------------------------------------- ETIQUETA DE SACO (plato con foto) */
+  .tags{position:relative;z-index:2}
+  .tag{
+    display:block;width:100%;margin-top:20px;-webkit-tap-highlight-color:transparent;
+    perspective:900px;
+  }
+  .tags > .tag:first-child{margin-top:18px}
+  .tag-hang{
+    position:relative;display:block;transform-origin:50% 0;
+    animation:sway 7s ease-in-out infinite;
+  }
+  .tag:nth-of-type(even) .tag-hang{animation-duration:8.4s;animation-direction:reverse}
+  @keyframes sway{0%,100%{transform:rotate(-1.1deg)}50%{transform:rotate(1.1deg)}}
+
+  /* cordel + ojal metálico */
+  .tag-cord{position:absolute;left:50%;top:-26px;width:2px;height:28px;background:linear-gradient(180deg,rgba(60,36,21,0),#6b4a2a);transform:translateX(-50%) rotate(0deg);border-radius:2px}
+  .grommet{
+    position:absolute;left:50%;top:-4px;transform:translateX(-50%);
+    width:22px;height:22px;border-radius:50%;z-index:4;
+    background:radial-gradient(circle at 40% 35%,#e7cfa0,#8a6a3e 60%,#5a4020);
+    box-shadow:0 2px 4px rgba(0,0,0,.4),inset 0 0 0 2px rgba(0,0,0,.25);
+    display:grid;place-items:center;
+  }
+  .grommet::after{content:"";width:9px;height:9px;border-radius:50%;background:#2c1a0e;box-shadow:inset 0 1px 2px rgba(0,0,0,.7)}
+
+  .tag-paper{
+    position:relative;background:linear-gradient(160deg,var(--kraft-cl),var(--kraft) 55%,#bc9153);
+    color:var(--cafe);border-radius:12px 12px 12px 12px;
+    padding:11px 12px 12px;margin-top:8px;
+    box-shadow:0 14px 30px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.28);
+    overflow:hidden;
+  }
+  .tag-paper::before{content:"";position:absolute;inset:0;background-image:var(--fibra);background-size:150px;opacity:.2;mix-blend-mode:multiply;pointer-events:none}
+  /* puntada cosida */
+  .tag-paper::after{content:"";position:absolute;inset:7px;border:2px dashed rgba(60,36,21,.42);border-radius:8px;pointer-events:none}
+  /* muesca de esquina (recorte de etiqueta) */
+  .tag-notch{position:absolute;top:0;left:0;width:26px;height:26px;background:inherit;clip-path:polygon(0 0,100% 0,0 100%);opacity:0}
+
+  .tag-photo{
+    display:block;position:relative;z-index:1;border-radius:7px;overflow:hidden;aspect-ratio:16/9;background:#241209;
+    box-shadow:0 5px 14px rgba(0,0,0,.35);
+    outline:2px dashed rgba(60,36,21,.5);outline-offset:-6px;
+  }
+  .tag-photo img{width:100%;height:100%;object-fit:cover}
+  .tag-photo .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,16,7,.5),rgba(30,16,7,0) 42%);opacity:0}
+  .tag-photo.hide-top .veil{opacity:1}
+
+  .tag-body{position:relative;z-index:1;margin-top:7px}
+  .tag-name{
+    display:block;font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:clamp(1.35rem,6vw,1.8rem);line-height:1;letter-spacing:-.01em;color:var(--cafe);
+  }
+  .tag-name em{font-style:normal;color:var(--tinta)}
+  /* desc recortada a 2 líneas en la tarjeta (el texto completo va en el detalle) → menú QR más compacto */
+  .tag-desc{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin-top:4px;font-size:.8rem;line-height:1.35;letter-spacing:.03em;color:var(--cafe-cl);max-width:32ch}
+  .tag-cta{display:inline-flex;align-items:center;gap:7px;margin-top:6px;font-family:'Special Elite',monospace;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--tinta)}
+  .tag-cta svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.8;fill:none}
+
+  /* estampa de precio (sello de tueste) */
+  .stamp{
+    position:relative;display:inline-grid;place-items:center;font-family:'Special Elite',monospace;
+    color:var(--tinta);border:2.4px solid var(--tinta);border-radius:50%;
+    width:58px;height:58px;text-align:center;line-height:1;transform:rotate(-9deg);
+    background:rgba(150,58,26,.06);
+  }
+  .stamp b{font-size:.94rem;font-weight:400;letter-spacing:-.01em}
+  .stamp small{font-size:.44rem;letter-spacing:.18em;text-transform:uppercase;margin-top:2px;opacity:.85}
+  .tag-price{position:absolute;top:8px;right:8px;z-index:3}
+
+  /* distintivo destacado */
+  .flag{
+    position:absolute;top:-12px;left:12px;z-index:4;font-family:'Special Elite',monospace;
+    font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--crema);
+    background:var(--tinta);padding:.3em .7em;border-radius:3px;transform:rotate(-4deg);
+    box-shadow:0 3px 8px rgba(0,0,0,.35);
+  }
+
+  /* ---------------------------------------------------- LEDGER (platos sin foto) */
+  .ledger{position:relative;z-index:2;margin-top:24px;background:rgba(0,0,0,.16);border-radius:10px;padding:12px 16px 5px;border:1.5px dashed rgba(244,233,212,.28)}
+  .ledger-title{display:flex;align-items:center;gap:8px;font-family:'Special Elite',monospace;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cobre-cl);margin-bottom:6px}
+  .row{
+    display:flex;align-items:baseline;gap:10px;width:100%;padding:8px 0 7px;
+    border-bottom:1.5px dotted rgba(244,233,212,.28);-webkit-tap-highlight-color:transparent;
+  }
+  .row:last-child{border-bottom:0}
+  .row-name{font-family:'Oswald',sans-serif;font-weight:600;text-transform:uppercase;font-size:1.08rem;letter-spacing:.01em;color:var(--crema);line-height:1.1}
+  .row-name em{font-style:normal;color:var(--cobre-cl);display:block;font-size:.62rem;letter-spacing:.14em;font-weight:400;margin-top:2px}
+  .row-dots{flex:1;border-bottom:2px dotted rgba(244,233,212,.3);transform:translateY(-5px);min-width:14px}
+  .row-price{font-family:'Special Elite',monospace;font-size:.92rem;color:var(--cobre-cl);white-space:nowrap;flex:none}
+  .row:hover .row-name,.row:focus-visible .row-name{color:var(--cobre-cl)}
+
+  /* ---------------------------------------------------- FOOTER */
+  .footer{position:relative;overflow:hidden;background:#1a0f07;color:var(--crema);padding:52px 0 46px;text-align:center}
+  .footer::before{content:"";position:absolute;inset:0;background-image:var(--fibra);background-size:180px;opacity:.15;pointer-events:none}
+  .footer .wrap{position:relative;z-index:1}
+  .footer .colibri{width:56px;margin:0 auto 12px;color:var(--cobre-cl)}
+  .footer-name{font-family:'Playfair Display',serif;font-weight:800;font-size:2rem;color:var(--crema)}
+  .footer-line{font-size:.64rem;letter-spacing:.26em;text-transform:uppercase;margin-top:8px;color:var(--cobre-cl)}
+  .footer-note{margin-top:18px;font-size:.85rem;color:rgba(244,233,212,.72);max-width:30ch;margin-inline:auto;line-height:1.6}
+  .footer-stamp{display:inline-block;margin-top:22px;font-family:'Special Elite',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--cobre-cl);border:1.5px solid rgba(217,154,94,.5);border-radius:4px;padding:.4em .7em;transform:rotate(-1.5deg)}
+
+  /* ---------------------------------------------------- DETALLE (la etiqueta se despega) */
+  .sheet{position:fixed;inset:0;z-index:100;display:none}
+  .sheet[data-open]{display:block}
+  .sheet-scrim{position:absolute;inset:0;background:rgba(14,7,3,.72);backdrop-filter:blur(3px);opacity:0;transition:opacity .35s ease}
+  .sheet[data-open] .sheet-scrim{opacity:1}
+  .sheet-stage{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:40px 18px 40px;display:flex;align-items:flex-start;justify-content:center;-webkit-overflow-scrolling:touch}
+  .sheet-label{
+    position:relative;width:100%;max-width:380px;margin:auto;
+    background:linear-gradient(160deg,var(--kraft-cl),var(--kraft) 58%,#bc9153);
+    color:var(--cafe);border-radius:14px;padding:22px 20px 24px;
+    box-shadow:0 30px 60px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.3);
+    transform-origin:top center;overflow:hidden;
+  }
+  .sheet-label::before{content:"";position:absolute;inset:0;background-image:var(--fibra);background-size:150px;opacity:.2;mix-blend-mode:multiply;pointer-events:none}
+  .sheet-label::after{content:"";position:absolute;inset:9px;border:2px dashed rgba(60,36,21,.4);border-radius:9px;pointer-events:none}
+  /* brillo de "despegue" que recorre la etiqueta */
+  .peelshine{position:absolute;inset:0;z-index:5;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,0) 38%,rgba(255,255,255,.5) 50%,rgba(255,255,255,0) 62%);opacity:0}
+  .sheet-grommet{position:absolute;left:50%;top:-9px;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;z-index:6;background:radial-gradient(circle at 40% 35%,#e7cfa0,#8a6a3e 60%,#5a4020);box-shadow:0 2px 5px rgba(0,0,0,.4),inset 0 0 0 2px rgba(0,0,0,.25);display:grid;place-items:center}
+  .sheet-grommet::after{content:"";width:11px;height:11px;border-radius:50%;background:#2c1a0e;box-shadow:inset 0 1px 2px rgba(0,0,0,.7)}
+
+  .sheet-close{
+    position:absolute;top:12px;right:12px;z-index:8;width:40px;height:40px;border-radius:50%;
+    border:2px solid var(--cafe);color:var(--cafe);display:grid;place-items:center;
+    background:rgba(244,233,212,.4);transition:transform .25s ease,background .25s ease;
+  }
+  .sheet-close:hover{background:rgba(150,58,26,.18);transform:rotate(90deg)}
+  .sheet-close svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
+
+  .sheet-kicker{position:relative;z-index:2;font-family:'Special Elite',monospace;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tinta);margin-top:2px}
+  .sheet-name{position:relative;z-index:2;font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;font-size:clamp(1.9rem,8.5vw,2.5rem);line-height:.98;letter-spacing:-.01em;color:var(--cafe);margin-top:6px;max-width:14ch}
+  .sheet-name em{font-style:normal;color:var(--tinta)}
+  .sheet-photo{
+    position:relative;z-index:2;margin-top:18px;border-radius:9px;overflow:hidden;
+    aspect-ratio:4/3;max-height:42vh;background:#241209;
+    outline:2px dashed rgba(60,36,21,.5);outline-offset:-7px;
+    box-shadow:0 10px 24px rgba(0,0,0,.4);
+  }
+  .sheet-photo img{width:100%;height:100%;object-fit:cover}
+  .sheet-photo .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,16,7,.52),rgba(30,16,7,0) 44%)}
+  .sheet-photo.no-photo{display:grid;place-items:center;background:rgba(36,18,9,.9);aspect-ratio:5/3}
+  .sheet-photo.no-photo .art{width:46%;color:var(--kraft-cl);opacity:.85}
+  .art path,.art ellipse{fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .sheet-desc{position:relative;z-index:2;margin-top:18px;font-size:1rem;line-height:1.6;color:var(--cafe);max-width:38ch}
+  .sheet-desc::first-letter{font-family:'Playfair Display',serif;font-weight:800;font-size:1.5em;color:var(--tinta)}
+  .sheet-foot{position:relative;z-index:2;display:flex;align-items:center;gap:16px;margin-top:22px}
+  .sheet-foot .stamp{width:64px;height:64px}
+  .sheet-foot .stamp b{font-size:1.02rem}
+  .sheet-foot-note{font-family:'Special Elite',monospace;font-size:.78rem;line-height:1.4;color:var(--cafe-cl);max-width:18ch}
+
+  /* ---------------------------------------------------- REDUCED MOTION */
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *{scroll-behavior:auto !important;animation:none !important}
+    .roast-fill,.roast-bean{transition:none}
+    .sheet-scrim{transition:opacity .2s ease}
+    .tag-hang{transform:rotate(-0.6deg)}
+  }
+</style>
+</head>
+<body>
+
+<div class="weave" aria-hidden="true"></div>
+<canvas id="beans" aria-hidden="true"></canvas>
+
+<!-- ============================ TOPBAR / MEDIDOR DE TUESTE ============================ -->
+<div class="topbar">
+  <div class="bar-in">
+    <div class="brand">
+      <b>Doboré</b>
+      <span>El Tostador · Boquete</span>
+    </div>
+    <nav class="roast" aria-label="Categorías por nivel de tueste">
+      <div class="roast-nodes" id="roast-nodes"><!-- pestañas por categoría: se generan desde menu.json --></div>
+      <div class="roast-meter">
+        <div class="roast-track" role="presentation">
+          <div class="roast-fill"></div>
+        </div>
+        <div class="roast-bean" id="roastBean">
+          <svg viewBox="0 0 26 38" aria-hidden="true"><ellipse cx="13" cy="19" rx="11" ry="17" fill="#b5713c"/><path d="M13 4 C 9 12, 9 26, 13 34" stroke="#2a1710" stroke-width="2.4" fill="none"/></svg>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<!-- ============================ HERO ============================ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top"><span>De la finca a tu taza</span><span class="ln"></span><span>Est. Boquete</span></div>
+
+    <svg class="colibri" viewBox="0 0 110 90" aria-hidden="true">
+      <path class="ala" d="M62 37 C 63 26, 71 14, 84 8 C 90 5.5, 97 4.5, 103 5.5 C 97 13, 90 21, 83 28 C 77 33.5, 70 37, 64 38.5 Z"/>
+      <path d="M6 44 C 18 42.5, 30 43.5, 40 44.5 C 43 37, 50 32, 57 33 C 62 34, 66 38, 67 43 C 73 45, 77.5 50, 78.5 55 C 85 61, 89.5 71, 88.5 83 C 84.5 78, 81 73, 78 68 C 77.5 74.5, 74.5 79.5, 69.5 83 C 69.5 76.5, 68.5 70, 66 64.5 C 59.5 66, 51 63.5, 45.5 57 C 42.5 53.5, 41 49.5, 40.5 47.5 C 30 46.5, 17 45.5, 6 45.5 Z"/>
+      <circle class="ojo" cx="51.5" cy="40" r="2"/>
+    </svg>
+
+    <p class="hero-eyebrow">Sigue el grano</p>
+    <h1 class="hero-title">La<br><span class="grano">Carta</span></h1>
+    <span class="hero-stamp">Lote Doboré · Tostado en casa</span>
+    <p class="hero-sub">Cada plato es una etapa del tueste, del grano verde al final oscuro. <b>Toca cualquiera</b> y la etiqueta se despega del saco.</p>
+    <div class="hero-cue"><span class="bar"></span> Desliza y deja que tueste</div>
+  </div>
+
+  <svg class="hero-branch branch" viewBox="0 0 120 150" aria-hidden="true">
+    <path d="M60 150 C 58 110, 56 70, 54 26"/>
+    <path d="M54 60 C 38 54, 26 40, 24 24"/><path d="M54 92 C 70 86, 82 72, 84 56"/>
+    <path d="M54 120 C 40 114, 30 100, 28 84"/>
+    <ellipse cx="30" cy="34" rx="6" ry="9" transform="rotate(-32 30 34)"/>
+    <ellipse cx="80" cy="66" rx="6" ry="9" transform="rotate(30 80 66)"/>
+    <ellipse cx="34" cy="94" rx="6" ry="9" transform="rotate(-30 34 94)"/>
+  </svg>
+</header>
+
+<!-- ============================ CARTA (render modular desde menu.json) ============================ -->
+<main id="menu-root" aria-live="polite">
+  <!-- Las secciones (una por categoría) y sus platos se generan en JS desde ../menu.json.
+       Si Notion agrega una categoría o un plato, aparece aquí sin tocar el HTML. -->
+</main>
+
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="footer">
+  <div class="wrap">
+    <svg class="colibri" viewBox="0 0 110 90" aria-hidden="true">
+      <path class="ala" d="M62 37 C 63 26, 71 14, 84 8 C 90 5.5, 97 4.5, 103 5.5 C 97 13, 90 21, 83 28 C 77 33.5, 70 37, 64 38.5 Z"/>
+      <path d="M6 44 C 18 42.5, 30 43.5, 40 44.5 C 43 37, 50 32, 57 33 C 62 34, 66 38, 67 43 C 73 45, 77.5 50, 78.5 55 C 85 61, 89.5 71, 88.5 83 C 84.5 78, 81 73, 78 68 C 77.5 74.5, 74.5 79.5, 69.5 83 C 69.5 76.5, 68.5 70, 66 64.5 C 59.5 66, 51 63.5, 45.5 57 C 42.5 53.5, 41 49.5, 40.5 47.5 C 30 46.5, 17 45.5, 6 45.5 Z"/>
+      <circle class="ojo" cx="51.5" cy="40" r="2"/>
+    </svg>
+    <p class="footer-name">Doboré</p>
+    <p class="footer-line">Café · Brunch · Postres</p>
+    <p class="footer-note">Pide en barra o levanta la mano — vamos a ti. Gracias por dejar que el grano llegue hasta acá.</p>
+    <span class="footer-stamp">Tostado y servido en Boquete, Panamá</span>
+  </div>
+</footer>
+
+<!-- ============================ DETALLE ============================ -->
+<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-name">
+  <div class="sheet-scrim" data-close></div>
+  <div class="sheet-stage" data-close>
+    <div class="sheet-label">
+      <span class="sheet-grommet" aria-hidden="true"></span>
+      <span class="peelshine" aria-hidden="true"></span>
+      <button class="sheet-close" aria-label="Cerrar detalle" data-close-btn>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5 L19 19 M19 5 L5 19"/></svg>
+      </button>
+      <p class="sheet-kicker"></p>
+      <h2 class="sheet-name" id="sheet-name"></h2>
+      <div class="sheet-photo"></div>
+      <p class="sheet-desc"></p>
+      <div class="sheet-foot">
+        <span class="stamp sheet-price"><b></b><small>Sello</small></span>
+        <span class="sheet-foot-note">Pídelo en barra o levanta la mano.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasGsap = !reduced && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+
+  /* =============================================================== DATOS (desde ../menu.json) */
+  if (hasGsap) gsap.registerPlugin(ScrollTrigger);
+
+  var CATS   = {};   // id -> {label, roast}     (para el detalle)
+  var DISHES = {};   // uid -> {cat,name,price,foto,desc,alt}
+  var ORDER  = [];   // ids de categoría, en orden
+
+  /* --- helpers de render --- */
+  function esc(s){
+    return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function pad2(n){ return n<10 ? '0'+n : ''+n; }
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  function mix(c0,c1,t){
+    return 'rgb('+Math.round(lerp(c0[0],c1[0],t))+','+Math.round(lerp(c0[1],c1[1],t))+','+Math.round(lerp(c0[2],c1[2],t))+')';
+  }
+  function roastLabel(i,n){ if(i<=0) return 'Tueste claro'; if(i>=n-1) return 'Tueste oscuro'; return 'Tueste medio'; }
+  function money(v){ v=(v==null?'':(''+v)).trim(); return v ? (v.charAt(0)==='$'?v:'$'+v) : ''; }
+  /* nombre a dos tonos: 1ª palabra normal, resto en <em> (color tinta) — como en la proto */
+  function twoTone(name){
+    name=(''+name).trim();
+    var i=name.indexOf(' ');
+    if(i<0) return '<em>'+esc(name)+'</em>';
+    return esc(name.slice(0,i))+' <em>'+esc(name.slice(i+1))+'</em>';
+  }
+  var CTA_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7 L20 7 L18 20 L6 20 Z"/><path d="M4 7 C 9 3, 15 3, 20 7"/></svg>';
+  /* fondo de sección: progresión del tueste (claro -> oscuro) segun el índice */
+  var BG0=[122,82,51], BG1=[44,26,14];      // #7a5233 -> #2c1a0e
+  var DOT0=[201,138,74], DOT1=[47,28,15];   // #c98a4a -> #2f1c0f
+
+  /* =============================================================== CARGA + RENDER MODULAR */
+  fetch('../menu.json', {cache:'no-cache'})
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(build)
+    .catch(showError);
+
+  function build(data){
+    var cats = (data && data.categories) || [];
+    var n = cats.length;
+    var nodesHtml = '', secHtml = '';
+
+    cats.forEach(function(cat, i){
+      var id    = cat.id || ('cat'+i);
+      var name  = (cat.name && cat.name.es) || id;
+      var num   = pad2(i+1);
+      var roast = roastLabel(i, n);
+      var t     = n>1 ? i/(n-1) : 0;
+      var bg    = mix(BG0,BG1,t), dot = mix(DOT0,DOT1,t);
+      var intro = (cat.footnote && cat.footnote.es) || '';
+
+      ORDER.push(id);
+      CATS[id] = {label:'Etapa '+num+' · '+name, roast:roast};
+
+      nodesHtml += '<a class="node" href="#'+esc(id)+'" data-sec="'+esc(id)+'">'+esc(name)+' <em class="lvl">'+esc(roast)+'</em></a>';
+
+      var tags = '', rows = '';
+      (cat.items || []).forEach(function(it){
+        var uid  = id+'::'+(it.key||Math.random().toString(36).slice(2));
+        var nm   = (it.name && it.name.es) || '';
+        var ds   = (it.desc && it.desc.es) || '';
+        var pr   = money(it.price && it.price.es);
+        var foto = it.image ? '../'+it.image : null;   // la proto vive en /proto-d/
+        DISHES[uid] = {cat:id, name:nm, price:pr, foto:foto, desc:ds, alt:nm};
+
+        if (foto){
+          tags += '<button class="tag" data-dish="'+esc(uid)+'">'
+            + '<span class="tag-hang"><span class="tag-cord"></span><span class="grommet"></span>'
+            + '<span class="tag-paper">'
+            + '<span class="tag-photo"><img src="'+esc(foto)+'" alt="'+esc(nm)+'" loading="lazy" decoding="async"><span class="veil"></span></span>'
+            + '<span class="tag-price"><span class="stamp"><b>'+esc(pr)+'</b><small>Sello</small></span></span>'
+            + '<span class="tag-body"><span class="tag-name">'+twoTone(nm)+'</span>'
+            + (ds ? '<span class="tag-desc">'+esc(ds)+'</span>' : '')
+            + '<span class="tag-cta">'+CTA_SVG+' Despega la etiqueta</span>'
+            + '</span></span></span></button>';
+        } else {
+          rows += '<button class="row" data-dish="'+esc(uid)+'"><span class="row-name">'+esc(nm)+'</span><span class="row-dots"></span><span class="row-price">'+esc(pr)+'</span></button>';
+        }
+      });
+
+      var body = '';
+      if (intro) body += '<p class="sec-intro">'+esc(intro)+'</p>';
+      if (tags)  body += '<div class="tags">'+tags+'</div>';
+      if (rows)  body += '<div class="ledger"><p class="ledger-title"><span>Más de la carta</span></p>'+rows+'</div>';
+
+      secHtml += '<section class="sec" id="'+esc(id)+'" aria-labelledby="t-'+esc(id)+'" style="background:'+bg+'">'
+        + '<span class="sec-num" aria-hidden="true">'+num+'</span>'
+        + '<div class="wrap"><header class="sec-head">'
+        + '<p class="sec-kicker"><span class="roastdot" style="background:'+dot+'"></span> Etapa '+num+' · '+esc(roast)+'</p>'
+        + '<h2 class="sec-title" id="t-'+esc(id)+'"><span class="ttl">'+esc(name)+'</span></h2>'
+        + '<span class="lote">Lote '+num+' · Boquete</span>'
+        + '</header>'+body+'</div></section>';
+    });
+
+    var nodesMount = document.getElementById('roast-nodes');
+    if (nodesMount) nodesMount.innerHTML = nodesHtml;
+    var root = document.getElementById('menu-root');
+    if (root) root.innerHTML = secHtml;
+
+    initInteractions();
+  }
+
+  function showError(err){
+    if (window.console) console.error('No se pudo cargar ../menu.json:', err);
+    var root = document.getElementById('menu-root');
+    if (root){
+      root.innerHTML = '<section class="sec" style="background:#2c1a0e">'
+        + '<div class="wrap"><header class="sec-head">'
+        + '<p class="sec-kicker"><span class="roastdot" style="background:#b5713c"></span> La carta no cargó</p>'
+        + '<h2 class="sec-title"><span class="ttl">Un momento</span></h2></header>'
+        + '<p class="sec-intro">No pudimos traer el menú. Recarga la página o pide en barra — con gusto te contamos qué hay hoy.</p>'
+        + '</div></section>';
+    }
+    wireDetail(); // deja Esc/cerrar operativos aunque no haya platos
+  }
+
+  function initInteractions(){
+    roastMeter();
+    if (hasGsap) gsapReveals();
+    wireDetail();
+  }
+
+  /* =============================================================== GRANOS (física sutil) */
+  (function beansSystem(){
+    var canvas = document.getElementById('beans');
+    if (!canvas || !canvas.getContext) return;
+    var ctx = canvas.getContext('2d');
+    var DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var W = 0, H = 0, beans = [];
+    var TONES = ['#7a8a44','#a06a34','#b5713c','#7d4a24','#5a3418','#2f1c0f'];
+
+    function size(){
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = Math.round(W*DPR); canvas.height = Math.round(H*DPR);
+      canvas.style.width = W+'px'; canvas.style.height = H+'px';
+      ctx.setTransform(DPR,0,0,DPR,0,0);
+    }
+    function mkBean(atTop){
+      var r = 2.6 + Math.random()*3.4;
+      return {
+        x: Math.random()*W,
+        y: atTop ? -20 - Math.random()*H*0.4 : Math.random()*H,
+        r: r,
+        vx: (Math.random()-0.5)*0.3,
+        vy: 0.25 + Math.random()*0.5,
+        rot: Math.random()*Math.PI*2,
+        vr: (Math.random()-0.5)*0.02,
+        dir: Math.random()<0.5?-1:1,
+        tone: TONES[(Math.random()*TONES.length)|0],
+        alpha: 0.32 + Math.random()*0.3
+      };
+    }
+    function seed(){
+      var area = W*H;
+      var n = Math.max(14, Math.min(30, Math.round(area/26000)));
+      beans = [];
+      for (var i=0;i<n;i++) beans.push(mkBean(false));
+    }
+    function draw(b){
+      ctx.save();
+      ctx.globalAlpha = b.alpha;
+      ctx.translate(b.x, b.y);
+      ctx.rotate(b.rot);
+      ctx.fillStyle = b.tone;
+      ctx.beginPath();
+      ctx.ellipse(0,0,b.r,b.r*1.5,0,0,Math.PI*2);
+      ctx.fill();
+      /* hendidura del grano */
+      ctx.strokeStyle = 'rgba(20,10,4,0.55)';
+      ctx.lineWidth = Math.max(0.6, b.r*0.24);
+      ctx.beginPath();
+      ctx.moveTo(0,-b.r*1.15);
+      ctx.quadraticCurveTo(b.r*0.5,0,0,b.r*1.15);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    size(); seed();
+    window.addEventListener('resize', function(){ size(); seed(); });
+
+    if (reduced){
+      /* estático digno: se dibujan una vez, sin animar */
+      beans.forEach(draw);
+      return;
+    }
+
+    /* impulso de scroll -> los granos ruedan */
+    var lastY = window.scrollY, scrollVel = 0;
+    window.addEventListener('scroll', function(){
+      var y = window.scrollY;
+      var d = y - lastY; lastY = y;
+      scrollVel += d;
+      if (scrollVel > 60) scrollVel = 60;
+      if (scrollVel < -60) scrollVel = -60;
+    }, {passive:true});
+
+    function frame(){
+      ctx.clearRect(0,0,W,H);
+      scrollVel *= 0.9;
+      var sv = scrollVel;
+      for (var i=0;i<beans.length;i++){
+        var b = beans[i];
+        /* gravedad suave + empuje del scroll */
+        b.vy += 0.012 + Math.abs(sv)*0.006;
+        b.vx += sv*0.012*b.dir;
+        b.vr += sv*0.0016*b.dir;
+        b.x += b.vx; b.y += b.vy; b.rot += b.vr;
+        b.vx *= 0.97; b.vy *= 0.992; b.vr *= 0.95;
+        if (b.vy > 3.2) b.vy = 3.2;
+        /* reciclaje */
+        if (b.y > H + 24){ Object.assign(b, mkBean(true)); b.x = Math.random()*W; }
+        if (b.x < -30) b.x = W + 28;
+        else if (b.x > W + 30) b.x = -28;
+        draw(b);
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+
+  /* =============================================================== MEDIDOR DE TUESTE + NAV ACTIVA */
+  function roastMeter(){
+    var fill = document.querySelector('.roast-fill');
+    var bean = document.getElementById('roastBean');
+    var track = document.querySelector('.roast-track');
+    var nodes = Array.prototype.slice.call(document.querySelectorAll('.node'));
+    var secs = ORDER.map(function(id){ return document.getElementById(id); });
+
+    function lerp(a,b,t){ return a + (b-a)*t; }
+    function hex(c){ return [parseInt(c.slice(1,3),16),parseInt(c.slice(3,5),16),parseInt(c.slice(5,7),16)]; }
+    var C0 = hex('#8a9350'), C1 = hex('#b5713c'), C2 = hex('#2a1710');
+    function roastColor(p){
+      var a,b2,t;
+      if (p < 0.5){ a=C0; b2=C1; t=p/0.5; } else { a=C1; b2=C2; t=(p-0.5)/0.5; }
+      var r=Math.round(lerp(a[0],b2[0],t)), g=Math.round(lerp(a[1],b2[1],t)), bl=Math.round(lerp(a[2],b2[2],t));
+      return 'rgb('+r+','+g+','+bl+')';
+    }
+
+    var ticking = false;
+    function update(){
+      ticking = false;
+      var doc = document.documentElement;
+      var max = doc.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      var trackW = track ? track.clientWidth : 0;
+      fill.style.transform = 'scaleX('+p+')';
+      bean.style.transform = 'translate(-50%,-50%) translateX('+(p*trackW)+'px) rotate(12deg)';
+      var ell = bean.querySelector('ellipse');
+      if (ell) ell.setAttribute('fill', roastColor(p));
+
+      /* categoría activa segun el centro del viewport */
+      var mid = window.scrollY + window.innerHeight*0.4;
+      var active = 0;
+      for (var i=0;i<secs.length;i++){
+        if (secs[i] && secs[i].offsetTop <= mid) active = i;
+      }
+      nodes.forEach(function(n,idx){ n.setAttribute('aria-current', idx===active ? 'true':'false'); });
+    }
+    function onScroll(){ if (!ticking){ ticking = true; requestAnimationFrame(update); } }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', onScroll);
+    update();
+  }
+
+  /* =============================================================== HERO: intro (independiente de los datos) */
+  if (hasGsap){
+    /* intro del hero: la estampa se imprime */
+    var intro = gsap.timeline({defaults:{ease:'power3.out'}});
+    intro.from('.hero-top', {y:-16, autoAlpha:0, duration:.5})
+      .from('.hero .colibri', {x:40, y:-24, rotation:-12, scale:.5, autoAlpha:0, transformOrigin:'40% 60%', duration:.8, ease:'back.out(1.6)'}, '-=.15')
+      .from('.hero-eyebrow', {y:18, autoAlpha:0, duration:.45}, '-=.4')
+      .from('.hero-title', {y:36, autoAlpha:0, duration:.7, ease:'power4.out'}, '-=.3')
+      .from('.hero-stamp', {scale:2.2, rotation:14, autoAlpha:0, duration:.5, ease:'back.out(2.2)'}, '-=.25')
+      .from('.hero-sub', {y:20, autoAlpha:0, duration:.5}, '-=.3')
+      .from('.hero-cue', {autoAlpha:0, duration:.5}, '-=.25');
+
+    /* colibrí que aletea mientras esperas */
+    gsap.to('.hero .colibri', {y:-5, duration:1.8, ease:'sine.inOut', yoyo:true, repeat:-1, delay:1.2});
+    gsap.to('.hero .colibri .ala', {rotation:8, transformOrigin:'15% 90%', duration:.16, ease:'sine.inOut', yoyo:true, repeat:-1, delay:1.2});
+  }
+
+  /* =============================================================== REVELADOS (GSAP) — tras el render */
+  function gsapReveals(){
+    document.querySelectorAll('.sec').forEach(function(sec){
+      gsap.to(sec.querySelector('.sec-num'), {yPercent:-26, ease:'none',
+        scrollTrigger:{trigger:sec, start:'top bottom', end:'bottom top', scrub:true}});
+      gsap.from(sec.querySelector('.ttl'), {x:-40, autoAlpha:0, duration:.9, ease:'power4.out',
+        scrollTrigger:{trigger:sec, start:'top 76%', once:true}});
+      gsap.from(sec.querySelectorAll('.sec-kicker, .lote, .sec-intro'), {y:18, autoAlpha:0, stagger:.1, duration:.6, ease:'power3.out',
+        scrollTrigger:{trigger:sec, start:'top 74%', once:true}});
+    });
+
+    /* etiquetas: caen del cordel con rebote */
+    gsap.utils.toArray('.tag').forEach(function(tag){
+      gsap.from(tag, {y:-24, rotationX:38, autoAlpha:0, transformOrigin:'50% 0%', duration:.8, ease:'back.out(1.5)',
+        scrollTrigger:{trigger:tag, start:'top 88%', once:true}});
+    });
+    /* sellos de precio: se estampan */
+    gsap.utils.toArray('.tag .stamp').forEach(function(s){
+      gsap.from(s, {scale:2.1, rotation:16, autoAlpha:0, duration:.5, ease:'back.out(2.3)',
+        scrollTrigger:{trigger:s, start:'top 90%', once:true}});
+    });
+    gsap.utils.toArray('.flag').forEach(function(f){
+      gsap.from(f, {scale:0, rotation:-16, autoAlpha:0, duration:.5, ease:'back.out(1.9)',
+        scrollTrigger:{trigger:f, start:'top 90%', once:true}});
+    });
+
+    /* ledger: filas entran en fila */
+    document.querySelectorAll('.ledger').forEach(function(led){
+      gsap.from(led.querySelectorAll('.ledger-title, .row'), {x:-24, autoAlpha:0, stagger:.08, duration:.6, ease:'power3.out',
+        scrollTrigger:{trigger:led, start:'top 86%', once:true}});
+    });
+
+    gsap.from('.footer .wrap > *', {y:22, autoAlpha:0, stagger:.09, duration:.6, ease:'power3.out',
+      scrollTrigger:{trigger:'.footer', start:'top 86%', once:true}});
+
+    /* press con squash */
+    document.querySelectorAll('.tag, .row').forEach(function(el){
+      el.addEventListener('pointerdown', function(){ gsap.to(el, {scale:.972, duration:.15, ease:'power2.out'}); });
+      ['pointerup','pointerleave','pointercancel'].forEach(function(ev){
+        el.addEventListener(ev, function(){ gsap.to(el, {scale:1, duration:.5, ease:'elastic.out(1,.5)'}); });
+      });
+    });
+
+    /* las fotos entran lazy: recalcular disparadores al cargar la imagen y al load global */
+    document.querySelectorAll('.tag-photo img').forEach(function(img){
+      if (!img.complete) img.addEventListener('load', function(){ ScrollTrigger.refresh(); }, {once:true});
+    });
+    window.addEventListener('load', function(){ ScrollTrigger.refresh(); });
+  }
+
+  /* =============================================================== DETALLE: LA ETIQUETA SE DESPEGA */
+  var sheet = document.querySelector('.sheet');
+  var label = sheet.querySelector('.sheet-label');
+  var shine = sheet.querySelector('.peelshine');
+  var closeBtn = sheet.querySelector('[data-close-btn]');
+  var sKicker = sheet.querySelector('.sheet-kicker');
+  var sName = sheet.querySelector('.sheet-name');
+  var sPhoto = sheet.querySelector('.sheet-photo');
+  var sDesc = sheet.querySelector('.sheet-desc');
+  var sPrice = sheet.querySelector('.sheet-price b');
+  var lastFocus = null, scrollLockY = 0, isOpen = false;
+
+  var ART = '<svg class="art" viewBox="0 0 120 120" aria-hidden="true">' +
+    '<path d="M30 54 L88 54 L82 98 C81 104 76 108 70 108 L48 108 C42 108 37 104 36 98 Z"/>' +
+    '<path d="M88 60 C 100 60, 106 68, 102 78 C 99 86, 91 88, 84 86"/>' +
+    '<ellipse cx="59" cy="54" rx="29" ry="7"/>' +
+    '<path d="M50 40 C 46 34, 50 30, 48 24"/>' +
+    '<path d="M64 40 C 60 34, 64 30, 62 24"/></svg>';
+
+  function lockScroll(){
+    scrollLockY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = (-scrollLockY)+'px';
+    document.body.style.left = '0'; document.body.style.right = '0';
+    document.body.style.width = '100%';
+  }
+  function unlockScroll(){
+    document.body.style.position = '';
+    document.body.style.top = ''; document.body.style.left = ''; document.body.style.right = '';
+    document.body.style.width = '';
+    window.scrollTo(0, scrollLockY);
+  }
+
+  function openDetail(id){
+    var d = DISHES[id]; if (!d || isOpen) return;
+    isOpen = true;
+    var c = CATS[d.cat] || {label:'', roast:''};
+    sKicker.textContent = c.label + (c.roast ? ' · ' + c.roast : '');
+    sName.textContent = d.name;
+    sDesc.textContent = d.desc;
+    sPrice.textContent = d.price;
+    if (d.foto){
+      sPhoto.classList.remove('no-photo');
+      sPhoto.innerHTML = '<img src="'+esc(d.foto)+'" alt="'+esc(d.alt||d.name)+'"><span class="veil"></span>';
+    } else {
+      sPhoto.classList.add('no-photo');
+      sPhoto.innerHTML = ART;
+    }
+
+    lastFocus = document.activeElement;
+    sheet.setAttribute('data-open','');
+    var stage = sheet.querySelector('.sheet-stage');
+    if (stage) stage.scrollTop = 0;
+    lockScroll();
+
+    if (hasGsap){
+      /* la etiqueta se despega: se levanta desde el cordel y baja el brillo */
+      gsap.killTweensOf([label, shine]);
+      gsap.set(label, {transformPerspective:1000, transformOrigin:'50% 0%'});
+      gsap.fromTo(label,
+        {rotationX:-88, y:-40, scale:.92, autoAlpha:0},
+        {rotationX:0, y:0, scale:1, autoAlpha:1, duration:.7, ease:'power4.out'});
+      gsap.fromTo(shine, {opacity:0, xPercent:-30}, {opacity:1, xPercent:130, duration:.75, ease:'power2.inOut'});
+      gsap.to(shine, {opacity:0, duration:.2, delay:.6});
+      gsap.from(sheet.querySelectorAll('.sheet-kicker, .sheet-name, .sheet-photo, .sheet-desc, .sheet-foot'),
+        {y:22, autoAlpha:0, stagger:.06, duration:.5, ease:'power3.out', delay:.18});
+      gsap.delayedCall(.32, function(){ closeBtn.focus(); });
+    } else {
+      closeBtn.focus();
+    }
+  }
+
+  function closeDetail(){
+    if (!isOpen) return;
+    function fin(){
+      sheet.removeAttribute('data-open');
+      unlockScroll();
+      isOpen = false;
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+    if (hasGsap){
+      gsap.killTweensOf([label, shine]);
+      gsap.to(label, {rotationX:-80, y:-32, scale:.94, autoAlpha:0, duration:.4, ease:'power3.in',
+        transformOrigin:'50% 0%', onComplete:fin});
+    } else { fin(); }
+  }
+
+  var detailWired = false;
+  function wireDetail(){
+    /* abrir: cada tarjeta/fila se genera en el render, hay que enlazarlas después */
+    document.querySelectorAll('[data-dish]').forEach(function(el){
+      el.addEventListener('click', function(){ openDetail(el.dataset.dish); });
+    });
+    if (detailWired) return;   // los cierres van sobre el sheet estático: una sola vez
+    detailWired = true;
+    /* cerrar: X, fondo, Esc */
+    closeBtn.addEventListener('click', closeDetail);
+    sheet.querySelectorAll('[data-close]').forEach(function(el){
+      el.addEventListener('click', function(ev){ if (ev.target === el) closeDetail(); });
+    });
+    document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape') closeDetail(); });
+  }
+})();
+</script>
+</body>
+</html>
