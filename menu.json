@@ -30,7 +30,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/espresso.jpg"
         },
         {
           "key": "cappuccino",
@@ -48,7 +48,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/cappuccino.jpg"
         },
         {
           "key": "latte",
@@ -66,7 +66,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/latte.jpg"
         },
         {
           "key": "cold-brew",
@@ -84,7 +84,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/cold-brew.jpg"
         },
         {
           "key": "coffee-tonic",
@@ -102,7 +102,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/tonica-de-cafe.jpg"
         },
         {
           "key": "espresso-sunrise",
@@ -152,7 +152,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/tostada-masa-madre.jpg"
         },
         {
           "key": "fruit-bowl",
@@ -170,7 +170,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/bowl-frutas.jpg"
         },
         {
           "key": "eggs",
@@ -188,7 +188,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/huevos.jpg"
         },
         {
           "key": "house-bread",
@@ -206,7 +206,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/pan-de-la-casa.jpg"
         },
         {
           "key": "soup",
@@ -224,7 +224,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/sopa-del-dia.jpg"
         },
         {
           "key": "sandwich-de-huevo",
@@ -364,7 +364,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/cheesecake.jpg"
         },
         {
           "key": "brownie",
@@ -382,7 +382,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/brownie.jpg"
         },
         {
           "key": "croissant",
@@ -400,7 +400,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/croissant.jpg"
         },
         {
           "key": "oat-cacao-cookie",
@@ -418,7 +418,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/galleta-avena.jpg"
         },
         {
           "key": "banana-bread",
@@ -436,7 +436,7 @@
           },
           "footnote": null,
           "wide": false,
-          "image": null
+          "image": "fotos/filler/pan-de-banano.jpg"
         },
         {
           "key": "cinnamon-roll",
