@@ -86,16 +86,30 @@
     transition:background .4s ease, box-shadow .4s ease;
   }
   .railnav.solid{box-shadow:0 6px 18px rgba(34,23,16,.12)}
-  .railnav-inner{display:flex;align-items:center;gap:6px;max-width:460px;width:100%;padding:9px 14px}
-  .rail-brand{font-family:'Playfair Display',serif;font-weight:800;font-size:1.02rem;color:var(--cobre);letter-spacing:.01em;margin-right:auto}
+  .railnav-inner{display:flex;align-items:center;gap:4px;max-width:460px;width:100%;padding:9px 12px}
+  .rail-brand{order:0;font-family:'Playfair Display',serif;font-weight:800;font-size:1.02rem;color:var(--cobre);letter-spacing:.01em;margin-right:auto}
   .rail-brand span{color:var(--cobre-dec)}
+  .rail-link{order:1}
+  .lang-toggle{order:2}
+  /* toggle de idioma */
+  .lang-toggle{
+    display:inline-flex;align-items:center;gap:1px;flex:none;margin-left:3px;
+    font-size:.62rem;font-weight:700;letter-spacing:.04em;line-height:1;
+    color:var(--tueste);border:1.4px solid var(--linea);border-radius:999px;
+    padding:5px 6px;background:rgba(255,255,255,.4);
+    transition:border-color .25s ease,background .25s ease;
+  }
+  .lang-toggle:hover,.lang-toggle:focus-visible{border-color:var(--cobre)}
+  .lang-toggle .l{padding:1px 3px;border-radius:6px;color:var(--tueste);opacity:.55;transition:opacity .2s ease,color .2s ease}
+  .lang-toggle .l.on{opacity:1;color:var(--cobre)}
+  .lang-toggle .sep{opacity:.35;margin:0 1px}
   .rail-link{
-    position:relative;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--tueste);text-decoration:none;padding:6px 8px;border-radius:8px;opacity:.82;
+    position:relative;font-size:.7rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--tueste);text-decoration:none;padding:6px 5px;border-radius:8px;opacity:.82;
     transition:opacity .25s ease,color .25s ease;
   }
   .rail-link::after{
-    content:"";position:absolute;left:8px;right:8px;bottom:1px;height:2px;border-radius:2px;
+    content:"";position:absolute;left:5px;right:5px;bottom:1px;height:2px;border-radius:2px;
     background:var(--cobre);transform:scaleX(0);transform-origin:left;transition:transform .3s ease;
   }
   .rail-link:hover,.rail-link:focus-visible{opacity:1}
@@ -273,14 +287,17 @@
   <div class="railnav-inner" data-rail>
     <a class="rail-brand" href="#top">Dob<span>o</span>ré</a>
     <!-- rail-links inyectados desde menu.json -->
+    <button class="lang-toggle" type="button" data-lang-toggle aria-label="Cambiar idioma">
+      <span class="l" data-l="es">ES</span><span class="sep" aria-hidden="true">/</span><span class="l" data-l="en">EN</span>
+    </button>
   </div>
 </nav>
 
 <!-- ============================ HERO ============================ -->
 <header class="hero" id="top">
   <div class="wrap hero-top">
-    <span>Doboré <span class="dot">·</span> Café de especialidad</span>
-    <span>Boquete, Panamá</span>
+    <span>Doboré <span class="dot">·</span> <span data-i18n="especialidad">Café de especialidad</span></span>
+    <span data-i18n="lugar">Boquete, Panamá</span>
   </div>
 
   <div class="wrap hero-mid">
@@ -295,7 +312,7 @@
     <p class="hero-sub">Café de altura, brunch sin prisa y algo dulce para cerrar. Todo se prepara aquí, en Boquete.</p>
   </div>
 
-  <div class="wrap hero-cue"><span class="linea"></span> Baja con calma</div>
+  <div class="wrap hero-cue"><span class="linea"></span> <span data-i18n="cue">Baja con calma</span></div>
 </header>
 
 <!-- ============================ CARTA (render desde menu.json) ============================ -->
@@ -310,8 +327,8 @@
       <circle class="ojo" cx="51.5" cy="40" r="2"/>
     </svg>
     <p class="footer-name">Doboré</p>
-    <p class="footer-line">Boquete · Chiriquí · Panamá</p>
-    <p class="footer-note">Gracias por acompañarnos. Vuelve pronto.</p>
+    <p class="footer-line" data-i18n="footLine">Boquete · Chiriquí · Panamá</p>
+    <p class="footer-note" data-i18n="footNote">Gracias por acompañarnos. Vuelve pronto.</p>
   </div>
 </footer>
 
@@ -348,6 +365,39 @@
   var DISHES = {};                /* key -> ficha para el detalle */
   var CATS   = {};                /* id  -> nombre de categoría (sin número) */
   var CAT_IDS = [];
+  var RAWCATS = [];               /* categorías crudas (para re-traducir en caliente) */
+
+  /* ---------------- idioma ---------------- */
+  var UI = {
+    es:{
+      especialidad:'Café de especialidad', lugar:'Boquete, Panamá',
+      title:'La <em>carta</em>',
+      sub:'Café de altura, brunch sin prisa y algo dulce para cerrar. Todo se prepara aquí, en Boquete.',
+      cue:'Baja con calma',
+      footNote:'Gracias por acompañarnos. Vuelve pronto.', footLine:'Boquete · Chiriquí · Panamá',
+      navLabel:'Categorías de la carta', close:'Cerrar', langLabel:'Cambiar idioma',
+      docTitle:'Doboré — La carta',
+      errKicker:'Un momento', errTitle:'La carta',
+      errBody:'No pudimos cargar la carta ahora mismo. Revisa tu conexión y recarga la página.'
+    },
+    en:{
+      especialidad:'Specialty coffee', lugar:'Boquete, Panama',
+      title:'The <em>menu</em>',
+      sub:'Highland coffee, an unhurried brunch and something sweet to finish. It’s all made right here, in Boquete.',
+      cue:'Take your time',
+      footNote:'Thanks for stopping by. Come back soon.', footLine:'Boquete · Chiriquí · Panama',
+      navLabel:'Menu categories', close:'Close', langLabel:'Change language',
+      docTitle:'Doboré — The menu',
+      errKicker:'One moment', errTitle:'The menu',
+      errBody:'We couldn’t load the menu right now. Check your connection and reload the page.'
+    }
+  };
+  function detectLang(){
+    try{ var s = localStorage.getItem('dobore-lang'); if (s === 'es' || s === 'en') return s; }catch(e){}
+    var n = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
+    return n.indexOf('es') === 0 ? 'es' : 'en';   /* dispositivo en español → es; cualquier otro → en */
+  }
+  var LANG = detectLang();
 
   /* ícono "ampliar" (marco con esquinas) — pista visual, no texto */
   var ZOOM = '<span class="thumb-zoom" aria-hidden="true"><svg viewBox="0 0 24 24">'+
@@ -360,7 +410,13 @@
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
     });
   }
-  function txtEs(o){ return (o && o.es) ? o.es : ''; }
+  /* toma el texto en el idioma activo, con respaldo es→en */
+  function tr(o){
+    if (!o || typeof o !== 'object') return '';
+    var v = o[LANG];
+    if (v == null) v = (o.es != null ? o.es : o.en);
+    return v == null ? '' : v;
+  }
   function shortName(n){ return String(n||'').split('/')[0].trim(); }         /* "Postres / Panadería" -> "Postres" */
   function money(p){ p = String(p==null?'':p).trim(); return p ? '$'+p : ''; }
   /* acento tipográfico: la última palabra del nombre va en itálica cobre */
@@ -377,15 +433,15 @@
   /* ---------------- construir el índice para el detalle ---------------- */
   function buildIndex(cats){
     cats.forEach(function(cat){
-      CATS[cat.id] = shortName(txtEs(cat.name) || cat.id);   /* nombre, sin "0N ·" */
+      CATS[cat.id] = shortName(tr(cat.name) || cat.id);   /* nombre, sin "0N ·" */
       (cat.items || []).forEach(function(it){
         DISHES[it.key] = {
           cat: cat.id,
-          name: txtEs(it.name),
-          price: money(txtEs(it.price)),
+          name: tr(it.name),
+          price: money(tr(it.price)),
           foto: it.image ? IMG_BASE + it.image : null,
-          alt: txtEs(it.name),
-          desc: txtEs(it.desc),
+          alt: tr(it.name),
+          desc: tr(it.desc),
           pos: null
         };
       });
@@ -397,9 +453,9 @@
     var key   = item.key;
     var side  = (photoIndex % 2 === 0) ? ' dish--l' : ' dish--r';   /* alterna izquierda / derecha */
     var src   = IMG_BASE + item.image;
-    var name  = txtEs(item.name);
-    var desc  = txtEs(item.desc);
-    var price = money(txtEs(item.price));
+    var name  = tr(item.name);
+    var desc  = tr(item.desc);
+    var price = money(tr(item.price));
 
     return (
       '<button class="dish'+side+'" type="button" data-dish="'+esc(key)+'">'+
@@ -419,17 +475,17 @@
   function rowHtml(item){
     return (
       '<button class="row" type="button" data-dish="'+esc(item.key)+'">'+
-        '<span class="row-name">'+esc(txtEs(item.name))+'</span>'+
+        '<span class="row-name">'+esc(tr(item.name))+'</span>'+
         '<span class="row-dots" aria-hidden="true"></span>'+
-        '<span class="price">'+esc(money(txtEs(item.price)))+'</span>'+
+        '<span class="price">'+esc(money(tr(item.price)))+'</span>'+
       '</button>'
     );
   }
 
   function sectionHtml(cat){
     var id   = cat.id;
-    var name = txtEs(cat.name) || id;
-    var foot = txtEs(cat.footnote);
+    var name = tr(cat.name) || id;
+    var foot = tr(cat.footnote);
     var items = Array.isArray(cat.items) ? cat.items : [];
 
     /* con foto -> tarjeta · sin foto -> fila compacta (respaldo modular) */
@@ -456,6 +512,7 @@
   /* ---------------- render principal ---------------- */
   function renderMenu(data){
     var cats = (data && Array.isArray(data.categories)) ? data.categories : [];
+    RAWCATS = cats;
     CAT_IDS = cats.map(function(c){ return c.id; });
     buildIndex(cats);
 
@@ -467,7 +524,7 @@
         a.className = 'rail-link';
         a.href = '#' + c.id;
         a.setAttribute('data-nav', c.id);
-        a.textContent = shortName(txtEs(c.name) || c.id);
+        a.textContent = shortName(tr(c.name) || c.id);
         rail.appendChild(a);
       });
     }
@@ -475,7 +532,7 @@
     /* hero: línea de categorías derivada del menú (modular) */
     var heroCats = document.querySelector('[data-hero-cats]');
     if (heroCats){
-      heroCats.textContent = cats.map(function(c){ return shortName(txtEs(c.name) || c.id); }).join(' · ');
+      heroCats.textContent = cats.map(function(c){ return shortName(tr(c.name) || c.id); }).join(' · ');
     }
 
     /* secciones de la carta */
@@ -484,21 +541,90 @@
   }
 
   function renderError(){
+    var u = UI[LANG];
     var root = document.getElementById('menu-root');
     if (root){
       root.innerHTML =
         '<section class="sec"><div class="wrap" style="text-align:center;padding:36px 0">'+
-          '<p class="sec-kicker">Un momento</p>'+
-          '<h2 class="sec-title"><span class="ttl">La carta</span></h2>'+
-          '<p style="margin-top:14px;color:var(--tinta)">No pudimos cargar la carta ahora mismo. Revisa tu conexión y recarga la página.</p>'+
+          '<p class="sec-kicker">'+esc(u.errKicker)+'</p>'+
+          '<h2 class="sec-title"><span class="ttl">'+esc(u.errTitle)+'</span></h2>'+
+          '<p style="margin-top:14px;color:var(--tinta)">'+esc(u.errBody)+'</p>'+
         '</div></section>';
     }
+  }
+
+  /* ---------------- aplicar idioma (sin re-render ni re-bind) ---------------- */
+  function applyLang(lang, persist){
+    LANG = (lang === 'en') ? 'en' : 'es';
+    if (persist){ try{ localStorage.setItem('dobore-lang', LANG); }catch(e){} }
+    var u = UI[LANG];
+    document.documentElement.lang = LANG;
+    try{ document.title = u.docTitle; }catch(e){}
+
+    /* estado del toggle */
+    document.querySelectorAll('.lang-toggle .l').forEach(function(s){
+      s.classList.toggle('on', s.getAttribute('data-l') === LANG);
+    });
+
+    /* textos fijos */
+    var setTxt = function(sel, val){ var el = document.querySelector(sel); if (el) el.textContent = val; };
+    setTxt('[data-i18n="especialidad"]', u.especialidad);
+    setTxt('[data-i18n="lugar"]', u.lugar);
+    setTxt('[data-i18n="cue"]', u.cue);
+    setTxt('[data-i18n="footNote"]', u.footNote);
+    setTxt('[data-i18n="footLine"]', u.footLine);
+    var ht = document.querySelector('.hero-title'); if (ht) ht.innerHTML = u.title;
+    var hs = document.querySelector('.hero-sub'); if (hs) hs.textContent = u.sub;
+    var nav = document.querySelector('.railnav'); if (nav) nav.setAttribute('aria-label', u.navLabel);
+    var cc = document.querySelector('.card-close'); if (cc) cc.setAttribute('aria-label', u.close);
+    var lt = document.querySelector('.lang-toggle'); if (lt) lt.setAttribute('aria-label', u.langLabel);
+
+    /* re-indexar datos del detalle en el nuevo idioma */
+    buildIndex(RAWCATS);
+
+    /* re-traducir lo ya renderizado, en su sitio (los listeners siguen vivos) */
+    var heroCats = document.querySelector('[data-hero-cats]');
+    if (heroCats) heroCats.textContent = RAWCATS.map(function(c){ return shortName(tr(c.name) || c.id); }).join(' · ');
+
+    document.querySelectorAll('.rail-link').forEach(function(l){
+      var c = RAWCATS.filter(function(x){ return x.id === l.getAttribute('data-nav'); })[0];
+      if (c) l.textContent = shortName(tr(c.name) || c.id);
+    });
+
+    RAWCATS.forEach(function(cat){
+      var sec = document.getElementById(cat.id); if (!sec) return;
+      var kick = sec.querySelector('.sec-kicker'); if (kick) kick.textContent = tr(cat.footnote);
+      var ttl = sec.querySelector('.ttl'); if (ttl) ttl.innerHTML = emphasizeLast(tr(cat.name) || cat.id);
+    });
+
+    document.querySelectorAll('.dish[data-dish]').forEach(function(el){
+      var d = DISHES[el.getAttribute('data-dish')]; if (!d) return;
+      var nm = el.querySelector('.dish-name'); if (nm) nm.innerHTML = emphasizeLast(d.name);
+      var te = el.querySelector('.dish-tease'); if (te) te.textContent = d.desc;
+      var pr = el.querySelector('.price'); if (pr) pr.textContent = d.price;
+    });
+    document.querySelectorAll('.row[data-dish]').forEach(function(el){
+      var d = DISHES[el.getAttribute('data-dish')]; if (!d) return;
+      var nm = el.querySelector('.row-name'); if (nm) nm.textContent = d.name;
+      var pr = el.querySelector('.price'); if (pr) pr.textContent = d.price;
+    });
   }
 
   /* ======================================================================
      boot(): todo lo que depende del DOM ya renderizado (scroll, detalle)
      ====================================================================== */
   function boot(){
+
+    /* ---------- idioma: aplicar el detectado + toggle ES/EN ---------- */
+    applyLang(LANG, false);
+    var langToggle = document.querySelector('[data-lang-toggle]');
+    if (langToggle){
+      langToggle.addEventListener('click', function(ev){
+        var seg = ev.target && ev.target.closest ? ev.target.closest('[data-l]') : null;
+        var next = seg ? seg.getAttribute('data-l') : (LANG === 'es' ? 'en' : 'es');
+        if (next !== LANG) applyLang(next, true);
+      });
+    }
 
     /* ---------- nav: activo + estado sólido ---------- */
     try{
