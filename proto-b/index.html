@@ -147,13 +147,6 @@
   .dish .win + .stamp{top:auto}
   .stamp--precio{position:absolute;top:2px;right:2px}
 
-  /* badge destacado giratorio */
-  .badge{position:absolute;z-index:3;width:92px;height:92px;top:-26px;left:-10px;color:var(--crema);filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
-  .badge svg{width:100%;height:100%;animation:girar 16s linear infinite}
-  .badge text{font-family:'Archivo',sans-serif;font-size:7.4px;letter-spacing:1.55px;text-transform:uppercase;fill:currentColor;font-weight:600}
-  .badge circle.centro{fill:var(--cobre)}
-  @keyframes girar{to{transform:rotate(360deg)}}
-
   /* separador botánico entre platos */
   .sep{display:flex;justify-content:center;gap:10px;margin-top:50px;color:rgba(247,236,218,.4)}
   .sep i{width:5px;height:5px;border-radius:50%;background:currentColor}
@@ -248,7 +241,7 @@
   /* ------------------------------------------------ reduced motion */
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto}
-    .kb img,.badge svg,.hero-cue .linea{animation:none}
+    .kb img,.hero-cue .linea{animation:none}
     .detail{transition:opacity .2s ease}
     *{scroll-behavior:auto}
   }
@@ -383,7 +376,7 @@
   var WINVARIANTS = [
     { win:'win--arch',     t:'t-l', a:'' },
     { win:'win--medallon', t:'t-r', a:'a-r' },
-    { win:'win--arch',     t:'t-l', a:'a-c', badge:true },
+    { win:'win--arch',     t:'t-l', a:'a-c' },
     { win:'win--piedra',   t:'t-r', a:'' },
     { win:'win--plato',    t:'t-l', a:'a-r' },
     { win:'win--medallon', t:'t-r', a:'' }
@@ -398,25 +391,15 @@
     var v = WINVARIANTS[counter.photo % WINVARIANTS.length];
     var foto = '../' + item.image;
     var price = money(item.price && item.price.es);
-    var badge = '';
-    if (v.badge){
-      var aroId = 'aro-' + counter.badge;
-      counter.badge++;
-      badge = '<span class="badge" aria-hidden="true"><svg viewBox="0 0 100 100">' +
-        '<defs><path id="' + aroId + '" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>' +
-        '<circle class="centro" cx="50" cy="50" r="14"/>' +
-        '<text><textPath href="#' + aroId + '">destacado · de la casa · destacado ·</textPath></text>' +
-        '</svg></span>';
-    }
     counter.photo++;
     dishesById[id] = {
-      theme: theme, catLabel: catLabel, destacado: !!v.badge,
+      theme: theme, catLabel: catLabel,
       name: item.name.es, price: price,
       desc: (item.desc && item.desc.es) || '',
       foto: foto, alt: item.name.es
     };
     var winClass = ['win', v.win, v.t, v.a, 'kb'].filter(Boolean).join(' ');
-    return '<button class="dish" data-dish="' + esc(id) + '">' + badge +
+    return '<button class="dish" data-dish="' + esc(id) + '">' +
       '<span class="' + winClass + '"><img src="' + esc(foto) + '" alt="' + esc(item.name.es) + '" loading="lazy"></span>' +
       '<span class="stamp stamp--precio">' + esc(price) + '</span>' +
       '<span class="dish-name">' + nameEm(item.name.es) + '</span>' +
@@ -428,7 +411,7 @@
   function rowItem(item, id, theme, catLabel){
     var price = money(item.price && item.price.es);
     dishesById[id] = {
-      theme: theme, catLabel: catLabel, destacado: false,
+      theme: theme, catLabel: catLabel,
       name: item.name.es, price: price,
       desc: (item.desc && item.desc.es) || '',
       foto: null, alt: item.name.es
@@ -502,7 +485,7 @@
     var cats = (data && Array.isArray(data.categories)) ? data.categories : [];
     if (!cats.length){ showError(); return false; }
     dishesById = {};
-    var counter = { photo: 0, badge: 0 };
+    var counter = { photo: 0 };
     var html = '';
     cats.forEach(function(cat, i){ html += TICKER + section(cat, i, counter); });
     root.innerHTML = html;
@@ -600,12 +583,6 @@
           scrollTrigger: { trigger: s, start: 'top 90%', once: true } });
       });
 
-      /* badges destacado caen con rebote */
-      gsap.utils.toArray('.badge').forEach(function(b){
-        gsap.from(b, { scale: 0, rotation: -90, autoAlpha: 0, duration: .7, ease: 'back.out(1.8)',
-          scrollTrigger: { trigger: b, start: 'top 86%', once: true } });
-      });
-
       /* filas sin foto: entran en fila */
       ScrollTrigger.batch('.row', { start: 'top 92%', once: true, onEnter: function(els){
         gsap.from(els, { x: -30, autoAlpha: 0, stagger: .09, duration: .7, ease: 'power3.out' });
@@ -667,7 +644,7 @@
     function openDetail(id, x, y){
       var d = dishesById[id]; if (!d) return;
       lastTap.x = x; lastTap.y = y;
-      dKicker.textContent = d.catLabel + (d.destacado ? ' · destacado de la casa' : '');
+      dKicker.textContent = d.catLabel;
       dName.textContent = d.name;
       dDesc.textContent = d.desc;
       dPrice.textContent = d.price;

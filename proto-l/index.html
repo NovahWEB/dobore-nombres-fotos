@@ -164,18 +164,6 @@
   .r-l{transform:rotate(-2.2deg)}
   .r-r{transform:rotate(2deg)}
   .ratio-45 .ph{aspect-ratio:4/5}
-  .ratio-11 .ph{aspect-ratio:1/1}
-  .ratio-54 .ph{aspect-ratio:5/4}
-
-  /* sello destacado, como estampado a mano */
-  .sello{position:absolute;z-index:3;top:-14px;left:-6px;width:80px;height:80px;color:var(--paper);
-    filter:drop-shadow(0 4px 8px rgba(43,26,15,.3))}
-  .dish.a-r .sello{left:auto;right:-6px}
-  .sello svg{width:100%;height:100%}
-  .sello text{font-family:'Archivo',sans-serif;font-size:7.6px;letter-spacing:1.4px;text-transform:uppercase;fill:currentColor;font-weight:700}
-  .sello .disco{fill:var(--terracota)}
-  .sello .nucleo{fill:var(--paper)}
-  .sello .gota{fill:var(--terracota)}
 
   .dish-name{
     display:block;position:relative;z-index:2;margin-top:12px;
@@ -362,7 +350,7 @@
 
   /* ================= mapas que se llenan al renderizar ================= */
   var CATS = {};   /* id -> {label, stain}  (para la ficha de detalle) */
-  var DISHES = {}; /* uid -> {cat,name,price,foto,desc,alt,destacado}  */
+  var DISHES = {}; /* uid -> {cat,name,price,foto,desc,alt}  */
 
   var ARTE_TAZA = '<svg class="arte" viewBox="0 0 120 120" aria-hidden="true">' +
     '<path d="M28 50 L86 50 L80 96 C79 102 74 106 68 106 L46 106 C40 106 35 102 34 96 Z"/>' +
@@ -396,7 +384,6 @@
   var DISH_WASH = ['dish--oliva','dish--terracota','dish--miel','dish--cafe'];
   var MASKS     = ['m-a','m-b','m-c'];
   var ALIGN     = ['','a-r','a-c'];
-  var RATIOS    = ['ratio-11','ratio-45','ratio-54'];
 
   /* ================= helpers de render ================= */
   function esc(s){
@@ -421,8 +408,7 @@
       price: item.price && item.price.es || '',
       foto: item.image ? ('../' + item.image) : null,
       desc: item.desc && item.desc.es || '',
-      alt: item.name && item.name.es || '',
-      destacado: !!item.destacado
+      alt: item.name && item.name.es || ''
     };
   }
 
@@ -475,7 +461,7 @@
         mask:  MASKS[i % MASKS.length],
         rot:   (i % 2 === 0) ? 'r-l' : 'r-r',
         align: ALIGN[i % ALIGN.length],
-        ratio: it.wide ? 'ratio-54' : RATIOS[i % RATIOS.length]
+        ratio: 'ratio-45'
       });
     });
 
@@ -599,9 +585,6 @@
         transformOrigin:'50% 55%', scrollTrigger:st});
       gsap.from(d.querySelector('.figure'), {autoAlpha:0, y:26, scale:.95, duration:.85, ease:'power3.out',
         scrollTrigger:{trigger:d, start:'top 80%', once:true}});
-      var sello = d.querySelector('.sello');
-      if (sello){ gsap.from(sello, {scale:0, rotation:-120, autoAlpha:0, duration:.7, ease:'back.out(1.9)',
-        scrollTrigger:{trigger:d, start:'top 74%', once:true}}); }
       gsap.from(d.querySelectorAll('.dish-name,.dish-tease,.price-tag,.dish-cta'), {y:20, autoAlpha:0, stagger:.07, duration:.6, ease:'power3.out',
         scrollTrigger:{trigger:d, start:'top 72%', once:true}});
     });
@@ -649,7 +632,7 @@
   function fill(id){
     var d = DISHES[id]; if (!d) return null;
     var c = CATS[d.cat] || {label:'', stain:''};
-    dKick.textContent = c.label + (d.destacado ? ' · destacado' : '');
+    dKick.textContent = c.label;
     dName.textContent = d.name;
     dDesc.textContent = d.desc;
     dPrice.innerHTML = '<span class="cur">B/.</span> ' + esc(d.price);

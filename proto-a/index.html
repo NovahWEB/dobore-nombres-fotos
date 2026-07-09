@@ -592,9 +592,9 @@ function build(menu){
     items.forEach(function(it){
       if (it && it.image){
         registerItem(it, id, nm, accent);
-        var isHero = (cardsHTML === "");
-        var role = isHero ? "hero-dish" : (sideFlip++ % 2 === 0 ? "side-l" : "side-r");
-        cardsHTML += polaroidHTML(it, role, POLA_ROTS[polaRot++ % POLA_ROTS.length], isHero);
+        /* todos los platos = misma tarjeta; solo alternan lado izq/der (estilo collage) */
+        var role = (sideFlip++ % 2 === 0 ? "side-l" : "side-r");
+        cardsHTML += polaroidHTML(it, role, POLA_ROTS[polaRot++ % POLA_ROTS.length]);
       }
     });
     items.forEach(function(it){
@@ -644,20 +644,16 @@ function registerItem(it, catId, catLabel, accent){
   };
 }
 
-function polaroidHTML(it, role, rot, isHero){
+function polaroidHTML(it, role, rot){
   var key = it.__key;
   var name = pick(it.name) || "";
   var price = money(it.price);
-  var fav = it.fav === true;
-  var seal = fav ? '<svg class="seal stamped" viewBox="0 0 100 100" aria-hidden="true"><use href="#sello-fav"/></svg>' : '';
-  var tapeB = fav ? '<span class="tape tape-b" aria-hidden="true"></span>' : '';
-  var peek = (isHero && teaser(it.desc)) ? '<span class="desc-peek">'+esc(teaser(it.desc))+'</span>' : '';
   return (
     '<button class="polaroid '+role+'" data-item="'+esc(key)+'" style="--rot:'+rot+'deg" aria-haspopup="dialog">'+
-      '<span class="tape" aria-hidden="true"></span>'+ tapeB + seal +
+      '<span class="tape" aria-hidden="true"></span>'+
       '<figure><img src="'+esc("../"+it.image)+'" alt="'+esc(name)+'" loading="lazy"></figure>'+
       '<span class="caption">'+
-        '<span><span class="name">'+esc(name)+'</span>'+ peek +'</span>'+
+        '<span><span class="name">'+esc(name)+'</span></span>'+
         (price ? '<span class="price-stamp stamped">'+esc(price)+'</span>' : '')+
       '</span>'+
     '</button>'

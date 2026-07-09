@@ -471,7 +471,6 @@
       alt: esc(txt(item.name)),
       desc: txt(item.desc),
       cap: txt(item.footnote) || txt(cat.footnote) || '',
-      destacado: !!(item.destacado || item.featured),
       waffle: !!(img && /foto-09/.test(img))
     };
   }
@@ -479,14 +478,11 @@
   function featureHTML(item, figNo, uid){
     var img = item.image;
     var isWaffle = !!(img && /foto-09/.test(img));
-    var wide = !!item.wide;
-    var destacado = !!(item.destacado || item.featured);
-    var cls = 'figure' + (wide ? ' wide' : '') + (isWaffle ? ' waffle' : '') + ' kb';
-    var seal = destacado ? '<span class="seal">Plato de la casa</span>' : '';
+    var cls = 'figure' + (isWaffle ? ' waffle' : '') + ' kb';
     var name = txt(item.name);
     var cap  = esc(txt(item.desc));
     return '<button class="feature dish anim" data-dish="'+esc(uid)+'" aria-label="Ver '+esc(name)+'">' +
-      '<figure class="'+cls+'">' + seal +
+      '<figure class="'+cls+'">' +
         '<div class="frame"><img src="../'+esc(img)+'" loading="lazy" alt="'+esc(name)+'"></div>' +
         '<figcaption class="figcap">' +
           '<span class="cap"><b>Pie de foto</b>'+cap+'</span>' +
@@ -593,7 +589,6 @@
         var uid = uniqueId(item.key);
         registerDish(uid, cat, item, i);
         if (item.image){
-          if (!hero) hero = item;
           figNo++;
           featArr.push(featureHTML(item, figNo, uid));
         } else {
@@ -759,15 +754,14 @@
     function openDetail(id){
       var d = DISHES[id]; if (!d) return;
       if (closeTimer){ clearTimeout(closeTimer); closeTimer = null; }
-      mKicker.textContent = (CATS[d.cat] || 'De la carta') + (d.destacado ? ' · Plato de la casa' : '');
+      mKicker.textContent = (CATS[d.cat] || 'De la carta');
       mName.innerHTML = d.name;
       mDesc.innerHTML = dropcapify(d.desc);
       mCap.textContent = d.cap || '';
       mPrice.textContent = d.price;
       if (d.foto){
         mFigure.className = 'm-figure' + (d.waffle ? ' waffle' : '');
-        mFigure.innerHTML = (d.destacado ? '<span class="m-badge">Plato de la casa</span>' : '') +
-          '<img src="' + esc(d.foto) + '" alt="' + (d.alt || '') + '">';
+        mFigure.innerHTML = '<img src="' + esc(d.foto) + '" alt="' + (d.alt || '') + '">';
       } else {
         mFigure.className = 'm-figure art';
         mFigure.innerHTML = ART[d.cat] || DEFAULT_ART;

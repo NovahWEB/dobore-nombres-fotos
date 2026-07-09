@@ -236,24 +236,6 @@ body{
   color:var(--cream-dim);display:inline-flex;align-items:center;gap:6px}
 .credit__more svg{width:12px;height:12px}
 
-/* Destacado: marquesina con bombillas */
-.card.star .frame{border:1px solid rgba(255,196,110,.35)}
-.card.star{padding:9px;border-radius:15px;
-  background:linear-gradient(180deg, rgba(52,32,16,.75), rgba(22,13,7,.6));
-  border:1px solid rgba(255,196,110,.22);
-  box-shadow:0 30px 60px -34px #000, inset 0 0 0 1px rgba(255,196,110,.05);
-}
-.card.star .starbulbs{position:absolute;inset:3px;pointer-events:none;z-index:6;border-radius:13px}
-.card.star .starbulbs i{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--bulb);
-  box-shadow:0 0 7px 2px var(--bulb-glow);animation:chase 1.2s steps(1) infinite}
-.starflag{
-  position:absolute;z-index:7;top:-2px;left:50%;transform:translateX(-50%);
-  font-family:"DM Mono",monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink);
-  background:linear-gradient(180deg,var(--bulb),var(--copper));padding:4px 14px;border-radius:0 0 8px 8px;
-  box-shadow:0 6px 16px -6px rgba(255,196,110,.7);white-space:nowrap;
-}
-.card.star .credit{padding:9px 8px 4px}
-
 /* Programa sin foto (café / postres) — estilo cartelera */
 .bill{
   appearance:none;width:100%;text-align:left;cursor:pointer;color:inherit;
@@ -375,7 +357,7 @@ body{
   .grain{animation:none}
   .flicker{display:none}
   .colibri{animation:none}
-  .bulb,.card.star .starbulbs i{animation:none;opacity:1;filter:brightness(1)}
+  .bulb{animation:none;opacity:1;filter:brightness(1)}
   .reel-badge .dot,.mframe__hud .rc{animation:none}
   .cutter,.flash{display:none!important}
   .card,.bill{opacity:1!important;transform:none!important;transition:none}
@@ -486,7 +468,6 @@ function normalize(json){
         price: (it.price && it.price.es != null) ? it.price.es : "",
         image: it.image || null,                          // ruta relativa a la data ("fotos/foto-XX.webp")
         role: (it.footnote && it.footnote.es) || catRole, // rótulo cinematográfico por categoría
-        star: !!it.wide,                                  // destacado (marquesina) si Notion marca wide
       }))
     };
   });
@@ -510,9 +491,7 @@ const reel = document.getElementById("reel");
 function cardHTML(it, i){
   const num = String(i+1).padStart(2,"0");
   if(it.image){
-    const starTop = it.star ? `<span class="starflag">En cartelera</span><span class="starbulbs" aria-hidden="true"></span>`:"";
-    return `<button class="card ${it.star?'star':''}" data-id="${it.id}">
-      ${starTop}
+    return `<button class="card" data-id="${it.id}">
       <figure class="frame">
         <img src="../${it.image}" alt="${it.name}" loading="lazy">
         <span class="frame__hud"><span class="sq"></span>Cuadro ${num} · Doboré</span>
@@ -550,14 +529,6 @@ function renderCat(cat){
   document.getElementById("slateTake").textContent = data.take;
   document.getElementById("slateNum").textContent = data.num;
   reel.innerHTML = data.items.map(cardHTML).join("");
-  // bombillas de destacados
-  reel.querySelectorAll(".starbulbs").forEach(el=>{
-    let h="";
-    for(let i=0;i<10;i++) h+=`<i style="top:-3px;left:${i*11+3}%;animation-delay:${(i%4)*.3}s"></i>`;
-    for(let i=0;i<10;i++) h+=`<i style="bottom:-3px;left:${i*11+3}%;animation-delay:${(i%4)*.3}s"></i>`;
-    for(let i=0;i<6;i++){h+=`<i style="left:-3px;top:${i*18+6}%;animation-delay:${(i%4)*.3}s"></i>`;h+=`<i style="right:-3px;top:${i*18+6}%;animation-delay:${(i%4)*.3}s"></i>`;}
-    el.innerHTML=h;
-  });
   revealCards();
 }
 
