@@ -1,32 +1,53 @@
 {
-  "_generated": "build-carta-json.mjs — data compartida para las 12 protos",
-  "_notion": "Cuando NOTION_TOKEN funcione, el sync repuebla desde las DBs Carta; las imágenes bajan a /images/cms via imageRef. Hoy: fotos reales locales del cliente por nombre.",
+  "_generated": "build-carta-json.mjs — data compartida y MULTILINGÜE (6 idiomas) para las protos",
+  "_idiomas": "es en fr de pt zh",
+  "_notion": "Contenido base ES (+EN) desde Notion vía sync; fr/de/pt/zh vía scripts/i18n-cache.json (o API de traducción con ANTHROPIC_API_KEY). Lo que el cliente escriba a mano en Notion manda.",
   "categories": [
     {
       "id": "cafe",
       "name": {
         "es": "Café",
-        "en": "Coffee"
+        "en": "Coffee",
+        "fr": "Café",
+        "de": "Kaffee",
+        "pt": "Café",
+        "zh": "咖啡"
       },
       "icon": "cup",
       "footnote": {
         "es": "Granos locales y tueste fresco",
-        "en": "Local beans, freshly roasted"
+        "en": "Local beans, freshly roasted",
+        "fr": "Grains locaux, torréfaction fraîche",
+        "de": "Lokale Bohnen, frisch geröstet",
+        "pt": "Grãos locais e torra fresca",
+        "zh": "本地咖啡豆，新鲜烘焙"
       },
       "items": [
         {
           "key": "espresso",
           "name": {
             "es": "Espresso",
-            "en": "Espresso"
+            "en": "Espresso",
+            "fr": "Espresso",
+            "de": "Espresso",
+            "pt": "Espresso",
+            "zh": "浓缩咖啡"
           },
           "price": {
             "es": "2.50",
-            "en": "2.50"
+            "en": "2.50",
+            "fr": "2.50",
+            "de": "2.50",
+            "pt": "2.50",
+            "zh": "2.50"
           },
           "desc": {
             "es": "Intenso, balanceado y de aroma profundo.",
-            "en": "Bold, balanced and deeply aromatic."
+            "en": "Bold, balanced and deeply aromatic.",
+            "fr": "Intense, équilibré et au parfum profond.",
+            "de": "Intensiv, ausgewogen und mit tiefem Aroma.",
+            "pt": "Intenso, equilibrado e de aroma profundo.",
+            "zh": "浓郁、均衡，香气深邃。"
           },
           "footnote": null,
           "wide": false,
@@ -36,15 +57,27 @@
           "key": "cappuccino",
           "name": {
             "es": "Cappuccino",
-            "en": "Cappuccino"
+            "en": "Cappuccino",
+            "fr": "Cappuccino",
+            "de": "Cappuccino",
+            "pt": "Cappuccino",
+            "zh": "卡布奇诺"
           },
           "price": {
             "es": "3.25",
-            "en": "3.25"
+            "en": "3.25",
+            "fr": "3.25",
+            "de": "3.25",
+            "pt": "3.25",
+            "zh": "3.25"
           },
           "desc": {
             "es": "Espresso con leche texturizada y sedosa.",
-            "en": "Espresso with silky, textured milk."
+            "en": "Espresso with silky, textured milk.",
+            "fr": "Espresso au lait texturé et soyeux.",
+            "de": "Espresso mit samtig aufgeschäumter Milch.",
+            "pt": "Espresso com leite texturizado e sedoso.",
+            "zh": "浓缩咖啡配丝滑绵密的奶泡。"
           },
           "footnote": null,
           "wide": false,
@@ -54,15 +87,27 @@
           "key": "latte",
           "name": {
             "es": "Latte",
-            "en": "Latte"
+            "en": "Latte",
+            "fr": "Latte",
+            "de": "Latte",
+            "pt": "Latte",
+            "zh": "拿铁"
           },
           "price": {
             "es": "3.75",
-            "en": "3.75"
+            "en": "3.75",
+            "fr": "3.75",
+            "de": "3.75",
+            "pt": "3.75",
+            "zh": "3.75"
           },
           "desc": {
             "es": "Suave y cremoso, perfecto para cualquier hora.",
-            "en": "Smooth and creamy, perfect any time of day."
+            "en": "Smooth and creamy, perfect any time of day.",
+            "fr": "Doux et crémeux, parfait à toute heure.",
+            "de": "Mild und cremig, perfekt zu jeder Zeit.",
+            "pt": "Suave e cremoso, perfeito para qualquer hora.",
+            "zh": "顺滑奶香，随时都适合。"
           },
           "footnote": null,
           "wide": false,
@@ -72,15 +117,27 @@
           "key": "cold-brew",
           "name": {
             "es": "Cold Brew",
-            "en": "Cold Brew"
+            "en": "Cold Brew",
+            "fr": "Cold Brew",
+            "de": "Cold Brew",
+            "pt": "Cold Brew",
+            "zh": "冷萃咖啡"
           },
           "price": {
             "es": "4.00",
-            "en": "4.00"
+            "en": "4.00",
+            "fr": "4.00",
+            "de": "4.00",
+            "pt": "4.00",
+            "zh": "4.00"
           },
           "desc": {
             "es": "Extracción en frío, dulce y refrescante.",
-            "en": "Cold-brewed, sweet and refreshing."
+            "en": "Cold-brewed, sweet and refreshing.",
+            "fr": "Extraction à froid, douce et rafraîchissante.",
+            "de": "Kalt extrahiert, süß und erfrischend.",
+            "pt": "Extração a frio, doce e refrescante.",
+            "zh": "冷萃工艺，甘甜清爽。"
           },
           "footnote": null,
           "wide": false,
@@ -90,15 +147,27 @@
           "key": "coffee-tonic",
           "name": {
             "es": "Tónica de café",
-            "en": "Coffee Tonic"
+            "en": "Coffee Tonic",
+            "fr": "Tonic au café",
+            "de": "Kaffee-Tonic",
+            "pt": "Tônica de café",
+            "zh": "咖啡汤力"
           },
           "price": {
             "es": "4.50",
-            "en": "4.50"
+            "en": "4.50",
+            "fr": "4.50",
+            "de": "4.50",
+            "pt": "4.50",
+            "zh": "4.50"
           },
           "desc": {
             "es": "Cítrica y burbujeante, con espresso de la casa.",
-            "en": "Bright, fizzy and citrusy, with our house espresso."
+            "en": "Bright, fizzy and citrusy, with our house espresso.",
+            "fr": "Pétillante et acidulée, avec notre espresso maison.",
+            "de": "Spritzig und zitrusfrisch, mit unserem Haus-Espresso.",
+            "pt": "Cítrica e borbulhante, com espresso da casa.",
+            "zh": "柑橘气泡，配招牌浓缩咖啡。"
           },
           "footnote": null,
           "wide": false,
@@ -108,15 +177,27 @@
           "key": "espresso-sunrise",
           "name": {
             "es": "Espresso Sunrise",
-            "en": "Espresso Sunrise"
+            "en": "Espresso Sunrise",
+            "fr": "Espresso Sunrise",
+            "de": "Espresso Sunrise",
+            "pt": "Espresso Sunrise",
+            "zh": "Espresso Sunrise"
           },
           "price": {
             "es": "1.00",
-            "en": "1.00"
+            "en": "1.00",
+            "fr": "1.00",
+            "de": "1.00",
+            "pt": "1.00",
+            "zh": "1.00"
           },
           "desc": {
             "es": "Agua tónica, espresso y jugo de naranja natural",
-            "en": "Tonic water, espresso and fresh orange juice"
+            "en": "Tonic water, espresso and fresh orange juice",
+            "fr": "Eau tonique, espresso et jus d'orange frais",
+            "de": "Tonic Water, Espresso und frischer Orangensaft",
+            "pt": "Água tônica, espresso e suco de laranja natural",
+            "zh": "汤力水、浓缩咖啡与鲜榨橙汁"
           },
           "footnote": null,
           "wide": false,
@@ -128,27 +209,47 @@
       "id": "brunch",
       "name": {
         "es": "Brunch",
-        "en": "Brunch"
+        "en": "Brunch",
+        "fr": "Brunch",
+        "de": "Brunch",
+        "pt": "Brunch",
+        "zh": "早午餐"
       },
       "icon": "utensils",
       "footnote": {
         "es": "Ingredientes frescos y de origen local",
-        "en": "Fresh, locally sourced ingredients"
+        "en": "Fresh, locally sourced ingredients",
+        "fr": "Ingrédients frais et locaux",
+        "de": "Frische Zutaten aus der Region",
+        "pt": "Ingredientes frescos e de origem local",
+        "zh": "新鲜的本地食材"
       },
       "items": [
         {
           "key": "sourdough-toast",
           "name": {
             "es": "Tostada de masa madre",
-            "en": "Sourdough Toast"
+            "en": "Sourdough Toast",
+            "fr": "Tartine au levain",
+            "de": "Sauerteig-Toast",
+            "pt": "Torrada de fermentação natural",
+            "zh": "酸种吐司"
           },
           "price": {
             "es": "6.50",
-            "en": "6.50"
+            "en": "6.50",
+            "fr": "6.50",
+            "de": "6.50",
+            "pt": "6.50",
+            "zh": "6.50"
           },
           "desc": {
             "es": "Con aguacate, semillas y aceite de oliva.",
-            "en": "With avocado, seeds and olive oil."
+            "en": "With avocado, seeds and olive oil.",
+            "fr": "Avec avocat, graines et huile d'olive.",
+            "de": "Mit Avocado, Samen und Olivenöl.",
+            "pt": "Com abacate, sementes e azeite de oliva.",
+            "zh": "配牛油果、坚果籽与橄榄油。"
           },
           "footnote": null,
           "wide": false,
@@ -158,15 +259,27 @@
           "key": "fruit-bowl",
           "name": {
             "es": "Bowl de frutas de temporada",
-            "en": "Seasonal Fruit Bowl"
+            "en": "Seasonal Fruit Bowl",
+            "fr": "Bol de fruits de saison",
+            "de": "Saisonale Obstschale",
+            "pt": "Bowl de frutas da estação",
+            "zh": "当季水果碗"
           },
           "price": {
             "es": "5.75",
-            "en": "5.75"
+            "en": "5.75",
+            "fr": "5.75",
+            "de": "5.75",
+            "pt": "5.75",
+            "zh": "5.75"
           },
           "desc": {
             "es": "Con yogurt artesanal y granola de la casa.",
-            "en": "With artisan yogurt and house-made granola."
+            "en": "With artisan yogurt and house-made granola.",
+            "fr": "Avec yaourt artisanal et granola maison.",
+            "de": "Mit handwerklichem Joghurt und hausgemachtem Granola.",
+            "pt": "Com iogurte artesanal e granola da casa.",
+            "zh": "配手工酸奶与自制格兰诺拉。"
           },
           "footnote": null,
           "wide": false,
@@ -176,15 +289,27 @@
           "key": "eggs",
           "name": {
             "es": "Huevos al gusto",
-            "en": "Eggs Your Way"
+            "en": "Eggs Your Way",
+            "fr": "Œufs à votre goût",
+            "de": "Eier nach Wahl",
+            "pt": "Ovos ao seu gosto",
+            "zh": "任选蛋料理"
           },
           "price": {
             "es": "6.50",
-            "en": "6.50"
+            "en": "6.50",
+            "fr": "6.50",
+            "de": "6.50",
+            "pt": "6.50",
+            "zh": "6.50"
           },
           "desc": {
             "es": "Con vegetales salteados y pan artesanal.",
-            "en": "With sautéed vegetables and artisan bread."
+            "en": "With sautéed vegetables and artisan bread.",
+            "fr": "Avec légumes sautés et pain artisanal.",
+            "de": "Mit sautiertem Gemüse und handwerklichem Brot.",
+            "pt": "Com legumes salteados e pão artesanal.",
+            "zh": "配香煎时蔬与手工面包。"
           },
           "footnote": null,
           "wide": false,
@@ -194,15 +319,27 @@
           "key": "house-bread",
           "name": {
             "es": "Pan de la casa",
-            "en": "House Bread"
+            "en": "House Bread",
+            "fr": "Pain maison",
+            "de": "Hausbrot",
+            "pt": "Pão da casa",
+            "zh": "招牌面包"
           },
           "price": {
             "es": "3.50",
-            "en": "3.50"
+            "en": "3.50",
+            "fr": "3.50",
+            "de": "3.50",
+            "pt": "3.50",
+            "zh": "3.50"
           },
           "desc": {
             "es": "Con mantequilla de café y mermelada local.",
-            "en": "With coffee butter and local jam."
+            "en": "With coffee butter and local jam.",
+            "fr": "Avec beurre au café et confiture locale.",
+            "de": "Mit Kaffeebutter und regionaler Marmelade.",
+            "pt": "Com manteiga de café e geleia local.",
+            "zh": "配咖啡黄油与本地果酱。"
           },
           "footnote": null,
           "wide": false,
@@ -212,15 +349,27 @@
           "key": "soup",
           "name": {
             "es": "Sopa del día",
-            "en": "Soup of the Day"
+            "en": "Soup of the Day",
+            "fr": "Soupe du jour",
+            "de": "Tagessuppe",
+            "pt": "Sopa do dia",
+            "zh": "每日例汤"
           },
           "price": {
             "es": "5.00",
-            "en": "5.00"
+            "en": "5.00",
+            "fr": "5.00",
+            "de": "5.00",
+            "pt": "5.00",
+            "zh": "5.00"
           },
           "desc": {
             "es": "Receta de temporada con ingredientes frescos.",
-            "en": "A seasonal recipe made with fresh ingredients."
+            "en": "A seasonal recipe made with fresh ingredients.",
+            "fr": "Recette de saison aux ingrédients frais.",
+            "de": "Saisonales Rezept mit frischen Zutaten.",
+            "pt": "Receita da estação com ingredientes frescos.",
+            "zh": "当季食谱，选用新鲜食材。"
           },
           "footnote": null,
           "wide": false,
@@ -230,15 +379,27 @@
           "key": "sandwich-de-huevo",
           "name": {
             "es": "Sandwich de Huevo",
-            "en": "Egg Sandwich"
+            "en": "Egg Sandwich",
+            "fr": "Sandwich à l'œuf",
+            "de": "Ei-Sandwich",
+            "pt": "Sanduíche de Ovo",
+            "zh": "鸡蛋三明治"
           },
           "price": {
             "es": "1.00",
-            "en": "1.00"
+            "en": "1.00",
+            "fr": "1.00",
+            "de": "1.00",
+            "pt": "1.00",
+            "zh": "1.00"
           },
           "desc": {
             "es": "Pan artesanal, huevos, queso cheddar o Pepper Jack, tomate asado, orégano fresco y salsa de la casa",
-            "en": "Artisan bread, eggs, cheddar or Pepper Jack cheese, roasted tomato, fresh oregano and house sauce"
+            "en": "Artisan bread, eggs, cheddar or Pepper Jack cheese, roasted tomato, fresh oregano and house sauce",
+            "fr": "Pain artisanal, œufs, cheddar ou Pepper Jack, tomate rôtie, origan frais et sauce maison",
+            "de": "Handwerkliches Brot, Eier, Cheddar oder Pepper Jack, geröstete Tomate, frischer Oregano und Haus-Sauce",
+            "pt": "Pão artesanal, ovos, queijo cheddar ou Pepper Jack, tomate assado, orégano fresco e molho da casa",
+            "zh": "手工面包、鸡蛋、切达或胡椒杰克奶酪、烤番茄、新鲜牛至与招牌酱汁"
           },
           "footnote": null,
           "wide": false,
@@ -248,15 +409,27 @@
           "key": "hamburguesa-dobore-suprema",
           "name": {
             "es": "Hamburguesa Doboré Suprema",
-            "en": "Doboré Supreme Burger"
+            "en": "Doboré Supreme Burger",
+            "fr": "Burger Doboré Suprême",
+            "de": "Doboré Supreme Burger",
+            "pt": "Hambúrguer Doboré Suprema",
+            "zh": "Doboré 至尊汉堡"
           },
           "price": {
             "es": "1.00",
-            "en": "1.00"
+            "en": "1.00",
+            "fr": "1.00",
+            "de": "1.00",
+            "pt": "1.00",
+            "zh": "1.00"
           },
           "desc": {
             "es": "Pan artesanal, media libra de carne, queso cheddar y Pepper Jack, cebolla encurtida y salsa de la casa",
-            "en": "Artisan bun, half-pound beef patty, cheddar and Pepper Jack cheese, pickled onion and house sauce"
+            "en": "Artisan bun, half-pound beef patty, cheddar and Pepper Jack cheese, pickled onion and house sauce",
+            "fr": "Pain artisanal, steak d'une demi-livre, cheddar et Pepper Jack, oignon mariné et sauce maison",
+            "de": "Handwerkliches Brötchen, halbes Pfund Rindfleisch, Cheddar und Pepper Jack, eingelegte Zwiebeln und Haus-Sauce",
+            "pt": "Pão artesanal, meia libra de carne, cheddar e Pepper Jack, cebola em conserva e molho da casa",
+            "zh": "手工面包、半磅牛肉、切达与胡椒杰克奶酪、腌洋葱与招牌酱汁"
           },
           "footnote": null,
           "wide": false,
@@ -266,15 +439,27 @@
           "key": "tortilla-de-la-abuela",
           "name": {
             "es": "Tortilla de la Abuela",
-            "en": "Grandma's Tortilla"
+            "en": "Grandma's Tortilla",
+            "fr": "Tortilla de la Grand-mère",
+            "de": "Omas Tortilla",
+            "pt": "Tortilla da Vovó",
+            "zh": "外婆的玉米饼"
           },
           "price": {
             "es": "1.00",
-            "en": "1.00"
+            "en": "1.00",
+            "fr": "1.00",
+            "de": "1.00",
+            "pt": "1.00",
+            "zh": "1.00"
           },
           "desc": {
             "es": "Tortilla de maíz asada rellena de queso cheddar o Pepper Jack, bacon, huevos revueltos y queso blanco",
-            "en": "Grilled corn tortilla filled with cheddar or Pepper Jack cheese, bacon, scrambled eggs and white cheese"
+            "en": "Grilled corn tortilla filled with cheddar or Pepper Jack cheese, bacon, scrambled eggs and white cheese",
+            "fr": "Tortilla de maïs grillée garnie de cheddar ou Pepper Jack, bacon, œufs brouillés et fromage blanc",
+            "de": "Gegrillte Maistortilla gefüllt mit Cheddar oder Pepper Jack, Bacon, Rührei und Weißkäse",
+            "pt": "Tortilla de milho grelhada recheada com cheddar ou Pepper Jack, bacon, ovos mexidos e queijo branco",
+            "zh": "烤玉米饼，夹切达或胡椒杰克奶酪、培根、炒蛋与白奶酪"
           },
           "footnote": null,
           "wide": false,
@@ -284,15 +469,27 @@
           "key": "hummus",
           "name": {
             "es": "Hummus",
-            "en": "Hummus"
+            "en": "Hummus",
+            "fr": "Houmous",
+            "de": "Hummus",
+            "pt": "Homus",
+            "zh": "鹰嘴豆泥"
           },
           "price": {
             "es": "1.00",
-            "en": "1.00"
+            "en": "1.00",
+            "fr": "1.00",
+            "de": "1.00",
+            "pt": "1.00",
+            "zh": "1.00"
           },
           "desc": {
             "es": "Fusión de receta mediterránea y panameña, acompañado de vegetales frescos y pan artesanal",
-            "en": "A fusion of Mediterranean and Panamanian recipes, served with fresh vegetables and artisan bread"
+            "en": "A fusion of Mediterranean and Panamanian recipes, served with fresh vegetables and artisan bread",
+            "fr": "Fusion de recettes méditerranéenne et panaméenne, servi avec légumes frais et pain artisanal",
+            "de": "Fusion aus mediterranem und panamaischem Rezept, serviert mit frischem Gemüse und handwerklichem Brot",
+            "pt": "Fusão de receita mediterrânea e panamenha, acompanhado de vegetais frescos e pão artesanal",
+            "zh": "地中海与巴拿马食谱的融合，配新鲜蔬菜与手工面包"
           },
           "footnote": null,
           "wide": false,
@@ -302,15 +499,27 @@
           "key": "alitas-de-pollo",
           "name": {
             "es": "Alitas de Pollo",
-            "en": "Chicken Wings"
+            "en": "Chicken Wings",
+            "fr": "Ailes de poulet",
+            "de": "Chicken Wings",
+            "pt": "Asinhas de frango",
+            "zh": "鸡翅"
           },
           "price": {
             "es": "1.00",
-            "en": "1.00"
+            "en": "1.00",
+            "fr": "1.00",
+            "de": "1.00",
+            "pt": "1.00",
+            "zh": "1.00"
           },
           "desc": {
             "es": "Crujientes alitas de pollo acompañadas de plátano, yuca y camote frito",
-            "en": "Crispy chicken wings served with fried plantain, cassava and sweet potato"
+            "en": "Crispy chicken wings served with fried plantain, cassava and sweet potato",
+            "fr": "Ailes de poulet croustillantes, accompagnées de banane plantain, manioc et patate douce frits",
+            "de": "Knusprige Chicken Wings mit frittierter Kochbanane, Maniok und Süßkartoffel",
+            "pt": "Asinhas de frango crocantes, acompanhadas de banana-da-terra, mandioca e batata-doce fritas",
+            "zh": "香脆鸡翅，配炸大蕉、木薯与红薯"
           },
           "footnote": null,
           "wide": false,
@@ -320,15 +529,27 @@
           "key": "waffles-dobore",
           "name": {
             "es": "Waffles Doboré",
-            "en": "Doboré Waffles"
+            "en": "Doboré Waffles",
+            "fr": "Gaufres Doboré",
+            "de": "Doboré Waffeln",
+            "pt": "Waffles Doboré",
+            "zh": "Doboré 华夫饼"
           },
           "price": {
             "es": "1.00",
-            "en": "1.00"
+            "en": "1.00",
+            "fr": "1.00",
+            "de": "1.00",
+            "pt": "1.00",
+            "zh": "1.00"
           },
           "desc": {
             "es": "Waffles acompañados de bacon y torta de huevo",
-            "en": "Waffles served with bacon and an egg omelette"
+            "en": "Waffles served with bacon and an egg omelette",
+            "fr": "Gaufres accompagnées de bacon et d'une omelette",
+            "de": "Waffeln mit Bacon und Eierkuchen",
+            "pt": "Waffles acompanhados de bacon e torta de ovo",
+            "zh": "华夫饼配培根与蛋饼"
           },
           "footnote": null,
           "wide": false,
@@ -340,27 +561,47 @@
       "id": "postres",
       "name": {
         "es": "Postres / Panadería",
-        "en": "Desserts / Bakery"
+        "en": "Desserts / Bakery",
+        "fr": "Desserts / Boulangerie",
+        "de": "Desserts / Backwaren",
+        "pt": "Sobremesas / Padaria",
+        "zh": "甜点 / 烘焙"
       },
       "icon": "croissant",
       "footnote": {
         "es": "Hecho en casa, todos los días",
-        "en": "House-made, every day"
+        "en": "House-made, every day",
+        "fr": "Fait maison, tous les jours",
+        "de": "Täglich hausgemacht",
+        "pt": "Feito em casa, todos os dias",
+        "zh": "每日现做"
       },
       "items": [
         {
           "key": "cheesecake-maracuya",
           "name": {
             "es": "Cheesecake de maracuyá",
-            "en": "Passion Fruit Cheesecake"
+            "en": "Passion Fruit Cheesecake",
+            "fr": "Cheesecake au fruit de la passion",
+            "de": "Maracuja-Käsekuchen",
+            "pt": "Cheesecake de maracujá",
+            "zh": "百香果芝士蛋糕"
           },
           "price": {
             "es": "4.75",
-            "en": "4.75"
+            "en": "4.75",
+            "fr": "4.75",
+            "de": "4.75",
+            "pt": "4.75",
+            "zh": "4.75"
           },
           "desc": {
             "es": "Cremoso, con fruta de la región.",
-            "en": "Creamy, made with fruit from the region."
+            "en": "Creamy, made with fruit from the region.",
+            "fr": "Crémeux, avec des fruits de la région.",
+            "de": "Cremig, mit Früchten aus der Region.",
+            "pt": "Cremoso, com fruta da região.",
+            "zh": "绵密顺滑，选用本地水果。"
           },
           "footnote": null,
           "wide": false,
@@ -370,15 +611,27 @@
           "key": "brownie",
           "name": {
             "es": "Brownie de chocolate",
-            "en": "Chocolate Brownie"
+            "en": "Chocolate Brownie",
+            "fr": "Brownie au chocolat",
+            "de": "Schokoladen-Brownie",
+            "pt": "Brownie de chocolate",
+            "zh": "巧克力布朗尼"
           },
           "price": {
             "es": "4.25",
-            "en": "4.25"
+            "en": "4.25",
+            "fr": "4.25",
+            "de": "4.25",
+            "pt": "4.25",
+            "zh": "4.25"
           },
           "desc": {
             "es": "Con nibs de cacao chiricano.",
-            "en": "With cacao nibs from Chiriquí."
+            "en": "With cacao nibs from Chiriquí.",
+            "fr": "Avec des éclats de cacao de Chiriquí.",
+            "de": "Mit Kakao-Nibs aus Chiriquí.",
+            "pt": "Com nibs de cacau de Chiriquí.",
+            "zh": "配奇里基产可可碎。"
           },
           "footnote": null,
           "wide": false,
@@ -388,15 +641,27 @@
           "key": "croissant",
           "name": {
             "es": "Croissant de mantequilla",
-            "en": "Butter Croissant"
+            "en": "Butter Croissant",
+            "fr": "Croissant au beurre",
+            "de": "Butter-Croissant",
+            "pt": "Croissant de manteiga",
+            "zh": "黄油可颂"
           },
           "price": {
             "es": "3.25",
-            "en": "3.25"
+            "en": "3.25",
+            "fr": "3.25",
+            "de": "3.25",
+            "pt": "3.25",
+            "zh": "3.25"
           },
           "desc": {
             "es": "Horneado cada mañana.",
-            "en": "Baked fresh every morning."
+            "en": "Baked fresh every morning.",
+            "fr": "Cuit chaque matin.",
+            "de": "Jeden Morgen frisch gebacken.",
+            "pt": "Assado todas as manhãs.",
+            "zh": "每日清晨现烤。"
           },
           "footnote": null,
           "wide": false,
@@ -406,15 +671,27 @@
           "key": "oat-cacao-cookie",
           "name": {
             "es": "Galleta de avena y cacao",
-            "en": "Oat & Cacao Cookie"
+            "en": "Oat & Cacao Cookie",
+            "fr": "Cookie avoine et cacao",
+            "de": "Hafer-Kakao-Cookie",
+            "pt": "Biscoito de aveia e cacau",
+            "zh": "燕麦可可饼干"
           },
           "price": {
             "es": "2.75",
-            "en": "2.75"
+            "en": "2.75",
+            "fr": "2.75",
+            "de": "2.75",
+            "pt": "2.75",
+            "zh": "2.75"
           },
           "desc": {
             "es": "Crujiente por fuera, suave por dentro.",
-            "en": "Crisp on the outside, soft within."
+            "en": "Crisp on the outside, soft within.",
+            "fr": "Croustillant dehors, moelleux dedans.",
+            "de": "Außen knusprig, innen weich.",
+            "pt": "Crocante por fora, macio por dentro.",
+            "zh": "外脆内软。"
           },
           "footnote": null,
           "wide": false,
@@ -424,15 +701,27 @@
           "key": "banana-bread",
           "name": {
             "es": "Pan de banano",
-            "en": "Banana Bread"
+            "en": "Banana Bread",
+            "fr": "Pain à la banane",
+            "de": "Bananenbrot",
+            "pt": "Pão de banana",
+            "zh": "香蕉面包"
           },
           "price": {
             "es": "20",
-            "en": "20"
+            "en": "20",
+            "fr": "20",
+            "de": "20",
+            "pt": "20",
+            "zh": "20"
           },
           "desc": {
             "es": "Receta de la casa, con nueces.",
-            "en": "Our house recipe, with walnuts."
+            "en": "Our house recipe, with walnuts.",
+            "fr": "Recette maison, aux noix.",
+            "de": "Hausrezept, mit Walnüssen.",
+            "pt": "Receita da casa, com nozes.",
+            "zh": "招牌配方，加入核桃。"
           },
           "footnote": null,
           "wide": false,
@@ -442,15 +731,27 @@
           "key": "cinnamon-roll",
           "name": {
             "es": "Cinnamon Roll",
-            "en": "Cinnamon Roll"
+            "en": "Cinnamon Roll",
+            "fr": "Cinnamon Roll",
+            "de": "Cinnamon Roll",
+            "pt": "Cinnamon Roll",
+            "zh": "肉桂卷"
           },
           "price": {
             "es": "1.00",
-            "en": "1.00"
+            "en": "1.00",
+            "fr": "1.00",
+            "de": "1.00",
+            "pt": "1.00",
+            "zh": "1.00"
           },
           "desc": {
             "es": "Horneado en casa",
-            "en": "Baked in-house"
+            "en": "Baked in-house",
+            "fr": "Cuit maison",
+            "de": "Hausgemacht gebacken",
+            "pt": "Feito em casa",
+            "zh": "店内现烤"
           },
           "footnote": null,
           "wide": false,

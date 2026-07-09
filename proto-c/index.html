@@ -91,19 +91,36 @@
   .rail-brand{order:0;font-family:'Playfair Display',serif;font-weight:800;font-size:1.02rem;color:var(--cobre);letter-spacing:.01em;margin-right:auto}
   .rail-brand span{color:var(--cobre-dec)}
   .rail-link{order:1}
-  .lang-toggle{order:2}
-  /* toggle de idioma */
-  .lang-toggle{
-    display:inline-flex;align-items:center;gap:1px;flex:none;margin-left:3px;
-    font-size:.62rem;font-weight:700;letter-spacing:.04em;line-height:1;
-    color:var(--tueste);border:1.4px solid var(--linea);border-radius:999px;
-    padding:5px 6px;background:rgba(255,255,255,.4);
+  /* selector de idioma (dropdown de 6, alineado con el sitio) */
+  .langmenu{order:2;position:relative;flex:none;margin-left:5px}
+  .langmenu__btn{
+    display:inline-flex;align-items:center;gap:3px;
+    font-size:.66rem;font-weight:700;letter-spacing:.06em;line-height:1;
+    color:var(--cobre);border:1.4px solid var(--linea);border-radius:999px;
+    padding:6px 8px;background:rgba(255,255,255,.42);
     transition:border-color .25s ease,background .25s ease;
   }
-  .lang-toggle:hover,.lang-toggle:focus-visible{border-color:var(--cobre)}
-  .lang-toggle .l{padding:1px 3px;border-radius:6px;color:var(--tueste);opacity:.55;transition:opacity .2s ease,color .2s ease}
-  .lang-toggle .l.on{opacity:1;color:var(--cobre)}
-  .lang-toggle .sep{opacity:.35;margin:0 1px}
+  .langmenu__btn:hover,.langmenu__btn:focus-visible{border-color:var(--cobre)}
+  .langmenu__caret{font-size:.6em;opacity:.7}
+  .langmenu__list{
+    position:absolute;top:calc(100% + 8px);right:0;z-index:60;min-width:158px;
+    list-style:none;margin:0;padding:6px;
+    background:var(--alba);border:1px solid var(--linea);border-radius:14px;
+    box-shadow:var(--sombra-alza);
+  }
+  .langmenu__list[hidden]{display:none}
+  .langmenu__list li{margin:0}
+  .langmenu__item{
+    display:flex;align-items:center;gap:10px;width:100%;
+    padding:8px 10px;border-radius:9px;font-size:.86rem;color:var(--tinta);
+    transition:background .18s ease,color .18s ease;
+  }
+  .langmenu__item:hover,.langmenu__item:focus-visible{background:var(--crema-2)}
+  .langmenu__item.is-active{color:var(--cobre);font-weight:600}
+  .langmenu__item-code{
+    flex:none;width:26px;font-size:.64rem;font-weight:700;letter-spacing:.04em;
+    color:var(--cobre);opacity:.85;text-align:center;
+  }
   .rail-link{
     position:relative;font-size:.7rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
     color:var(--tueste);text-decoration:none;padding:6px 5px;border-radius:8px;opacity:.82;
@@ -303,9 +320,12 @@
   <div class="railnav-inner" data-rail>
     <a class="rail-brand" href="#top">Dob<span>o</span>ré</a>
     <!-- rail-links inyectados desde menu.json -->
-    <button class="lang-toggle" type="button" data-lang-toggle aria-label="Cambiar idioma">
-      <span class="l" data-l="es">ES</span><span class="sep" aria-hidden="true">/</span><span class="l" data-l="en">EN</span>
-    </button>
+    <div class="langmenu" data-langmenu>
+      <button class="langmenu__btn" type="button" data-langmenu-btn aria-haspopup="listbox" aria-expanded="false" aria-label="Cambiar idioma">
+        <span data-langmenu-current>ES</span><span class="langmenu__caret" aria-hidden="true">▾</span>
+      </button>
+      <ul class="langmenu__list" role="listbox" data-langmenu-list hidden></ul>
+    </div>
   </div>
 </nav>
 
@@ -424,35 +444,53 @@
   var CAT_IDS = [];
   var RAWCATS = [];               /* categorías crudas (para re-traducir en caliente) */
 
-  /* ---------------- idioma ---------------- */
+  /* ---------------- idioma (6, alineado con el sitio principal) ---------------- */
+  var SUPPORTED = ['es','en','fr','de','pt','zh'];
+  var LANGUAGES = [
+    {code:'es', name:'Español',    short:'ES'},
+    {code:'en', name:'English',    short:'EN'},
+    {code:'fr', name:'Français',   short:'FR'},
+    {code:'de', name:'Deutsch',    short:'DE'},
+    {code:'pt', name:'Português',  short:'PT'},
+    {code:'zh', name:'中文',        short:'中'}
+  ];
   var UI = {
-    es:{
-      especialidad:'Café de especialidad', lugar:'Boquete, Panamá',
-      title:'La <em>carta</em>',
+    es:{ especialidad:'Café de especialidad', lugar:'Boquete, Panamá', title:'La <em>carta</em>',
       sub:'Café de altura, brunch sin prisa y algo dulce para cerrar. Todo se prepara aquí, en Boquete.',
-      cue:'Baja con calma',
-      footNote:'Gracias por acompañarnos. Vuelve pronto.', footLine:'Boquete · Chiriquí · Panamá',
-      navLabel:'Categorías de la carta', close:'Cerrar', langLabel:'Cambiar idioma',
-      docTitle:'Doboré — La carta',
-      errKicker:'Un momento', errTitle:'La carta',
-      errBody:'No pudimos cargar la carta ahora mismo. Revisa tu conexión y recarga la página.'
-    },
-    en:{
-      especialidad:'Specialty coffee', lugar:'Boquete, Panama',
-      title:'The <em>menu</em>',
+      cue:'Baja con calma', footNote:'Gracias por acompañarnos. Vuelve pronto.', footLine:'Boquete · Chiriquí · Panamá',
+      navLabel:'Categorías de la carta', close:'Cerrar', langLabel:'Cambiar idioma', docTitle:'Doboré — La carta',
+      errKicker:'Un momento', errTitle:'La carta', errBody:'No pudimos cargar la carta ahora mismo. Revisa tu conexión y recarga la página.' },
+    en:{ especialidad:'Specialty coffee', lugar:'Boquete, Panama', title:'The <em>menu</em>',
       sub:'Highland coffee, an unhurried brunch and something sweet to finish. It’s all made right here, in Boquete.',
-      cue:'Take your time',
-      footNote:'Thanks for stopping by. Come back soon.', footLine:'Boquete · Chiriquí · Panama',
-      navLabel:'Menu categories', close:'Close', langLabel:'Change language',
-      docTitle:'Doboré — The menu',
-      errKicker:'One moment', errTitle:'The menu',
-      errBody:'We couldn’t load the menu right now. Check your connection and reload the page.'
-    }
+      cue:'Take your time', footNote:'Thanks for stopping by. Come back soon.', footLine:'Boquete · Chiriquí · Panama',
+      navLabel:'Menu categories', close:'Close', langLabel:'Change language', docTitle:'Doboré — The menu',
+      errKicker:'One moment', errTitle:'The menu', errBody:'We couldn’t load the menu right now. Check your connection and reload the page.' },
+    fr:{ especialidad:'Café de spécialité', lugar:'Boquete, Panama', title:'La <em>carte</em>',
+      sub:'Café d’altitude, un brunch sans hâte et une douceur pour finir. Tout est préparé ici même, à Boquete.',
+      cue:'Prenez votre temps', footNote:'Merci de votre visite. À bientôt.', footLine:'Boquete · Chiriquí · Panama',
+      navLabel:'Catégories du menu', close:'Fermer', langLabel:'Changer de langue', docTitle:'Doboré — La carte',
+      errKicker:'Un instant', errTitle:'La carte', errBody:'Impossible de charger la carte pour le moment. Vérifiez votre connexion et rechargez la page.' },
+    de:{ especialidad:'Spezialitätenkaffee', lugar:'Boquete, Panama', title:'Die <em>Karte</em>',
+      sub:'Hochlandkaffee, ein gemütlicher Brunch und etwas Süßes zum Abschluss. Alles wird hier in Boquete zubereitet.',
+      cue:'Lassen Sie sich Zeit', footNote:'Danke für Ihren Besuch. Bis bald.', footLine:'Boquete · Chiriquí · Panama',
+      navLabel:'Menükategorien', close:'Schließen', langLabel:'Sprache ändern', docTitle:'Doboré — Die Karte',
+      errKicker:'Einen Moment', errTitle:'Die Karte', errBody:'Die Karte konnte gerade nicht geladen werden. Prüfen Sie Ihre Verbindung und laden Sie die Seite neu.' },
+    pt:{ especialidad:'Café especial', lugar:'Boquete, Panamá', title:'O <em>cardápio</em>',
+      sub:'Café de altitude, um brunch sem pressa e algo doce para encerrar. Tudo é preparado aqui, em Boquete.',
+      cue:'Desça com calma', footNote:'Obrigado pela visita. Volte sempre.', footLine:'Boquete · Chiriquí · Panamá',
+      navLabel:'Categorias do cardápio', close:'Fechar', langLabel:'Mudar idioma', docTitle:'Doboré — O cardápio',
+      errKicker:'Um momento', errTitle:'O cardápio', errBody:'Não foi possível carregar o cardápio agora. Verifique sua conexão e recarregue a página.' },
+    zh:{ especialidad:'精品咖啡', lugar:'博克特，巴拿马', title:'<em>菜单</em>',
+      sub:'高山咖啡、悠闲的早午餐，再来点甜点收尾。一切都在博克特现场制作。',
+      cue:'慢慢往下看', footNote:'感谢光临，欢迎再来。', footLine:'博克特 · 奇里基 · 巴拿马',
+      navLabel:'菜单分类', close:'关闭', langLabel:'切换语言', docTitle:'Doboré — 菜单',
+      errKicker:'请稍候', errTitle:'菜单', errBody:'暂时无法加载菜单。请检查网络后重新加载页面。' }
   };
   function detectLang(){
-    try{ var s = localStorage.getItem('dobore-lang'); if (s === 'es' || s === 'en') return s; }catch(e){}
+    try{ var s = localStorage.getItem('dobore-lang'); if (SUPPORTED.indexOf(s) >= 0) return s; }catch(e){}
     var n = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
-    return n.indexOf('es') === 0 ? 'es' : 'en';   /* dispositivo en español → es; cualquier otro → en */
+    var base = n.split('-')[0];                       /* 'fr-FR'→'fr', 'zh-CN'→'zh', 'pt-BR'→'pt' */
+    return SUPPORTED.indexOf(base) >= 0 ? base : 'es';/* idioma del dispositivo → soportado; si no, español */
   }
   var LANG = detectLang();
 
@@ -612,15 +650,22 @@
 
   /* ---------------- aplicar idioma (sin re-render ni re-bind) ---------------- */
   function applyLang(lang, persist){
-    LANG = (lang === 'en') ? 'en' : 'es';
+    LANG = (SUPPORTED.indexOf(lang) >= 0) ? lang : 'es';
     if (persist){ try{ localStorage.setItem('dobore-lang', LANG); }catch(e){} }
     var u = UI[LANG];
     document.documentElement.lang = LANG;
     try{ document.title = u.docTitle; }catch(e){}
 
-    /* estado del toggle */
-    document.querySelectorAll('.lang-toggle .l').forEach(function(s){
-      s.classList.toggle('on', s.getAttribute('data-l') === LANG);
+    /* estado del selector de idioma (etiqueta actual + activo en la lista) */
+    var lmCur = document.querySelector('[data-langmenu-current]');
+    if (lmCur){
+      var cur = LANGUAGES.filter(function(l){ return l.code === LANG; })[0] || LANGUAGES[0];
+      lmCur.textContent = cur.short;
+    }
+    document.querySelectorAll('[data-langmenu-list] [data-lang]').forEach(function(b){
+      var on = b.getAttribute('data-lang') === LANG;
+      b.classList.toggle('is-active', on);
+      if (b.parentNode) b.parentNode.setAttribute('aria-selected', on ? 'true' : 'false');
     });
 
     /* textos fijos */
@@ -672,16 +717,34 @@
      ====================================================================== */
   function boot(){
 
-    /* ---------- idioma: aplicar el detectado + toggle ES/EN ---------- */
-    applyLang(LANG, false);
-    var langToggle = document.querySelector('[data-lang-toggle]');
-    if (langToggle){
-      langToggle.addEventListener('click', function(ev){
-        var seg = ev.target && ev.target.closest ? ev.target.closest('[data-l]') : null;
-        var next = seg ? seg.getAttribute('data-l') : (LANG === 'es' ? 'en' : 'es');
-        if (next !== LANG) applyLang(next, true);
-      });
+    /* ---------- idioma: dropdown de 6 idiomas ---------- */
+    var lmWrap = document.querySelector('[data-langmenu]');
+    var lmBtn  = document.querySelector('[data-langmenu-btn]');
+    var lmList = document.querySelector('[data-langmenu-list]');
+    if (lmList){
+      lmList.innerHTML = LANGUAGES.map(function(l){
+        return '<li role="option" aria-selected="false">'+
+          '<button class="langmenu__item" type="button" data-lang="'+esc(l.code)+'">'+
+            '<span class="langmenu__item-code" aria-hidden="true">'+esc(l.short)+'</span>'+
+            '<span>'+esc(l.name)+'</span>'+
+          '</button></li>';
+      }).join('');
     }
+    function closeLang(){ if (lmList) lmList.hidden = true; if (lmBtn) lmBtn.setAttribute('aria-expanded','false'); }
+    function openLang(){ if (lmList) lmList.hidden = false; if (lmBtn) lmBtn.setAttribute('aria-expanded','true'); }
+    if (lmBtn) lmBtn.addEventListener('click', function(){ (lmList && lmList.hidden) ? openLang() : closeLang(); });
+    if (lmList) lmList.addEventListener('click', function(ev){
+      var b = ev.target && ev.target.closest ? ev.target.closest('[data-lang]') : null;
+      if (!b) return;
+      var code = b.getAttribute('data-lang');
+      closeLang();
+      if (code !== LANG) applyLang(code, true);
+    });
+    document.addEventListener('pointerdown', function(ev){ if (lmWrap && !lmWrap.contains(ev.target)) closeLang(); });
+    document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape' && lmList && !lmList.hidden){ closeLang(); if (lmBtn) lmBtn.focus(); } });
+
+    /* aplicar el idioma detectado (ya con la lista construida) */
+    applyLang(LANG, false);
 
     /* ---------- nav: activo + estado sólido ---------- */
     try{
