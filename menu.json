@@ -147,7 +147,7 @@
           "key": "coffee-tonic",
           "name": {
             "es": "Tónica de café",
-            "en": "Coffee Tonic",
+            "en": "Coffee tonic",
             "fr": "Tonic au café",
             "de": "Kaffee-Tonic",
             "pt": "Tônica de café",
@@ -229,7 +229,7 @@
           "key": "sourdough-toast",
           "name": {
             "es": "Tostada de masa madre",
-            "en": "Sourdough Toast",
+            "en": "Sourdough toast",
             "fr": "Tartine au levain",
             "de": "Sauerteig-Toast",
             "pt": "Torrada de fermentação natural",
@@ -581,7 +581,7 @@
           "key": "cheesecake-maracuya",
           "name": {
             "es": "Cheesecake de maracuyá",
-            "en": "Passion Fruit Cheesecake",
+            "en": "Passion fruit cheesecake",
             "fr": "Cheesecake au fruit de la passion",
             "de": "Maracuja-Käsekuchen",
             "pt": "Cheesecake de maracujá",
@@ -671,7 +671,7 @@
           "key": "oat-cacao-cookie",
           "name": {
             "es": "Galleta de avena y cacao",
-            "en": "Oat & Cacao Cookie",
+            "en": "Oat and cacao cookie",
             "fr": "Cookie avoine et cacao",
             "de": "Hafer-Kakao-Cookie",
             "pt": "Biscoito de aveia e cacau",
