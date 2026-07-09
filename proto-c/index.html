@@ -23,6 +23,7 @@
     --tostado:   #221710;   /* coffee-900 (títulos) */
     --tinta:     #2d261c;   /* ink (cuerpo) */
     --sage:      #5a6743;   /* olive */
+    --cereza:    #a53d2c;   /* cherry (cerezas de café) */
     --linea:     rgba(34,23,16,.15);
     --sombra-suave:0 10px 30px -12px rgba(51,36,26,.28);
     --sombra-alza: 0 18px 44px -16px rgba(34,23,16,.38);
@@ -140,6 +141,21 @@
   .hero-cue{display:flex;align-items:center;gap:12px;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--tueste)}
   .hero-cue .linea{flex:0 0 42px;height:1.5px;background:var(--cobre);transform-origin:left;animation:cue 2.8s ease-in-out infinite}
   @keyframes cue{0%,100%{transform:scaleX(.3)}50%{transform:scaleX(1)}}
+
+  /* el texto del hero va SIEMPRE por encima de la rama */
+  .hero .wrap{position:relative;z-index:1}
+
+  /* rama de café — vignette de marca que llena el vacío del hero */
+  .hero-scene{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:visible}
+  .hero-branch{position:absolute;top:3%;right:-7%;width:min(76vw,320px);height:auto;overflow:visible;transform-origin:88% 8%}
+  .branch-stem{stroke:var(--cobre-dec);stroke-width:2;stroke-linecap:round;opacity:.55}
+  .leaf-body{fill:rgba(90,103,67,.15);stroke:var(--cobre-dec);stroke-width:1.4;opacity:.72}
+  .leaf-vein{stroke:var(--cobre-dec);stroke-width:1;opacity:.45}
+  .leaf-vein2{stroke:var(--cobre-dec);stroke-width:.9;opacity:.3}
+  .cherry{fill:var(--cereza);opacity:.72}
+  .cherry-hi{fill:rgba(255,255,255,.5)}
+  .petal{fill:rgba(248,242,228,.92);stroke:var(--cobre-dec);stroke-width:1.2;opacity:.9}
+  .flower-core{fill:var(--oro)}
 
   /* ------------------------------------------------ SECCIONES */
   .sec{position:relative;padding:32px 0 20px}
@@ -295,6 +311,47 @@
 
 <!-- ============================ HERO ============================ -->
 <header class="hero" id="top">
+  <div class="hero-scene" aria-hidden="true">
+    <svg class="hero-branch" viewBox="0 0 240 210" fill="none">
+      <defs>
+        <g id="cafe-leaf">
+          <path class="leaf-body" d="M0 0 C -11 -15, -11 -32, 0 -46 C 11 -32, 11 -15, 0 0 Z"/>
+          <path class="leaf-vein" d="M0 -3 L0 -43"/>
+          <path class="leaf-vein2" d="M0 -14 L-6 -21 M0 -22 L-6 -29 M0 -14 L6 -21 M0 -22 L6 -29"/>
+        </g>
+        <g id="cafe-cherry">
+          <circle class="cherry" cx="0" cy="0" r="7"/>
+          <circle class="cherry-hi" cx="-2.4" cy="-2.4" r="1.7"/>
+        </g>
+        <g id="cafe-flower">
+          <path class="petal" d="M0 0 C -4.5 -9, -4.5 -20, 0 -24 C 4.5 -20, 4.5 -9, 0 0 Z"/>
+          <path class="petal" transform="rotate(72)"  d="M0 0 C -4.5 -9, -4.5 -20, 0 -24 C 4.5 -20, 4.5 -9, 0 0 Z"/>
+          <path class="petal" transform="rotate(144)" d="M0 0 C -4.5 -9, -4.5 -20, 0 -24 C 4.5 -20, 4.5 -9, 0 0 Z"/>
+          <path class="petal" transform="rotate(216)" d="M0 0 C -4.5 -9, -4.5 -20, 0 -24 C 4.5 -20, 4.5 -9, 0 0 Z"/>
+          <path class="petal" transform="rotate(288)" d="M0 0 C -4.5 -9, -4.5 -20, 0 -24 C 4.5 -20, 4.5 -9, 0 0 Z"/>
+          <circle class="flower-core" r="3.2"/>
+        </g>
+      </defs>
+
+      <!-- tallo principal: entra por arriba a la derecha y baja hacia el centro -->
+      <path class="branch-stem" d="M236 6 C 206 26, 180 50, 158 82 C 142 106, 130 132, 122 158"/>
+
+      <!-- hojas alternas a lo largo del tallo -->
+      <use href="#cafe-leaf" transform="translate(200,36) rotate(56) scale(.95)"/>
+      <use href="#cafe-leaf" transform="translate(210,54) rotate(158) scale(.82)"/>
+      <use href="#cafe-leaf" transform="translate(172,74) rotate(42) scale(1.06)"/>
+      <use href="#cafe-leaf" transform="translate(184,96) rotate(146) scale(.9)"/>
+      <use href="#cafe-leaf" transform="translate(146,120) rotate(34) scale(1)"/>
+
+      <!-- cerezas de café en un nodo -->
+      <use href="#cafe-cherry" transform="translate(150,108)"/>
+      <use href="#cafe-cherry" transform="translate(163,114) scale(.9)"/>
+
+      <!-- flor de café: la que visita el colibrí -->
+      <use href="#cafe-flower" transform="translate(124,158)"/>
+    </svg>
+  </div>
+
   <div class="wrap hero-top">
     <span>Doboré <span class="dot">·</span> <span data-i18n="especialidad">Café de especialidad</span></span>
     <span data-i18n="lugar">Boquete, Panamá</span>
@@ -654,12 +711,16 @@
 
       /* intro del hero */
       var intro = gsap.timeline({defaults:{ease:'power3.out'}});
-      intro.from('.hero-top', {y:-16, autoAlpha:0, duration:.6})
-        .from('.hero .colibri', {x:44, y:-24, rotation:-12, scale:.6, autoAlpha:0, transformOrigin:'40% 60%', duration:.9, ease:'back.out(1.5)'}, '-=.2')
+      intro.from('.hero-branch', {autoAlpha:0, scale:.9, transformOrigin:'88% 8%', duration:1.2})
+        .from('.hero-top', {y:-16, autoAlpha:0, duration:.6}, '-=1')
+        .from('.hero .colibri', {x:44, y:-24, rotation:-12, scale:.6, autoAlpha:0, transformOrigin:'40% 60%', duration:.9, ease:'back.out(1.5)'}, '-=.5')
         .from('.hero-kicker', {y:18, autoAlpha:0, duration:.5}, '-=.4')
         .from('.hero-title', {y:34, autoAlpha:0, duration:.8, ease:'power4.out'}, '-=.3')
         .from('.hero-sub', {y:18, autoAlpha:0, duration:.5}, '-=.4')
         .from('.hero-cue', {autoAlpha:0, duration:.5}, '-=.2');
+
+      /* la rama se mece suave, como con viento */
+      gsap.to('.hero-branch', {rotation:1.8, duration:5.5, ease:'sine.inOut', yoyo:true, repeat:-1, transformOrigin:'88% 8%', delay:1.2});
 
       /* colibrí flota y aletea */
       gsap.to('.hero .colibri', {y:-6, duration:2, ease:'sine.inOut', yoyo:true, repeat:-1, delay:1.4});
