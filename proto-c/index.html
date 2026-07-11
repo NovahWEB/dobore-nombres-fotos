@@ -299,6 +299,50 @@
   .card-foot{display:flex;align-items:center;justify-content:center;margin-top:22px}
   .card-foot .price{font-size:1.15rem;padding:.4em 1em}
 
+  /* ================================================ DESKTOP
+     La carta se hizo mobile-first; en pantalla grande respira:
+     contenedor ancho, platos en 2 columnas, hero más amplio. */
+  @media (min-width:760px){
+    .wrap{max-width:920px;padding-inline:40px}
+    .railnav-inner{max-width:920px;gap:6px;padding:11px 40px}
+    .rail-brand{font-size:1.15rem}
+    .rail-link{font-size:.74rem;letter-spacing:.1em;padding:6px 10px}
+    .rail-link::after{left:10px;right:10px}
+
+    /* hero más grande y aireado */
+    .hero{padding:96px 0 44px}
+    .colibri{width:120px}
+    .hero-branch{width:min(46vw,440px);top:2%}
+    .hero-kicker{font-size:.82rem}
+    .hero-title{font-size:clamp(3.6rem,7vw,5rem)}
+    .hero-sub{font-size:1.14rem;max-width:44ch}
+
+    /* títulos de sección a escala */
+    .sec{padding:52px 0 30px}
+    .sec-title .ttl{font-size:clamp(3rem,5vw,3.8rem)}
+    .sec-kicker{font-size:.72rem}
+
+    /* PLATOS: grilla de 2 columnas, todos con la misma orientación
+       (en móvil alternan; en desktop se ven parejos, foto a la izquierda) */
+    .dishes{display:grid;grid-template-columns:1fr 1fr;gap:30px 52px;align-items:start;margin-top:26px}
+    .dishes .sep{display:none}                 /* el separador es un recurso de la columna móvil */
+    .dish{margin-top:0}
+    .dish--r{flex-direction:row}
+    .dish--r .dish-body{text-align:left}
+    .dish--r .dish-foot{justify-content:flex-start}
+    .dish-media{width:clamp(120px,15vw,148px)}
+    .dish-name{font-size:clamp(1.4rem,2vw,1.7rem)}
+    .dish-tease{font-size:.9rem}
+
+    /* lista sin foto (respaldo) también a 2 columnas */
+    .rows{display:grid;grid-template-columns:1fr 1fr;gap:0 52px}
+    .row:nth-of-type(2){border-top:1.4px solid var(--linea)}
+
+    /* ficha de detalle un poco más grande */
+    .card{width:min(70vw,520px)}
+    .footer-name{font-size:2.4rem}
+  }
+
   /* ------------------------------------------------ reduced motion */
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto}
@@ -587,7 +631,10 @@
     var photoItems = items.filter(function(it){ return it.image; });
     var rowItems   = items.filter(function(it){ return !it.image; });
 
-    var dishes = photoItems.map(function(it,i){ return dishHtml(it, i); }).join(SEP);
+    /* platos en un contenedor propio: en desktop se vuelve grilla de 2 columnas */
+    var dishes = photoItems.length
+      ? '<div class="dishes">' + photoItems.map(function(it,i){ return dishHtml(it, i); }).join(SEP) + '</div>'
+      : '';
     var rows   = rowItems.length ? '<div class="rows">'+ rowItems.map(rowHtml).join('') +'</div>' : '';
 
     return (
