@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Doboré — La Carta · Revista</title>
+<title>Dobore — La Carta · Revista</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F4E9D4'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='22' font-style='italic' text-anchor='middle' fill='%23A23918'%3ED%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -355,7 +355,7 @@
 <div class="grain" aria-hidden="true"></div>
 <div class="vignette" aria-hidden="true"></div>
 
-<main class="deck" id="deck" aria-label="Carta de Doboré, revista"></main>
+<main class="deck" id="deck" aria-label="Carta de Dobore, revista"></main>
 
 <!-- =================================================== NAV FIJA -->
 <nav class="nav" aria-label="Navegación de la carta">
@@ -521,7 +521,7 @@
       '</section>') : '';
     return '<section class="page" data-cat="'+esc(cat.id)+'" aria-label="'+esc(name)+'"><div class="sheet">' +
       '<div class="layer-back" aria-hidden="true"><span class="ghost" style="'+ghostPos+'">'+pad2(pageIdx)+'</span>'+botanica(botStyle)+'</div>' +
-      '<div class="runhead"><span class="tag">Doboré · La Carta</span><span class="tag r-r">Sección '+roman+'</span></div>' +
+      '<div class="runhead"><span class="tag">Dobore · La Carta</span><span class="tag r-r">Sección '+roman+'</span></div>' +
       '<header class="opener anim"><p class="kicker tag">Sección '+word+'</p>' +
         '<h2 class="op-title"'+opStyle+'>'+esc(name)+'</h2>'+standfirst+'</header>' +
       '<div class="rule anim"></div>' +
@@ -550,7 +550,7 @@
             '<figcaption>En portada, '+hn+', foto de la casa.</figcaption></figure>';
     }
     return '<section class="page cover is-active" data-cat="portada" aria-label="Portada"><div class="sheet">' +
-      '<div class="masthead"><span class="tag">Doboré · Café</span><span class="tag">N.º 01</span></div>' +
+      '<div class="masthead"><span class="tag">Dobore · Café</span><span class="tag">N.º 01</span></div>' +
       '<div class="cover-h">'+COLIBRI +
         '<h1 class="cover-title">La<br>Carta</h1>' +
         '<p class="cover-sub">'+sub+' · Boquete, Panamá</p></div>' +
@@ -565,7 +565,7 @@
     var line = cats.map(function(c){ return esc(shortName(txt(c.name))); }).join(' · ');
     return '<section class="page colofon" data-cat="colofon" aria-label="Colofón"><div class="sheet">' +
       COLIBRI +
-      '<p class="colofon-name">Doboré</p>' +
+      '<p class="colofon-name">Dobore</p>' +
       '<p class="colofon-line">'+line+'</p>' +
       '<p class="colofon-note">Pide en barra o levanta la mano, que vamos a ti. Gracias por hojear la carta.</p>' +
       '<div class="colofon-meta"><b>Colofón</b>La Carta, N.º 01. Boquete, Panamá. Fotografía y cocina de la casa. Grano de las tierras altas de Chiriquí.</div>' +
@@ -818,7 +818,7 @@
     deck.innerHTML =
       '<section class="page cover is-active" data-cat="portada" aria-label="Error"><div class="sheet" style="justify-content:center;align-items:center;text-align:center;gap:6px">' +
         COLIBRI +
-        '<p class="colofon-name" style="font-size:2.6rem">Doboré</p>' +
+        '<p class="colofon-name" style="font-size:2.6rem">Dobore</p>' +
         '<p class="colofon-note">No pudimos cargar la carta en este momento. Actualiza la página o vuelve a intentarlo en un momento.</p>' +
       '</div></section>';
   }

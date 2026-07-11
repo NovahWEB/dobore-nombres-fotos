@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Doboré — La Carta · Cine de Sabor</title>
+<title>Dobore — La Carta · Cine de Sabor</title>
 <meta name="theme-color" content="#140c07">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -411,7 +411,7 @@ body{
   <!-- Rótulo de sección -->
   <div class="slate" id="slate">
     <div class="slate__l">
-      <div class="slate__kicker" id="slateKicker">Doboré presenta</div>
+      <div class="slate__kicker" id="slateKicker">Dobore presenta</div>
       <h2 class="slate__h" id="slateH">Café</h2>
     </div>
     <div class="slate__take"><span id="slateTake">Escena</span><b id="slateNum">01</b></div>
@@ -422,7 +422,7 @@ body{
 
   <div class="fin">
     <div class="fin__word">Buen provecho</div>
-    <div class="fin__sub">Doboré · Producción de la casa</div>
+    <div class="fin__sub">Dobore · Producción de la casa</div>
   </div>
 </main>
 
@@ -454,11 +454,11 @@ function normalize(json){
     if(!id) return;
     ORDER.push(id);
     const label = (cat.name && cat.name.es) || id;
-    const catRole = (cat.footnote && cat.footnote.es) || "Doboré";
+    const catRole = (cat.footnote && cat.footnote.es) || "Dobore";
     MENU[id] = {
       label,
       tabLabel: label.split("/")[0].trim(),   // nav compacto ("Postres" ← "Postres / Panadería")
-      kicker: "Doboré presenta",
+      kicker: "Dobore presenta",
       take: "Escena",
       num: String(ci+1).padStart(2,"0"),
       items: (cat.items || []).map(it=>({
@@ -494,7 +494,7 @@ function cardHTML(it, i){
     return `<button class="card" data-id="${it.id}">
       <figure class="frame">
         <img src="../${it.image}" alt="${it.name}" loading="lazy">
-        <span class="frame__hud"><span class="sq"></span>Cuadro ${num} · Doboré</span>
+        <span class="frame__hud"><span class="sq"></span>Cuadro ${num} · Dobore</span>
         <span class="frame__scope">2.39 : 1</span>
         <span class="frame__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
       </figure>
@@ -594,7 +594,7 @@ function openDetail(id){
   if(it.image){
     modalMedia.innerHTML=`<div class="mframe">
       <img src="../${it.image}" alt="${it.name}">
-      <span class="mframe__hud"><span class="rc"></span>Rec · Doboré · ${it.role}</span>
+      <span class="mframe__hud"><span class="rc"></span>Rec · Dobore · ${it.role}</span>
     </div>`;
   }else{
     modalMedia.innerHTML=`<div class="titlecard"><div class="tc-in">

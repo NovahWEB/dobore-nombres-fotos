@@ -408,12 +408,12 @@
         {
           "key": "hamburguesa-dobore-suprema",
           "name": {
-            "es": "Hamburguesa Doboré Suprema",
-            "en": "Doboré Supreme Burger",
-            "fr": "Burger Doboré Suprême",
-            "de": "Doboré Supreme Burger",
-            "pt": "Hambúrguer Doboré Suprema",
-            "zh": "Doboré 至尊汉堡"
+            "es": "Hamburguesa Dobore Suprema",
+            "en": "Dobore Supreme Burger",
+            "fr": "Burger Dobore Suprême",
+            "de": "Dobore Supreme Burger",
+            "pt": "Hambúrguer Dobore Suprema",
+            "zh": "Dobore 至尊汉堡"
           },
           "price": {
             "es": "1.00",
@@ -528,12 +528,12 @@
         {
           "key": "waffles-dobore",
           "name": {
-            "es": "Waffles Doboré",
-            "en": "Doboré Waffles",
-            "fr": "Gaufres Doboré",
-            "de": "Doboré Waffeln",
-            "pt": "Waffles Doboré",
-            "zh": "Doboré 华夫饼"
+            "es": "Waffles Dobore",
+            "en": "Dobore Waffles",
+            "fr": "Gaufres Dobore",
+            "de": "Dobore Waffeln",
+            "pt": "Waffles Dobore",
+            "zh": "Dobore 华夫饼"
           },
           "price": {
             "es": "1.00",
