@@ -793,6 +793,23 @@
     /* aplicar el idioma detectado (ya con la lista construida) */
     applyLang(LANG, false);
 
+    /* ---------- auto-scroll a la categoría del ancla (#cafe, #brunch, …) ----------
+       Si se llega con hash (p. ej. desde "Ver todo" del landing), scrollea a esa
+       sección una vez renderizada. Las secciones se crean en renderMenu, así que
+       aquí ya existen; esperamos un frame a que asiente el layout. */
+    try{
+      var hash = (location.hash || '').slice(1);
+      if (hash){
+        var target = document.getElementById(decodeURIComponent(hash));
+        if (target){
+          var goToSection = function(){ target.scrollIntoView({ behavior: 'auto', block: 'start' }); };
+          setTimeout(goToSection, 80);
+          /* reajuste tras cargar imágenes (evita quedar corto por el reflow) */
+          window.addEventListener('load', function(){ setTimeout(goToSection, 60); });
+        }
+      }
+    }catch(e){}
+
     /* ---------- nav: activo + estado sólido ---------- */
     try{
       var links = {};
